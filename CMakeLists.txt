@@ -7,19 +7,23 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rospy REQUIRED)
-find_package(roscpp REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(std_msgs REQUIRED)
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+add_executable(basic_node src/basic_node.cpp)
+ament_target_dependencies(basic_node rclcpp)
+
+# C++ Nodes
+include_directories(include)
+install(TARGETS
+  basic_node
+  DESTINATION lib/${PROJECT_NAME})
+
+# Python Nodes
+install(PROGRAMS
+  scripts/basic_node.py
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
