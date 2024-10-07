@@ -54,6 +54,10 @@
 
          [INFO] [1728219147.878266379] [basic_node]: Hello, ROS 2 (Python)!
 
+ - Add Motor library
+   - ```sudo apt-get install ros-humble-dynamixel-sdk```
+
+
 
 # Adding nodes
 - Add the **.py** file at **/src**

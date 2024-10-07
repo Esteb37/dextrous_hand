@@ -24,6 +24,11 @@ find_package(std_msgs REQUIRED)
 # Python Nodes
 install(PROGRAMS
   src/basic_node.py
+  src/hand_node.py
+  src/Joint.py
+  src/Hand.py
+  src/Finger.py
+  src/constants.py
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
