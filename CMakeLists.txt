@@ -21,14 +21,23 @@ find_package(std_msgs REQUIRED)
 #  basic_node
 #  DESTINATION lib/${PROJECT_NAME})
 
-# Python Nodes
+# Python files
 install(PROGRAMS
+
+  # Nodes
   src/basic_node.py
   src/hand_node.py
+  src/control_node.py
+
+  # Classes
   src/Joint.py
   src/Hand.py
   src/Finger.py
+
+  # Utilities
   src/constants.py
+  src/utils.py
+
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

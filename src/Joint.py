@@ -7,6 +7,8 @@ class Joint():
     _name_instances = {}
     _motor_instances = {}
 
+    _instances = {}
+
     def __new__(cls, name, motor_port, *args, **kwargs):
         """
         Singleton pattern. Make sure only one instance of each Joint is created.
@@ -83,7 +85,6 @@ class Joint():
         string += "Velocity: " + str(self.velocity) + "\n"
         string += "Limits: " + str(self.limits) + "\n"
         return string
-
 
 WRIST = Joint(constants.IDS.WRIST.name,
               constants.MOTOR_PORTS[constants.IDS.WRIST],

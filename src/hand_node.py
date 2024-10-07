@@ -1,15 +1,27 @@
 #!/usr/bin/env python3
 
 import rclpy
+import rclpy.logging
 from rclpy.node import Node
 from Hand import HAND
-
+from std_msgs.msg import Float32MultiArray
 class HandNode(Node):
     """
     Node to control the hand
     """
     def __init__(self):
         super().__init__('hand_node')
+
+        self.subscription = self.create_subscription(
+            Float32MultiArray,
+            'finger_positions',
+            self.finger_positions_callback,
+            10)
+
+        self.get_logger().info('Hand node started')
+
+    def finger_positions_callback(self, msg):
+        HAND.set_fingers(msg.data)
         HAND.print()
 
 def main(args=None):

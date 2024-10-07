@@ -2,7 +2,6 @@
 
 from enum import Enum, auto
 
-
 class IDS(Enum):
     """
     Subsystem IDs.
@@ -17,8 +16,6 @@ class IDS(Enum):
     PINKY = auto()
     ABDUCTION = auto()
     WRIST = auto()
-
-
 
 MOTOR_PORTS = {
     IDS.THUMB: [0, 1, 2],

@@ -2,58 +2,7 @@
 
 from Finger import FINGERS
 from Joint import ABDUCTION, WRIST
-
-def matrix_to_fingers_pos(matrix):
-    """
-    Turns a position matrix into human-readable dictionary
-
-    param matrix: a matrix of finger positions, of shape
-
-                    [float, float, float, <- Finger 1
-                     float, float, float,
-                     ...
-                     float, float, float]
-
-    return positions: a dictionary of finger positions, of shape
-
-                    {THUMB: [float, float, float],
-                     INDEX: [float, float, float],
-                     ...
-                     PINKY: [float, float, float]}
-    """
-
-    if len(matrix) != len(FINGERS) or len(matrix[0]) != FINGERS[0].joint_count:
-        raise Exception("Matrix must have ", len(FINGERS),
-                        " rows and ", FINGERS[0].joint_count, " columns. Received ",
-                        len(matrix), " rows and ", len(matrix[0]), " columns")
-
-    positions = {}
-    for i, finger in enumerate(FINGERS):
-        positions[finger] = matrix[i]
-
-    return positions
-
-def finger_pos_to_matrix(positions):
-    """
-    Turns a human-readable position dict into position matrix
-
-    param positions: a dictionary of finger positions, of shape
-                    {THUMB: [float, float, float],
-                    INDEX: [float, float, float],
-                    ...
-                    PINKY: [float, float, float]}
-
-    return matrix: a matrix of finger positions, of shape
-                    [float, float, float,
-                    float, float, float,
-                    ...
-                    float, float, float]
-    """
-    matrix = []
-    for finger in FINGERS:
-        matrix.append(positions[finger.id])
-
-    return matrix
+from utils import finger_pos_to_matrix
 
 class Hand():
     _instance = None
@@ -79,7 +28,10 @@ class Hand():
             positions = finger_pos_to_matrix(positions)
 
         for i, finger in enumerate(FINGERS):
-            finger.set_positions(positions[i])
+            finger.set_positions([positions[i * 3],
+                                  positions[i * 3 + 1],
+                                  positions[i * 3 + 2]]
+                                  )
 
     def set_abduction(self, position):
         ABDUCTION.set_position(position)
