@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from Joint import Joint
-import constants
+from dextrous_hand.Joint import Joint
+import dextrous_hand.constants as constants
 
 class Finger():
     # For the singleton pattern

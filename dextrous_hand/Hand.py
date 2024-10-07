@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from Finger import FINGERS
-from Joint import ABDUCTION, WRIST
-from utils import finger_pos_to_matrix
+from dextrous_hand.Finger import FINGERS
+from dextrous_hand.Joint import ABDUCTION, WRIST
+from dextrous_hand.utils import finger_pos_to_matrix
 
 class Hand():
     _instance = None

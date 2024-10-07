@@ -2,14 +2,16 @@
 
 import rclpy
 from rclpy.node import Node
+
 from std_msgs.msg import Float32MultiArray
 import numpy as np
-from Finger import FINGERS
-from utils import matrix_to_message
-from pynput import keyboard
+from pynput import keyboard # type: ignore
 import time
 
-class ControlNode(Node):
+from dextrous_hand.utils import matrix_to_message
+from dextrous_hand.Finger import FINGERS
+
+class TeleopNode(Node):
     """
     Node to send commands to the hand
     Controls:
@@ -26,9 +28,9 @@ class ControlNode(Node):
     """
 
     def __init__(self):
-        super().__init__('control_node')
+        super().__init__('teleop_node')
         self.publisher = self.create_publisher(Float32MultiArray, 'finger_positions', 10)
-        self.get_logger().info('Control node started')
+        self.get_logger().info('teleop node started')
         self.finger_positions = np.zeros((5, 3))
         self.finger_id = 0
         self.joint_id = 0
@@ -78,7 +80,7 @@ class ControlNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ControlNode()
+    node = TeleopNode()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

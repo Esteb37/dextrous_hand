@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import constants
+import dextrous_hand.constants as constants
 
 class Joint():
     # For the singleton pattern

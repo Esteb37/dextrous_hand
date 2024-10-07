@@ -63,16 +63,24 @@
  - Add teleop control library
    - ```pip install pynput```
 
-# Adding nodes
-- Add the **.py** file at **/src**
-- In **CMakeList.txt**
+# Adding files
 
+## Nodes
+- Add the **.py** file at **/src**
+- In setup.py
    ```
-   install(PROGRAMS
-   src/basic_node.py
-   src/node_name.py <-- Add file name here
-   DESTINATION lib/${PROJECT_NAME})
+    entry_points={
+        'console_scripts': [
+            'basic_node = src.basic_node:main',
+            'your_node = src.your_node:main', <-- Add node here
+        ],
+    },
    ```
+## Modules
+- Just add the **.py** file at **/dextrous_hand**
+   - When importing, do not forget to append ```dextrous_hand```
+
+      ```import dextrous_hand.my_module as my_module```
 
 # File Structure
  - **/src** - Python node files

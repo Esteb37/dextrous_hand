@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from Finger import FINGERS
+from dextrous_hand.Finger import FINGERS
 from std_msgs.msg import Float32MultiArray
 
 def matrix_to_fingers_pos(matrix):

@@ -3,8 +3,10 @@
 import rclpy
 import rclpy.logging
 from rclpy.node import Node
-from Hand import HAND
 from std_msgs.msg import Float32MultiArray
+
+from dextrous_hand.Hand import HAND
+
 class HandNode(Node):
     """
     Node to control the hand
