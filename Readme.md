@@ -57,7 +57,11 @@
  - Add Motor library
    - ```sudo apt-get install ros-humble-dynamixel-sdk```
 
+ - Add pip
+   - ```sudo apt install python3-pip```
 
+ - Add teleop control library
+   - ```pip install pynput```
 
 # Adding nodes
 - Add the **.py** file at **/src**
