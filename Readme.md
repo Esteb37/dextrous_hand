@@ -50,7 +50,7 @@
    - ```colcon build --packages-select dextrous_hand```
 
  - Test node
-   - ```ros2 run dextrous_hand basic_node.py```
+   - ```ros2 run dextrous_hand basic_node```
 
          [INFO] [1728219147.878266379] [basic_node]: Hello, ROS 2 (Python)!
 
