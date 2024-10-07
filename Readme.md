@@ -49,48 +49,26 @@
  - Build from within ```ros2_ws```
    - ```colcon build --packages-select dextrous_hand```
 
- - Test nodes
-   - ```ros2 run dextrous_hand basic_node```
-
-         [INFO] [1728218504.785549319] [basic_node]: Hello, ROS 2 (C++)!
+ - Test node
    - ```ros2 run dextrous_hand basic_node.py```
 
          [INFO] [1728219147.878266379] [basic_node]: Hello, ROS 2 (Python)!
 
 
 # Adding nodes
-## C++
-   - Add the **.cpp** file at **/src**
-   - Add the **.hpp** file at **/include** if necessary
-   - In **CMakeList.txt**
+- Add the **.py** file at **/src**
+- In **CMakeList.txt**
 
-      ```
-      add_executable(node_name src/node_name.cpp)
-      ament_target_dependencies(node_name rclcpp)
-      ...
-      install(TARGETS
-         basic_node
-         node_name <-- Add node name here
-         DESTINATION lib/${PROJECT_NAME})
-      ```
-## Python
-   - Add the **.py** file at **/scripts**
-   - In **CMakeList.txt**
-
-      ```
-      install(PROGRAMS
-      scripts/basic_node.py
-      scripts/node_name.py <-- Add file name here
-      DESTINATION lib/${PROJECT_NAME})
-      ```
+   ```
+   install(PROGRAMS
+   src/basic_node.py
+   src/node_name.py <-- Add file name here
+   DESTINATION lib/${PROJECT_NAME})
+   ```
 
 # File Structure
- - **/src** - C++ node source files
- - **/include** - C++ header files
- - **/scripts** - Python node files
+ - **/src** - Python node files
  - **/dextrous_hand** - Python module files
  - **/launch** - ROS Launch files
  - **/test** - Any code that does not correspond to a node (i.e. test code and experiments)
  - **/data** - Images, text-files, ML models etc
- - **/.vscode** - For easy workspace configuration
- - **/local** - Optional, needs to be created. For anything that should not be shared to the repository.

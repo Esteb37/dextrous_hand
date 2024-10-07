@@ -4,14 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include",
                 "/opt/ros/humble/include/**"
             ],
-            "defines": [],
-            "compilerPath": null,
-            "cStandard": "c17",
-            "cppStandard": "gnu++17",
-            "intelliSenseMode": "linux-gcc-x64"
+            "defines": []
         }
     ],
     "version": 4
