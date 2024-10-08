@@ -23,8 +23,8 @@ MOTOR_PORTS = {
     IDS.MIDDLE: [6, 7, 8],
     IDS.RING: [9, 10, 11],
     IDS.PINKY: [12, 13, 14],
-    IDS.ABDUCTION: 15,
-    IDS.WRIST: 16
+    IDS.ABDUCTION: [15],
+    IDS.WRIST: [16]
 }
 """
 Motor ports for each subsystem.
@@ -47,8 +47,8 @@ MOTOR_LIMITS = {
     IDS.PINKY: [[-3.14, 3.14],
                 [-3.14, 3.14],
                 [-3.14, 3.14]],
-    IDS.ABDUCTION: [-3.14, 3.14],
-    IDS.WRIST: [-3.14, 3.14]
+    IDS.ABDUCTION: [[-3.14, 3.14]],
+    IDS.WRIST: [[-3.14, 3.14]]
 }
 """
 Hard limits for the motors to prevent overextension.

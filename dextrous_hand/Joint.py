@@ -85,11 +85,3 @@ class Joint():
         string += "Velocity: " + str(self.velocity) + "\n"
         string += "Limits: " + str(self.limits) + "\n"
         return string
-
-WRIST = Joint(constants.IDS.WRIST.name,
-              constants.MOTOR_PORTS[constants.IDS.WRIST],
-              constants.MOTOR_LIMITS[constants.IDS.WRIST])
-
-ABDUCTION = Joint(constants.IDS.ABDUCTION.name,
-                  constants.MOTOR_PORTS[constants.IDS.ABDUCTION],
-                  constants.MOTOR_LIMITS[constants.IDS.ABDUCTION])
