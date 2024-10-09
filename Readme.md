@@ -3,7 +3,7 @@
 ### We are using ROS 2 Humble, for Ubuntu Jammy 22.04
  - Install and configure git
     ```
-    sudo apt-get git
+    sudo apt-get install git
     git config --global user.name GITHUB_USERNAME
     git config --global user.email GITHUB_EMAIL
     ```
@@ -24,14 +24,14 @@
  - Install **Colcon** and **Ninja** for building
     - ```
       sudo apt install python3-colcon-common-extensions
-      apt-get install ninja-build
+      sudo apt-get install ninja-build
       ```
 
  - Install **rosdep** for dependency management
    - ```
       sudo apt-get install python3-rosdep
-      rosdep init
-      rosdep update
+      sudo rosdep init
+      sudo rosdep update
       ```
  - Create a **ros2 workspace** at home and go to its **src** folder
     - ```
