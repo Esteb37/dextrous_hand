@@ -21,6 +21,8 @@
       source ~/ros2_ws/install/setup.bash
       ```
 
+      Restart the command line window to apply the .bashrc
+
  - Install **Colcon** and **Ninja** for building
     - ```
       sudo apt install python3-colcon-common-extensions
