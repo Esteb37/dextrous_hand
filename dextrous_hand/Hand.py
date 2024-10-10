@@ -4,6 +4,8 @@ from dextrous_hand.Finger import FINGERS
 from dextrous_hand.Abduction import ABDUCTION
 from dextrous_hand.Wrist import WRIST
 from dextrous_hand.utils import finger_pos_to_matrix
+from dextrous_hand.Subsystem import Subsystem
+import dextrous_hand.constants as constants
 
 class Hand():
     _instance = None
@@ -29,27 +31,28 @@ class Hand():
             positions = finger_pos_to_matrix(positions)
 
         for i, finger in enumerate(FINGERS):
-            finger.positions = positions[i * 3 : (i + 1) * 3]
+            finger.write(positions[i * 3 : (i + 1) * 3])
+
+        at_position = True
+        for finger in FINGERS:
+            at_position = at_position and finger.at_position()
+        return at_position
 
     def set_abduction(self, position):
-        ABDUCTION.position = position
+        return ABDUCTION.write(position)
 
     def set_wrist(self, position):
-        WRIST.position = position
-
-    def print(self, verbose = False):
-        for finger in FINGERS:
-            finger.print(verbose)
-        WRIST.print(verbose)
-        ABDUCTION.print(verbose)
-        print()
+        return WRIST.write(position)
 
     def __str__(self):
-        string = "---- Hand ----\n"
-        for finger in FINGERS:
-            string += finger.id.name+": "+str(finger.positions)+"\n"
-        string += WRIST.name + ": " + str(WRIST.position) + "\n"
-        string += ABDUCTION.name + ": " + str(ABDUCTION.position) + "\n"
+        string = ""
+        for subsystem_id in constants.SUBSYSTEMS:
+            subsystem = Subsystem(subsystem_id)
+            string += str(subsystem) + "\n"
+            for joint in subsystem.joints:
+                string += "\t" + str(joint) + "\n"
+                for motor in joint.motors:
+                    string += "\t\t" + str(motor) + "\n"
         return string
 
 HAND = Hand()

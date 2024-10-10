@@ -4,4 +4,4 @@ from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.constants as constants
 
 # Singleton instance
-WRIST = Subsystem(constants.IDS.WRIST)
+WRIST = Subsystem(constants.SUBSYSTEMS.WRIST)

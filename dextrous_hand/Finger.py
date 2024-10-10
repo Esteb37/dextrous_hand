@@ -2,12 +2,13 @@
 
 from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.constants as constants
+from enum import Enum
 
 # Singleton instances
-THUMB = Subsystem(constants.IDS.THUMB)
-INDEX = Subsystem(constants.IDS.INDEX)
-MIDDLE = Subsystem(constants.IDS.MIDDLE)
-RING = Subsystem(constants.IDS.RING)
-PINKY = Subsystem(constants.IDS.PINKY)
+THUMB = Subsystem(constants.SUBSYSTEMS.THUMB)
+INDEX = Subsystem(constants.SUBSYSTEMS.INDEX)
+MIDDLE = Subsystem(constants.SUBSYSTEMS.MIDDLE)
+RING = Subsystem(constants.SUBSYSTEMS.RING)
+PINKY = Subsystem(constants.SUBSYSTEMS.PINKY)
 
 FINGERS = [THUMB, INDEX, MIDDLE, RING, PINKY]

@@ -1,87 +1,86 @@
 #!/usr/bin/env python3
 
 import dextrous_hand.constants as constants
+from dextrous_hand.Motor import Motor
 
 class Joint():
     # For the singleton pattern
-    _name_instances = {}
-    _motor_instances = {}
-
     _instances = {}
 
-    def __new__(cls, name, motor_port, *args, **kwargs):
+    def __new__(cls, name, *args, **kwargs):
         """
         Singleton pattern. Make sure only one instance of each Joint is created.
         If a joint with the same name has already been created, return that instance.
-        If a joint with the same motor_port has already been created, raise an exception so no two joints share the same motor_port.
         """
+        if name not in cls._instances:
+            cls._instances[name] = super(Joint, cls).__new__(cls)
+        return cls._instances[name]
 
-        # Check if an instance with this name already exists
-        if name in cls._name_instances:
-            return cls._name_instances[name]
-        # Check if a motor with this motor_port already exists
-        if motor_port in cls._motor_instances:
-            raise Exception(f"Motor ID {motor_port} is already in use by another Joint instance.")
-
-        # Create a new instance
-        instance = super(Joint, cls).__new__(cls)
-        cls._name_instances[name] = instance
-        cls._motor_instances[motor_port] = instance
-        return instance
-
-    def __init__(self, name, motor_port, limits):
+    def __init__(self, id : constants.JOINTS):
         # Avoid reinitialization if already initialized
         if hasattr(self, 'initialized') and self.initialized:
             return
 
-        self.name = name
-        self.motor_port = motor_port
-        self.limits = limits
+        self.id = id
+        self.target = 0
+        self.motors = [Motor(port) for port in constants.JOINT_MOTORS[id]]
 
-        self.position = 0.0
-        self.velocity = 0.0
+        if len(self.motors) == 0:
+            raise Exception("Joint ", self.id.name, " has no motors")
 
         self.initialized = True
 
-    def send_data(self, data):
+    def joint2motors(self, angle):
         """
-        Send the motor angle to the controller
-
-        param data: the information in a format that is understandable by the controller
+        TODO: map depending on motor composition
+        Map the angle of the joint to the angle of the motor(s)
         """
-        pass
+        motor_angles = [angle for _ in self.motors]
+        return motor_angles
 
-    def position_to_data(self, position):
-        """
-        Convert the motor angle to a format that can be sent to the controller
-
-        param position: the motor angle
-
-        return data: the information in a format that is understandable by the controller
-        """
-        pass
-
-    def set_position(self, position):
+    def write(self, angle):
         """
         Set the joint's motor to a specific angle
 
-        param position: the angle to set the motor to
+        param angle: the angle to set the motor to
         """
+        self.target = angle
+        motor_angles = self.joint2motors(angle)
+        for motor, motor_angle in zip(self.motors, motor_angles):
+            motor.write(motor_angle)
+        return self.at_position()
 
-        self.position = max(self.limits[0], min(self.limits[1], position))
-        data = self.position_to_data(position)
-        self.send_data(data)
+    def motors2joint(self, motor_angles):
+        """
+        TODO: map depending on motor composition
+        Map the angles of the motor(s) to the angle of the joint
+        """
+        joint_angle = motor_angles[0]
+        return joint_angle
 
-    def print(self, verbose= False):
-        if verbose:
-            print(str(self))
-        else:
-            print(self.name, ":", self.position)
+    def read(self):
+        """
+        Get the joint's current angle
+        """
+        motor_angles = [motor.read() for motor in self.motors]
+        return self.motors2joint(motor_angles)
+
+    def at_position(self):
+        """
+        Check if the joint is at its target position
+        """
+        at_position = True
+        for motor in self.motors:
+            at_position = at_position and motor.at_position()
+        return at_position
+
+    @property
+    def angle(self):
+        return self.read()
 
     def __str__(self):
-        string = "----" + self.name + "----\n"
-        string += "Motor port: " + str(self.motor_port) + "\n"
-        string += "Position: " + str(self.position) + "\n"
-        string += "Velocity: " + str(self.velocity) + "\n"
-        string += "Limits: " + str(self.limits) + "\n"
-        return string
+        return self.id.name + ": " + f"{self.angle:.3f} rad"
+
+    # To support 'obj[motor_index]' for getting motors
+    def __getitem__(self, motor_index):
+        return self.motors[motor_index]

@@ -8,7 +8,7 @@ class Subsystem():
     # For the singleton pattern
     _instances = {}
 
-    def __new__(cls, subsystem_id : constants.IDS, *args, **kwargs):
+    def __new__(cls, subsystem_id : constants.SUBSYSTEMS, *args, **kwargs):
         """
         Singleton pattern. Make sure only one instance of each Subsystem is created.
         If it has already been created, return the existing instance.
@@ -20,31 +20,24 @@ class Subsystem():
             cls._instances[subsystem_id] = super(Subsystem, cls).__new__(cls)
         return cls._instances[subsystem_id]
 
-    def __init__(self, subsystem_id : constants.IDS):
+    def __init__(self, subsystem_id : constants.SUBSYSTEMS):
         # Avoid reinitialization if the instance already exists
         if hasattr(self, 'initialized') and self.initialized:
             return
 
         self.id = subsystem_id
-        self.name = self.id.name
-        self.joint_count = len(constants.MOTOR_PORTS[self.id])
+        self.joint_count = len(constants.SUBSYSTEM_JOINTS[self.id])
 
         if self.joint_count == 0:
             raise Exception("Subsystem ", self.id.name, " has no joints")
 
-        if self.joint_count != len(constants.MOTOR_LIMITS[self.id]):
-            raise Exception("Subsystem ", self.id.name, " has ", self.joint_count, " joints, but ", len(constants.MOTOR_LIMITS[self.id]), " limits were provided")
-
         # Create a Joint instance for each joint in the subsystem
-        self.joints = [Joint(self.id.name + "." + str(i),
-                             constants.MOTOR_PORTS[self.id][i],
-                             constants.MOTOR_LIMITS[self.id][i])
-                             for i in range(self.joint_count)]
+        self.joints = [Joint(joint_id) for joint_id in constants.SUBSYSTEM_JOINTS[self.id]]
 
         # For the singleton pattern
         self.initialized = True
 
-    def set_positions(self, positions : list[float] | int):
+    def write(self, positions : list[float] | int):
         """
         Set the positions of all joints in the subsystem simultaneously
 
@@ -53,45 +46,33 @@ class Subsystem():
         if type(positions) is int:
             if self.joint_count != 1:
                 raise Exception("Positions must be a list of ", self.joint_count, " elements. Received a single value")
-            self.joints[0].set_position(positions)
+            self.joints[0].write(positions)
 
         elif isinstance(positions, Iterable):
             if len(positions) != self.joint_count:
                 raise Exception("Positions array must have ", self.joint_count, " elements. Received ", len(positions), " elements")
 
             for i in range(self.joint_count):
-                self.joints[i].set_position(positions[i])
+                self.joints[i].write(positions[i])
 
+        return self.at_position()
 
-    def print(self, verbose : bool = False):
-        for i in range(self.joint_count):
-            self.joints[i].print(verbose)
+    def read(self):
+        """
+        Read the positions of all joints in the subsystem
+        """
+        return [joint.read() for joint in self.joints]
+
+    def at_position(self):
+        """
+        Check if all joints in the subsystem are at their target positions
+        """
+        return all([joint.at_position() for joint in self.joints])
 
     def __str__(self):
-        string = self.id.name + "\n"
-        string += "[" + ", ".join([str(joint.position) for joint in self.joints]) + "]\n"
-        return string
+        formatted_values = [f"{value:.3f}" for value in self.read()]
+        return self.id.name + ": " + str(formatted_values)
 
     # To support 'obj[joint_index]' for getting joints
     def __getitem__(self, joint_index):
         return self.joints[joint_index]
-
-    @property
-    def positions(self):
-        return [joint.position for joint in self.joints]
-
-    @positions.setter
-    def positions(self, positions):
-        self.set_positions(positions)
-
-    @property
-    def position(self):
-        if self.joint_count != 1:
-            raise Exception("Subsystem ", self.id.name, " has ", self.joint_count, " joints. Use 'positions' instead")
-        return self.joints[0].position
-
-    @position.setter
-    def position(self, position):
-        if self.joint_count != 1:
-            raise Exception("Subsystem ", self.id.name, " has ", self.joint_count, " joints. Use 'positions' instead")
-        self.joints[0].position = position

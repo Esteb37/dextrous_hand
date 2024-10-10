@@ -24,7 +24,7 @@ class HandNode(Node):
 
     def finger_positions_callback(self, msg):
         HAND.set_fingers(msg.data)
-        HAND.print()
+        print(HAND)
 
 def main(args=None):
     rclpy.init(args=args)
