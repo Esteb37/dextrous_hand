@@ -23,9 +23,10 @@ def matrix_to_fingers_pos(matrix):
     """
 
     if len(matrix) != len(FINGERS) or len(matrix[0]) != FINGERS[0].joint_count:
-        raise Exception("Matrix must have ", len(FINGERS),
-                        " rows and ", FINGERS[0].joint_count, " columns. Received ",
-                        len(matrix), " rows and ", len(matrix[0]), " columns")
+        raise Exception("Matrix must have " + str(len(FINGERS)) +
+                        " rows and " + str(FINGERS[0].joint_count)  +
+                        " columns. Received " + str(len(matrix)) + " rows and "
+                        + str(len(matrix[0])) + " columns")
 
     positions = {}
     for i, finger in enumerate(FINGERS):

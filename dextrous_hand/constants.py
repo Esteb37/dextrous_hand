@@ -6,23 +6,23 @@ from numpy import pi as PI
 IS_SIMULATION = True # Set to True if the motor controller is not connected
 DEVICENAME = "/dev/ttyUSB0" # Change this if you have more than one USB connection
 class MOTORS(Enum):
-    THUMB_0 = 1
-    THUMB_1 = 2
-    THUMB_2 = 3
-    INDEX_0 = 4
-    INDEX_1 = 5
-    INDEX_2 = 6
-    MIDDLE_0 = 7
-    MIDDLE_1 = 8
-    MIDDLE_2 = 9
-    RING_0 = 10
-    RING_1 = 11
-    RING_2 = 12
-    PINKY_0 = 13
-    PINKY_1 = 14
-    PINKY_2 = 15
-    ABDUCTION = 16
-    WRIST = 17
+    THUMB_0 = 0
+    THUMB_1 = 1
+    THUMB_2 = 2
+    INDEX_0 = 3
+    INDEX_1 = 4
+    INDEX_2 = 5
+    MIDDLE_0 = 6
+    MIDDLE_1 = 7
+    MIDDLE_2 = 8
+    RING_0 = 9
+    RING_1 = 10
+    RING_2 = 11
+    PINKY_0 = 12
+    PINKY_1 = 13
+    PINKY_2 = 14
+    ABDUCTION = 15
+    WRIST = 16
 """
 Motor ports for each subsystem.
 """

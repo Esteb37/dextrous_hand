@@ -26,10 +26,11 @@ class Subsystem():
             return
 
         self.id = subsystem_id
-        self.joint_count = len(constants.SUBSYSTEM_JOINTS[self.id])
 
-        if self.joint_count == 0:
-            raise Exception("Subsystem ", self.id.name, " has no joints")
+        if self.id not in constants.SUBSYSTEM_JOINTS or len(constants.SUBSYSTEM_JOINTS[self.id]) == 0:
+            raise Exception("Subsystem " + self.id.name + " has no joints")
+
+        self.joint_count = len(constants.SUBSYSTEM_JOINTS[self.id])
 
         # Create a Joint instance for each joint in the subsystem
         self.joints = [Joint(joint_id) for joint_id in constants.SUBSYSTEM_JOINTS[self.id]]
@@ -45,12 +46,12 @@ class Subsystem():
         """
         if type(positions) is int:
             if self.joint_count != 1:
-                raise Exception("Positions must be a list of ", self.joint_count, " elements. Received a single value")
+                raise Exception("Positions must be a list of " + str(self.joint_count) + " elements. Received a single value")
             self.joints[0].write(positions)
 
         elif isinstance(positions, Iterable):
             if len(positions) != self.joint_count:
-                raise Exception("Positions array must have ", self.joint_count, " elements. Received ", len(positions), " elements")
+                raise Exception("Positions array must have " + str(self.joint_count) + " elements. Received " + str(len(positions)) + " elements")
 
             for i in range(self.joint_count):
                 self.joints[i].write(positions[i])

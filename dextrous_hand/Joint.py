@@ -23,10 +23,11 @@ class Joint():
 
         self.id = id
         self.target = 0
-        self.motors = [Motor(port) for port in constants.JOINT_MOTORS[id]]
 
-        if len(self.motors) == 0:
-            raise Exception("Joint ", self.id.name, " has no motors")
+        if self.id not in constants.JOINT_MOTORS or len(constants.JOINT_MOTORS[self.id]) == 0:
+            raise Exception("Joint " + self.id.name + " has no motors")
+
+        self.motors = [Motor(port) for port in constants.JOINT_MOTORS[id]]
 
         self.initialized = True
 

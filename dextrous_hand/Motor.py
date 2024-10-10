@@ -97,16 +97,24 @@ else:
 class Motor():
 
     _instances = {}
+    _ports = {}
 
     AT_POSITION_THRESHOLD = 10
 
     def __new__(cls, motor_id, *args, **kwargs):
         """
-        Singleton pattern. Make sure only one instance of each Motor is created.
+        Singleton pattern. Make sure only one instance of each Motor is created and no motors share the same port.
         If it has already been created, return the existing instance.
+        If the port is already occupied, raise an exception.
 
         param motor_id: the ID of the motor
         """
+
+        if motor_id.value in cls._ports:
+            raise Exception("Port " + str(motor_id.value) + " is already occupied by motor " + cls._ports[motor_id.value].name)
+
+        cls._ports[motor_id.value] = motor_id
+
         if motor_id not in cls._instances:
             cls._instances[motor_id] = super(Motor, cls).__new__(cls)
         return cls._instances[motor_id]
@@ -131,12 +139,16 @@ class Motor():
         else:
             print("Motor %s is in simulation mode" % self.id.name)
 
+        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) == 0:
+            raise Exception("Motor " + self.id.name + " has no limits")
+
         angle_limits = constants.MOTOR_LIMITS[self.id]
         self.min_position = (angle_limits[0] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
         self.max_position = (angle_limits[1] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
 
-        self.initialized = True
         self.target = 0
+
+        self.initialized = True
 
     def write_position(self, position):
         """
