@@ -12,3 +12,6 @@ RING = Subsystem(constants.SUBSYSTEMS.RING)
 PINKY = Subsystem(constants.SUBSYSTEMS.PINKY)
 
 FINGERS = [THUMB, INDEX, MIDDLE, RING, PINKY]
+"""
+ A collection of fingers for easy iteration.
+"""

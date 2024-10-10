@@ -23,16 +23,38 @@ class Hand():
         """
         Set the positions of all fingers simultaneously.
 
-        param positions: a matrix or dictionary of finger positions
+        params
+            positions: a matrix or dictionary of finger positions
+                matrix:
+
+                        [float, float, float, <- Finger 1
+                        float, float, float,
+                        ...
+                        float, float, float]
+
+                dictionary:
+
+                        {THUMB: [float, float, float],
+                        INDEX: [float, float, float],
+                        ...
+                        PINKY: [float, float, float]}
+
+        returns
+            True if all fingers are at their target positions
+
+        raises
+            Exception: if the positions array has the wrong number of elements
         """
 
         # If positions is a dictionary, convert it to a matrix
         if type(positions) == dict:
             positions = finger_pos_to_matrix(positions)
 
+        # Write the positions to each finger
         for i, finger in enumerate(FINGERS):
             finger.write(positions[i * 3 : (i + 1) * 3])
 
+        # Check if all fingers are at position
         at_position = True
         for finger in FINGERS:
             at_position = at_position and finger.at_position()

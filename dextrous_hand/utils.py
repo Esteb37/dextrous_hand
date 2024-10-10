@@ -7,19 +7,24 @@ def matrix_to_fingers_pos(matrix):
     """
     Turns a position matrix into human-readable dictionary
 
-    param matrix: a matrix of finger positions, of shape
+    params
+        a matrix of finger positions, of shape
 
                     [float, float, float, <- Finger 1
                      float, float, float,
                      ...
                      float, float, float]
 
-    return positions: a dictionary of finger positions, of shape
+    returns
+        a dictionary of finger positions, of shape
 
                     {THUMB: [float, float, float],
                      INDEX: [float, float, float],
                      ...
                      PINKY: [float, float, float]}
+
+    raises
+        Exception: if the matrix has the wrong number of rows or columns
     """
 
     if len(matrix) != len(FINGERS) or len(matrix[0]) != FINGERS[0].joint_count:
@@ -38,17 +43,21 @@ def finger_pos_to_matrix(positions):
     """
     Turns a human-readable position dict into position matrix
 
-    param positions: a dictionary of finger positions, of shape
+    params
+        positions: a dictionary of finger positions, of shape
                     {THUMB: [float, float, float],
                     INDEX: [float, float, float],
                     ...
                     PINKY: [float, float, float]}
 
-    return matrix: a matrix of finger positions, of shape
+    returns
+        a matrix of finger positions, of shape
                     [float, float, float,
                     float, float, float,
                     ...
                     float, float, float]
+    raises
+        Exception: if the dictionary has the wrong number of keys or values
     """
     matrix = []
     for finger in FINGERS:

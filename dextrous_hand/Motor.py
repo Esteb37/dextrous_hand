@@ -95,10 +95,14 @@ else:
         quit()
 
 class Motor():
+    """
+    Class to control a single motor
+    """
 
     _instances = {}
     _ports = {}
 
+    # Error threshold to be considered at position
     AT_POSITION_THRESHOLD = 10
 
     def __new__(cls, motor_id, *args, **kwargs):
@@ -120,14 +124,26 @@ class Motor():
         return cls._instances[motor_id]
 
 
-    def __init__(self, motor_id):
+    def __init__(self, motor_id : constants.MOTORS):
+        """
+        params
+            motor_id [MOTORS]: the motor's ID
+
+        raises
+            Exception: if the motor has no limits
+            Exception: if the motor port has already been occupied
+        """
+
         # Avoid reinitialization if the instance already exists
         if hasattr(self, 'initialized') and self.initialized:
             return
 
         self.id = motor_id
 
-        if not constants.IS_SIMULATION:
+        # Only try to send the data if the motor is actually connected
+        if constants.IS_SIMULATION:
+            print("Motor %s is in simulation mode" % self.id.name)
+        else:
             # Enable Dynamixel Torque
             dxl_comm_result, dxl_error = PACKET_HANDLER.write1ByteTxRx(PORT_HANDLER, self.id, ADDR_TORQUE_ENABLE, TORQUE_ENABLE) # type: ignore
             if dxl_comm_result != DXL.COMM_SUCCESS:
@@ -136,12 +152,12 @@ class Motor():
                 print("Motor %s: %s" % (self.id.name, PACKET_HANDLER.getRxPacketError(dxl_error))) # type: ignore
             else:
                 print("Motor %s has been successfully connected" % self.id.name)
-        else:
-            print("Motor %s is in simulation mode" % self.id.name)
 
-        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) == 0:
-            raise Exception("Motor " + self.id.name + " has no limits")
+        # Check if the motor's limits have been defined
+        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) != 2:
+            raise Exception("Motor " + self.id.name + " has no limits or invalid limits")
 
+        # Map the angle limits to hard position limits
         angle_limits = constants.MOTOR_LIMITS[self.id]
         self.min_position = (angle_limits[0] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
         self.max_position = (angle_limits[1] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
@@ -152,11 +168,22 @@ class Motor():
 
     def write_position(self, position):
         """
-            Send the position to the motor
+        Send the absolute position to the motor
+
+        params:
+            position: the absolute position to send to the motor
+
+        returns:
+            True if the motor is at the target position, False otherwise
         """
+
+        # Make sure the position is within the motor's limits
         position = max(min(position, self.max_position), self.min_position)
+
+        # Set the target position (current position is not equal to target position because it needs time to move)
         self.target = position
 
+        # Only send data if the motor is actually connected
         if not constants.IS_SIMULATION:
             dxl_comm_result, dxl_error = PACKET_HANDLER.write4ByteTxRx(PORT_HANDLER, self.id, ADDR_GOAL_POSITION, position) # type: ignore
             if dxl_comm_result != DXL.COMM_SUCCESS:
@@ -164,19 +191,32 @@ class Motor():
             elif dxl_error != 0:
                 print("Motor %s: %s" % (self.id.name, PACKET_HANDLER.getRxPacketError(dxl_error))) # type: ignore
 
+        return self.at_position()
+
     def write(self, angle):
         """
-            Map (-pi, pi) to (0, MAX_POS) and write the position to the motor
+        Map angle to absolute position and write to the motor
+
+        params:
+            angle: the angle in radians to set the motor to
+
+        returns:
+            True if the motor is at the target position, False otherwise
         """
         position = (angle + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
-        self.write_position(position)
-
+        return self.write_position(position)
 
     def read_position(self):
+        """
+        returns:
+            the motor's current position
+        """
 
+        # If the motor is not connected, assume the motor is at the target position
         if constants.IS_SIMULATION:
             return self.target
 
+        # Get the current position of the motor
         dxl_present_position, dxl_comm_result, dxl_error = PACKET_HANDLER.read4ByteTxRx(PORT_HANDLER, self.id, ADDR_PRESENT_POSITION) # type: ignore
         if dxl_comm_result != DXL.COMM_SUCCESS:
             print("Motor %s: %s" % (self.id.name, PACKET_HANDLER.getTxRxResult(dxl_comm_result))) # type: ignore
@@ -186,20 +226,32 @@ class Motor():
 
     def read(self):
         """
-            Read the position of the motor and map it to (-pi, pi)
+        returns:
+            the motor's current angle in radians
         """
         position = self.read_position()
         return (position * 2 * np.pi / DXL_MAXIMUM_POSITION_VALUE) - np.pi
 
     def at_position(self):
+        """
+        returns:
+            True if the motor is within the error threshold to the target position, False otherwise
+        """
         return abs(self.target - self.read_position()) < self.AT_POSITION_THRESHOLD
 
     @property
     def angle(self):
+        """
+        returns:
+            the motor's current angle in radians
+        """
         return self.read()
 
     @property
     def position(self):
+        """
+            returns the motor's current position
+        """
         return self.read_position()
 
     def __str__(self):

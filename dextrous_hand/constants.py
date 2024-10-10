@@ -24,7 +24,7 @@ class MOTORS(Enum):
     ABDUCTION = 15
     WRIST = 16
 """
-Motor ports for each subsystem.
+Motor ports
 """
 
 FULL_RANGE = [-PI, PI]
@@ -88,7 +88,6 @@ class JOINTS(Enum):
     PINKY_TIP = auto()
     ABDUCTION = auto()
     WRIST = auto()
-
 
 JOINT_MOTORS = {
     JOINTS.THUMB_BASE: [MOTORS.THUMB_0],
