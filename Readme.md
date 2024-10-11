@@ -56,11 +56,11 @@
 
          [INFO] [1728219147.878266379] [basic_node]: Hello, ROS 2 (Python)!
 
- - Add Motor library
-   - ```sudo apt-get install ros-humble-dynamixel-sdk```
-
  - Add pip
    - ```sudo apt install python3-pip```
+
+ - Add Motor library
+   - ```pip install dynamixel_sdk```
 
  - Add teleop control library
    - ```pip install pynput```
