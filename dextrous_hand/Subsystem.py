@@ -88,7 +88,7 @@ class Subsystem():
         return all([joint.at_position() for joint in self.joints])
 
     def __str__(self):
-        formatted_values = [f"{value:.3f}" for value in self.read()]
+        formatted_values = [f"{value:.2f}" for value in self.read()]
         return self.id.name + ": " + str(formatted_values)
 
     def __getitem__(self, joint_index):

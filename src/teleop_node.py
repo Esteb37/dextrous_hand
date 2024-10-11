@@ -62,9 +62,9 @@ class TeleopNode(Node):
 
             # Adjust finger positions based on arrow keys
             elif key.char == "o":
-                self.finger_positions[self.finger_id][self.joint_id] += 0.01
+                self.finger_positions[self.finger_id][self.joint_id] += 0.1
             elif key.char == "l":
-                self.finger_positions[self.finger_id][self.joint_id] -= 0.01
+                self.finger_positions[self.finger_id][self.joint_id] -= 0.1
 
             print(FINGERS[self.finger_id].id.name, self.joint_id+1, self.finger_positions[self.finger_id][self.joint_id])
 

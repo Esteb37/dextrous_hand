@@ -6,6 +6,7 @@ from dextrous_hand.Wrist import WRIST
 from dextrous_hand.utils import finger_pos_to_matrix
 from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.constants as constants
+from dextrous_hand.MotorBridge import MotorBridge
 
 class Hand():
     _instance = None
@@ -18,6 +19,14 @@ class Hand():
         if cls._instance is None:
             cls._instance = super(Hand, cls).__new__(cls)
         return cls._instance
+
+    def __init__(self):
+        if hasattr(self, 'initialized') and self.initialized:
+            return
+
+        self.motor_bridge = MotorBridge()
+
+        self.initialized = True
 
     def set_fingers(self, positions):
         """
@@ -65,6 +74,18 @@ class Hand():
 
     def set_wrist(self, position):
         return WRIST.write(position)
+
+    def update_motor_positions(self):
+        """
+        Read the encoder positions of all motors
+        """
+        self.motor_bridge.update_positions()
+
+    def write_motor_targets(self):
+        """
+        Write the target positions to all motors
+        """
+        self.motor_bridge.write_targets()
 
     def __str__(self):
         string = ""

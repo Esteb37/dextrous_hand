@@ -3,8 +3,9 @@
 from enum import Enum, auto
 from numpy import pi as PI
 
-IS_SIMULATION = True # Set to True if the motor controller is not connected
-DEVICENAME = "/dev/ttyUSB0" # Change this if you have more than one USB connection
+IS_SIMULATION = False # Set to True if the motor controller is not connected
+DEVICENAMES = ["/dev/ttyUSB0", "/dev/ttyUSB1"]
+
 class MOTORS(Enum):
     THUMB_0 = 0
     THUMB_1 = 1
