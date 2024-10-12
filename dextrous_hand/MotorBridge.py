@@ -62,8 +62,7 @@ ADDR_TARGET_POSITION          = 116
 ADDR_CURRENT_POSITION       = 132
 LEN_TARGET_POSITION           = 4         # Data Byte Length
 LEN_CURRENT_POSITION        = 4         # Data Byte Length
-DXL_MINIMUM_POSITION_VALUE  = 0
-DXL_MAXIMUM_POSITION_VALUE  = 4095
+
 BAUDRATE                    = 57600 # Change only if you have changed the baudrate of the motors
 PROTOCOL_VERSION            = 2.0
 
@@ -202,8 +201,10 @@ class MotorBridge():
         dxl_comm_result = self.GROUP_SYNC_WRITE.txPacket()
         if dxl_comm_result != DXL.COMM_SUCCESS:
             LOG_ERROR("%s" % self.PACKET_HANDLER.getTxRxResult(dxl_comm_result))
+            self.GROUP_SYNC_WRITE.clearParam()
             return False
 
+        self.GROUP_SYNC_WRITE.clearParam()
         return True
 
     def update_positions(self):

@@ -140,4 +140,4 @@ class Motor():
         return self.read_position()
 
     def __str__(self):
-        return "Motor %s" % self.name + ": " + f"{self.angle:.2f}" + " rad"
+        return "Motor %s" % self.name + ": " + f"{self.angle:.2f}" + " rad (" + f"{self.position:.0f} / {self.target:.0f})"

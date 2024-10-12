@@ -76,7 +76,7 @@ class TeleopNode(Node):
             # Publish the current finger positions
             msg = matrix_to_message(self.finger_positions)
             self.publisher.publish(msg)
-            time.sleep(0.1)  # Control publishing rate
+            time.sleep(0.001)  # Control publishing rate
 
 def main(args=None):
     rclpy.init(args=args)

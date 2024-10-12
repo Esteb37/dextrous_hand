@@ -12,7 +12,7 @@ class HandNode(Node):
     Node to control the hand
     """
 
-    NODE_FREQUENCY_HZ = 60
+    POSITION_UPDATE_FREQUENCY = 35 # Hz
 
     def __init__(self):
         super().__init__('hand_node')
@@ -21,11 +21,12 @@ class HandNode(Node):
             Float32MultiArray,
             'finger_positions',
             self.finger_positions_callback,
-            10)
-
-        self.timer = self.create_timer(1.0 / self.NODE_FREQUENCY_HZ, self.main)
+            100)
 
         self.get_logger().info('Hand node started')
+
+        self.timer = self.create_timer(1.0 / self.POSITION_UPDATE_FREQUENCY, self.main)
+
 
     def main(self):
         HAND.update_motor_positions()
