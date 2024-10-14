@@ -27,6 +27,8 @@ class TeleopNode(Node):
     down: decrease joint angle
     """
 
+    FREQUENCY = 200 # Hz
+
     def __init__(self):
         super().__init__('teleop_node')
         self.publisher = self.create_publisher(Float32MultiArray, 'finger_positions', 10)
@@ -76,7 +78,7 @@ class TeleopNode(Node):
             # Publish the current finger positions
             msg = matrix_to_message(self.finger_positions)
             self.publisher.publish(msg)
-            time.sleep(0.001)  # Control publishing rate
+            time.sleep(1.0 / self.FREQUENCY)
 
 def main(args=None):
     rclpy.init(args=args)

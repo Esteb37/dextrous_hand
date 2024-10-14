@@ -63,7 +63,7 @@ ADDR_CURRENT_POSITION       = 132
 LEN_TARGET_POSITION           = 4         # Data Byte Length
 LEN_CURRENT_POSITION        = 4         # Data Byte Length
 
-BAUDRATE                    = 57600 # Change only if you have changed the baudrate of the motors
+BAUDRATE                    = 3000000 # Change only if you have changed the baudrate of the motors
 PROTOCOL_VERSION            = 2.0
 
 TORQUE_ENABLE               = 1     # Value for enabling the torque

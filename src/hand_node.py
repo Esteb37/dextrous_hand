@@ -12,7 +12,7 @@ class HandNode(Node):
     Node to control the hand
     """
 
-    POSITION_UPDATE_FREQUENCY = 35 # Hz
+    POSITION_UPDATE_FREQUENCY = 64 # Hz
 
     def __init__(self):
         super().__init__('hand_node')
