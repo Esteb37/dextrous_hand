@@ -3,7 +3,7 @@
 from enum import Enum, auto
 from numpy import pi as PI
 
-IS_SIMULATION = False # Set to True if the motor controller is not connected
+IS_SIMULATION = True # Set to True if the motor controller is not connected
 DEVICENAMES = ["/dev/ttyUSB0", "/dev/ttyUSB1"]
 
 class MOTORS(Enum):

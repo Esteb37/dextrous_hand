@@ -6,7 +6,8 @@ from dextrous_hand.Wrist import WRIST
 from dextrous_hand.utils import finger_pos_to_matrix
 from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.constants as constants
-from dextrous_hand.MotorBridge import MotorBridge
+from dextrous_hand.DynamixelClient import DynamixelClient
+from dextrous_hand.Motor import Motor
 
 class Hand():
     _instance = None
@@ -24,7 +25,7 @@ class Hand():
         if hasattr(self, 'initialized') and self.initialized:
             return
 
-        self.motor_bridge = MotorBridge()
+        self.motor_bridge = DynamixelClient()
 
         self.initialized = True
 

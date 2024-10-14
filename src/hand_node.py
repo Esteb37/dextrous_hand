@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import rclpy
-import rclpy.logging
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 
