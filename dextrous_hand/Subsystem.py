@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-from collections.abc import Iterable
-from dextrous_hand.Joint import Joint
-import dextrous_hand.constants as constants
+import dextrous_hand.ids as ids
+import dextrous_hand.architecture as architecture
+from abc import ABC, abstractmethod
 
-class Subsystem():
+class Subsystem(ABC):
     """
     A subsystem is any collection of joints that can be controlled together.
+    It is an abstract class so that each finger / wrist defines how to write to its joints.
     """
 
     # For the singleton pattern
@@ -21,7 +22,7 @@ class Subsystem():
             cls._instances[subsystem_id] = super(Subsystem, cls).__new__(cls)
         return cls._instances[subsystem_id]
 
-    def __init__(self, subsystem_id : constants.SUBSYSTEMS):
+    def __init__(self, subsystem_id : ids.SUBSYSTEMS):
         """
         params
             subsystem_id [SUBSYSTEMS]: the subsystem's id
@@ -32,46 +33,43 @@ class Subsystem():
 
         self.id = subsystem_id
 
-        # Check if the subsystem has joints in the constants.py file
-        if self.id not in constants.SUBSYSTEM_JOINTS or len(constants.SUBSYSTEM_JOINTS[self.id]) == 0:
+        # Check if the subsystem has joints in the architecture.py file
+        if self.id not in architecture.SUBSYSTEM_JOINTS or len(architecture.SUBSYSTEM_JOINTS[self.id]) == 0:
             raise Exception("Subsystem " + self.id.name + " has no joints")
 
-        self.joint_count = len(constants.SUBSYSTEM_JOINTS[self.id])
+        self.joints = architecture.SUBSYSTEM_JOINTS[self.id]
+        self.joint_count = len(self.joints)
 
-        # Create a Joint instance for each joint in the subsystem
-        self.joints = [Joint(joint_id) for joint_id in constants.SUBSYSTEM_JOINTS[self.id]]
+        self.motors = architecture.SUBSYSTEM_MOTORS[self.id]
 
         # For the singleton pattern
         self.initialized = True
 
-    def write(self, positions : list[float] | int):
+    @abstractmethod
+    def joints2motors(self, joint_angles):
         """
-        Set the positions of all joints in the subsystem simultaneously
+        Map the angles of the joints to the angles of the motors
+        Each subclass should uniquely implement this method
 
         params
-            positions: list of positions for each joint in the subsystem, or a single position for a single-joint subsystem
+            joint_angles: a list of joint angles
 
         returns
-            True if all joints are at their target positions
-
-        raises
-            Exception: if the positions array has the wrong number of elements
+            a list of motor angles
         """
+        pass
 
-        # If positions is a single value, write it to the single joint
-        if type(positions) is int:
-            if self.joint_count != 1:
-                raise Exception("Positions must be a list of " + str(self.joint_count) + " elements. Received a single value")
-            self.joints[0].write(positions)
+    def write(self, joint_angles):
+        """
+        Map joint angles to motor angles and write to the motors
 
-        elif isinstance(positions, Iterable):
-            if len(positions) != self.joint_count:
-                raise Exception("Positions array must have " + str(self.joint_count) + " elements. Received " + str(len(positions)) + " elements")
+        params
+            joint_angles: a list of joint angles
+        """
+        motor_angles = self.joints2motors(joint_angles)
 
-            for i in range(self.joint_count):
-                self.joints[i].write(positions[i])
-
-        return self.at_position()
+        for motor, angle in zip(self.motors, motor_angles): # type: ignore
+            motor.write(angle)
 
     def read(self):
         """
@@ -83,9 +81,9 @@ class Subsystem():
     def at_position(self):
         """
         returns
-            True if all joints in the subsystem are at their target positions
+            True if all motors in the subsystem are at their target angles
         """
-        return all([joint.at_position() for joint in self.joints])
+        return all([motor.at_angle() for motor in self.motors])
 
     def __str__(self):
         formatted_values = [f"{value:.2f}" for value in self.read()]

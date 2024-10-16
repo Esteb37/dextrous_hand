@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import os
 import dextrous_hand.constants as constants
+import dextrous_hand.ids as ids
 import numpy as np
-
-DXL_MAXIMUM_POSITION_VALUE  = 4095
 
 class Motor():
     """
@@ -15,7 +13,7 @@ class Motor():
     _ports = {}
 
     # Error threshold to be considered at position
-    AT_POSITION_THRESHOLD = 10
+    AT_ANGLE_THRESHOLD = 0.1
 
     def __new__(cls, motor_id, *args, **kwargs):
         """
@@ -37,7 +35,7 @@ class Motor():
         return cls._instances[motor_id]
 
 
-    def __init__(self, motor_id : constants.MOTORS):
+    def __init__(self, motor_id : ids.MOTORS):
         """
         params
             motor_id [MOTORS]: the motor's ID
@@ -56,38 +54,17 @@ class Motor():
         self.name = motor_id.name
 
         # Check if the motor's limits have been defined
-        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) != 2:
+        if self.id not in ids.MOTOR_LIMITS or len(ids.MOTOR_LIMITS[self.id]) != 2:
             raise Exception("Motor " + str(self.name) + " has no limits or invalid limits")
 
-        # Map the angle limits to hard position limits
-        angle_limits = constants.MOTOR_LIMITS[self.id]
-        self.min_position = (angle_limits[0] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
-        self.max_position = (angle_limits[1] + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
+        self.angle_limits = constants.MOTOR_LIMITS[self.id]
 
-        self.target = 0
+        self.target = 0.0
 
-        self.current_position = 0
+        self.angle = 0.0
 
         self.initialized = True
 
-    def write_position(self, position):
-        """
-        Send the absolute position to the motor
-
-        params:
-            position: the absolute position to send to the motor
-
-        returns:
-            True if the motor is at the target position, False otherwise
-        """
-
-        # Make sure the position is within the motor's limits
-        position = int(max(min(position, self.max_position), self.min_position))
-
-        # Set the target position (current position is not equal to target position because it needs time to move)
-        self.target = position
-
-        return self.at_position()
 
     def write(self, angle):
         """
@@ -99,45 +76,23 @@ class Motor():
         returns:
             True if the motor is at the target position, False otherwise
         """
-        position = (angle + np.pi) * DXL_MAXIMUM_POSITION_VALUE / (2 * np.pi)
-        return self.write_position(position)
-
-    def read_position(self):
-        """
-        returns:
-            the motor's current position
-        """
-        return self.current_position
+        target = min(max(angle, self.angle_limits[0]), self.angle_limits[1])
+        self.target = target
+        return self.at_angle()
 
     def read(self):
         """
         returns:
             the motor's current angle in radians
         """
-        position = self.read_position()
-        return (position * 2 * np.pi / DXL_MAXIMUM_POSITION_VALUE) - np.pi
+        return self.angle
 
-    def at_position(self):
+    def at_angle(self):
         """
         returns:
             True if the motor is within the error threshold to the target position, False otherwise
         """
-        return abs(self.target - self.read_position()) < self.AT_POSITION_THRESHOLD
-
-    @property
-    def angle(self):
-        """
-        returns:
-            the motor's current angle in radians
-        """
-        return self.read()
-
-    @property
-    def position(self):
-        """
-            returns the motor's current position
-        """
-        return self.read_position()
+        return abs(self.target - self.angle) < self.AT_ANGLE_THRESHOLD
 
     def __str__(self):
-        return "Motor %s" % self.name + ": " + f"{self.angle:.2f}" + " rad (" + f"{self.position:.0f} / {self.target:.0f})"
+        return "Motor %s" % self.name + ": " + f"{self.angle:.2f}" + " rad / " + f"{self.target:.2f}" + " rad"

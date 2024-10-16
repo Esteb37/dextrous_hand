@@ -18,9 +18,10 @@ import atexit
 import time
 from typing import Optional, Sequence, Union, Tuple
 import numpy as np
-import dextrous_hand.constants as constants
+import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from rclpy import logging
+from dextrous_hand import constants
 
 PROTOCOL_VERSION = 2.0
 
@@ -73,7 +74,6 @@ def dynamixel_cleanup_handler():
         open_client.port_handler.is_using = False
         open_client.disconnect()
 
-
 def signed_to_unsigned(value: int, size: int) -> int:
     """Converts the given value to its unsigned representation."""
     if value < 0:
@@ -82,14 +82,12 @@ def signed_to_unsigned(value: int, size: int) -> int:
         value = max_value + value
     return value
 
-
 def unsigned_to_signed(value: int, size: int) -> int:
     """Converts the given value from its unsigned representation."""
     bit_size = 8 * size
     if (value & (1 << (bit_size - 1))) != 0:
         value = -((1 << bit_size) - value)
     return value
-
 
 class DynamixelClient:
     """Client for communicating with Dynamixel motors.
@@ -126,10 +124,11 @@ class DynamixelClient:
         import dynamixel_sdk
         self.dxl = dynamixel_sdk
 
-        self.motor_ids = [id.value for id in list(constants.MOTORS)]
-        self.motor_objects = [Motor(id) for id in list(constants.MOTORS)]
-        self.port_name = constants.DEVICENAMES[0]
-        self.baudrate = 3000000
+        # Access all motors
+        self.motor_objects = [Motor(id) for id in list(ids.MOTORS)]
+        self.motor_ids = [motor.port for motor in self.motor_objects]
+        self.port_name = constants.DEVICE_NAME
+        self.baudrate = constants.BAUDRATE
         self.lazy_connect = lazy_connect
 
         self.port_handler = self.dxl.PortHandler(self.port_name)
@@ -235,12 +234,12 @@ class DynamixelClient:
 
     def read_pos_vel_cur(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Returns the positions, velocities, and currents."""
-        return self._pos_vel_cur_reader.read()
+        return self._pos_vel_cur_reader.read() # type: ignore
 
     def read_status_is_done_moving(self) -> bool:
         """Returns the last bit of moving status"""
         moving_status = self._moving_status_reader.read().astype(np.int8)
-        return np.bitwise_and(moving_status, np.array([0x01] * len(moving_status)).astype(np.int8))
+        return np.bitwise_and(moving_status, np.array([0x01] * len(moving_status)).astype(np.int8)) # type: ignore
 
     def write_desired_pos(self, motor_ids: Sequence[int],
                           positions: np.ndarray):
@@ -254,18 +253,18 @@ class DynamixelClient:
 
         # Convert to Dynamixel position space.
         positions = positions / self._pos_vel_cur_reader.pos_scale
-        times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION,
+        times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION, # type: ignore
                         LEN_GOAL_POSITION)
         return times
 
     def write_desired_current(self, motor_ids: Sequence[int], current: np.ndarray):
         assert len(motor_ids) == len(current)
-        self.sync_write(motor_ids, current, ADDR_GOAL_CURRENT, LEN_GOAL_CURRENT)
+        self.sync_write(motor_ids, current, ADDR_GOAL_CURRENT, LEN_GOAL_CURRENT) # type: ignore
 
     def write_profile_velocity(self, motor_ids: Sequence[int], profile_velocity: np.ndarray):
             assert len(motor_ids) == len(profile_velocity)
 
-            self.sync_write(motor_ids, profile_velocity, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY)
+            self.sync_write(motor_ids, profile_velocity, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY) # type: ignore
 
     def write_byte(
             self,
@@ -369,25 +368,31 @@ class DynamixelClient:
         return value
 
     def update_positions(self):
-        """Updates the positions of all motors."""
+        """
+            Updates the positions of all motors.
+            Must be called at least once per cycle so that the Motor objects have the most recent data.
+        """
 
+        # If we are in simulation, just set the angles to the target (infinite speed)
         if constants.IS_SIMULATION:
             for motor in self.motor_objects:
-                motor.current_position = motor.target
+                motor.angle = motor.target
             return
 
         self.check_connected()
         self._pos_vel_cur_reader.read()
         for motor in self.motor_objects:
-            motor.current_position = self._pos_vel_cur_reader._pos_data[motor.id.value]
+            motor.angle = self._pos_vel_cur_reader._pos_data[motor.id.value]
 
     def write_targets(self):
         """Writes the target positions to all motors."""
+
+        # If we are in simulation, do nothing
         if constants.IS_SIMULATION:
             return
 
         self.check_connected()
-        targets = [motor.target for motor in self.motor_objects]
+        targets = np.array([motor.target for motor in self.motor_objects])
         self.write_desired_pos(self.motor_ids, targets)
 
     def __enter__(self):
@@ -403,7 +408,6 @@ class DynamixelClient:
     def __del__(self):
         """Automatically disconnect on destruction."""
         self.disconnect()
-
 
 class DynamixelReader:
     """Reads data from Dynamixel motors.
@@ -474,7 +478,6 @@ class DynamixelReader:
         """Returns a copy of the data."""
         return self._data.copy()
 
-
 class DynamixelPosVelCurReader(DynamixelReader):
     """Reads positions and velocities."""
 
@@ -519,7 +522,6 @@ class DynamixelPosVelCurReader(DynamixelReader):
         """Returns a copy of the data."""
         return (self._pos_data.copy(), self._vel_data.copy(),
                 self._cur_data.copy())
-
 
 # Register global cleanup function.
 atexit.register(dynamixel_cleanup_handler)

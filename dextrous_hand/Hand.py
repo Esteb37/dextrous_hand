@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
 from dextrous_hand.Finger import FINGERS
-from dextrous_hand.Abduction import ABDUCTION
 from dextrous_hand.Wrist import WRIST
 from dextrous_hand.utils import finger_pos_to_matrix
-from dextrous_hand.Subsystem import Subsystem
-import dextrous_hand.constants as constants
 from dextrous_hand.DynamixelClient import DynamixelClient
-from dextrous_hand.Motor import Motor
+
 
 class Hand():
     _instance = None
@@ -70,9 +67,6 @@ class Hand():
             at_position = at_position and finger.at_position()
         return at_position
 
-    def set_abduction(self, position):
-        return ABDUCTION.write(position)
-
     def set_wrist(self, position):
         return WRIST.write(position)
 
@@ -90,8 +84,7 @@ class Hand():
 
     def __str__(self):
         string = ""
-        for subsystem_id in constants.SUBSYSTEMS:
-            subsystem = Subsystem(subsystem_id)
+        for subsystem in FINGERS + [WRIST]:
             string += str(subsystem) + "\n"
             for joint in subsystem.joints:
                 string += "\t" + str(joint) + "\n"
@@ -99,4 +92,5 @@ class Hand():
                     string += "\t\t" + str(motor) + "\n"
         return string
 
+# Singleton instance
 HAND = Hand()
