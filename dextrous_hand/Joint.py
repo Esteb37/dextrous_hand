@@ -67,7 +67,7 @@ class Joint(ABC):
         motor_angles = [motor.read() for motor in self.motors]
         return self.motors2joint(motor_angles)
 
-    def find_motor(self, partial_id):
+    def get_motor(self, partial_id):
         """
         Tries to find a motor whose name contains the provided substring
 
@@ -75,12 +75,15 @@ class Joint(ABC):
             partial_id [MOTORS]: a substring of the motor's id
 
         returns
-            The motor if found, None otherwise
+            The motor if found
+
+        raises
+            Exception: if no motor is found with the provided substring
         """
 
         motors = [motor for motor in self.motors if partial_id in motor.id.name]
         if len(motors) == 0:
-            return None
+            raise Exception(self.id.name + " has no motor with id containing " + partial_id)
         return motors[0]
 
     def __str__(self):

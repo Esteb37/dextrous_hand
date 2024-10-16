@@ -104,15 +104,3 @@ class JOINTS(Enum):
     THUMB_DIP = auto()
 
     WRIST = auto()
-
-def finger_id_to_index(id : SUBSYSTEMS) -> int:
-    """
-    Convert a finger id to an index in the FINGERS list
-    """
-    return {
-        SUBSYSTEMS.PINKY: 0,
-        SUBSYSTEMS.RING: 1,
-        SUBSYSTEMS.MIDDLE: 2,
-        SUBSYSTEMS.INDEX: 3,
-        SUBSYSTEMS.THUMB: 4
-    }[id]

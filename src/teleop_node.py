@@ -10,6 +10,7 @@ import time
 
 from dextrous_hand.utils import matrix_to_message
 import dextrous_hand.ids as ids
+from dextrous_hand.Finger import finger_index
 
 class TeleopNode(Node):
     """
@@ -78,16 +79,16 @@ class TeleopNode(Node):
                 if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
                     self.wrist_position += 0.1
                 else:
-                    self.finger_positions[ids.finger_id_to_index(self.subsystem_id)][self.joint_id] += 0.1
+                    self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] += 0.1
             elif key.char == "l":
                 if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
                     self.wrist_position -= 0.1
                 else:
-                    self.finger_positions[ids.finger_id_to_index(self.subsystem_id)][self.joint_id] -= 0.1
+                    self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] -= 0.1
 
             print(self.subsystem_id.name, self.wrist_position
                                           if self.subsystem_id == ids.SUBSYSTEMS.WRIST else
-                                          self.finger_positions[ids.finger_id_to_index(self.subsystem_id)])
+                                          self.finger_positions[finger_index(self.subsystem_id)])
             print()
 
         except AttributeError:

@@ -93,7 +93,7 @@ class Subsystem(ABC):
         """
         return all([motor.at_angle() for motor in self.motors])
 
-    def find_joint(self, partial_id):
+    def get_joint(self, partial_id):
         """
         Tries to find a joint whose name contains the provided substring
 
@@ -101,15 +101,18 @@ class Subsystem(ABC):
             partial_id [JOINTS]: a substring of the joint's id
 
         returns
-            The joint if found, None otherwise
+            The joint if found
+
+        raises
+            Exception: if no joint is found with the provided substring
         """
 
         joints = [joint for joint in self.joints if partial_id in joint.id.name]
         if len(joints) == 0:
-            return None
+            raise Exception(self.id.name + " has no joint with id containing " + partial_id)
         return joints[0]
 
-    def find_motor(self, partial_id):
+    def get_motor(self, partial_id):
         """
         Tries to find a motor whose name contains the provided substring
 
@@ -117,12 +120,15 @@ class Subsystem(ABC):
             partial_id [MOTORS]: a substring of the motor's id
 
         returns
-            The motor if found, None otherwise
+            The motor if found
+
+        raises
+            Exception: if no motor is found with the provided substring
         """
 
         motors = [motor for motor in self.motors if partial_id in motor.id.name]
         if len(motors) == 0:
-            return None
+            raise Exception(self.id.name + " has no motor with id containing " + partial_id)
         return motors[0]
 
     def __str__(self):

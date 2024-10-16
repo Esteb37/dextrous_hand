@@ -28,9 +28,9 @@ def matrix_to_fingers_pos(matrix):
         Exception: if the matrix has the wrong number of rows or columns
     """
 
-    if len(matrix) != len(FINGERS) or len(matrix[0]) != FINGERS[0].joint_count:
+    if len(matrix) != len(FINGERS) or len(matrix[0]) != 3:
         raise Exception("Matrix must have " + str(len(FINGERS)) +
-                        " rows and " + str(FINGERS[0].joint_count)  +
+                        " rows and " + str(3)  +
                         " columns. Received " + str(len(matrix)) + " rows and "
                         + str(len(matrix[0])) + " columns")
 

@@ -26,31 +26,31 @@ class Finger(Subsystem):
 
     @property
     def ABD(self):
-        return self.find_joint("ABD")
+        return self.get_joint("ABD")
 
     @property
     def MCP(self):
-        return self.find_joint("MCP")
+        return self.get_joint("MCP")
 
     @property
     def PIP(self):
-        return self.find_joint("PIP")
+        return self.get_joint("PIP")
 
     @property
     def DIP(self):
-        return self.find_joint("DIP")
+        return self.get_joint("DIP")
 
     @property
     def URBL(self):
-        return self.find_motor("URBL")
+        return self.get_motor("URBL")
 
     @property
     def ULBR(self):
-        return self.find_motor("ULBR")
+        return self.get_motor("ULBR")
 
     @property
     def UMBM(self):
-        return self.find_motor("UMBM")
+        return self.get_motor("UMBM")
 
 class Thumb(Finger):
     """
@@ -87,3 +87,9 @@ FINGERS = [PINKY, RING, MIDDLE, INDEX, THUMB]
 """
  A collection of fingers for easy iteration.
 """
+
+def finger_index(id : ids.SUBSYSTEMS) -> int:
+    """
+    Convert a finger id to an index in the FINGERS list
+    """
+    return [finger.id for finger in FINGERS].index(id)

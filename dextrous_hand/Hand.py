@@ -59,7 +59,7 @@ class Hand():
         if type(positions) == dict:
             positions = finger_pos_to_matrix(positions)
 
-        assert len(positions) == 5
+        assert len(positions) == len(FINGERS)
         assert len(positions[0]) == 3
 
         # Write the positions to each finger

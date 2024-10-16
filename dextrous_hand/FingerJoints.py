@@ -22,7 +22,7 @@ class ABD(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return motor_angles[0]
+        return self.get_motor("URBL").read()
 
 class MCP(Joint):
     """
@@ -42,7 +42,7 @@ class MCP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return motor_angles[1]
+        return self.get_motor("ULBR").read()
 
 
 class PIP(Joint):
@@ -63,7 +63,7 @@ class PIP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return motor_angles[0]
+        return self.get_motor("UMBM").read()
 
 class DIP(Joint):
     """
@@ -83,4 +83,4 @@ class DIP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return motor_angles[0]
+        return self.get_motor("UMBM").read()
