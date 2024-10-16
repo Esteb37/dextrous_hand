@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import dextrous_hand.ids as ids
-import dextrous_hand.architecture as architecture
+from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 
 class Subsystem(ABC):
@@ -33,14 +33,17 @@ class Subsystem(ABC):
 
         self.id = subsystem_id
 
+
+        from dextrous_hand.architecture import SUBSYSTEM_JOINTS, SUBSYSTEM_MOTORS
+
         # Check if the subsystem has joints in the architecture.py file
-        if self.id not in architecture.SUBSYSTEM_JOINTS or len(architecture.SUBSYSTEM_JOINTS[self.id]) == 0:
+        if self.id not in SUBSYSTEM_JOINTS or len(SUBSYSTEM_JOINTS[self.id]) == 0:
             raise Exception("Subsystem " + self.id.name + " has no joints")
 
-        self.joints = architecture.SUBSYSTEM_JOINTS[self.id]
+        self.joints = SUBSYSTEM_JOINTS[self.id]
         self.joint_count = len(self.joints)
 
-        self.motors = architecture.SUBSYSTEM_MOTORS[self.id]
+        self.motors = [Motor(motor_id) for motor_id in SUBSYSTEM_MOTORS[self.id]]
 
         # For the singleton pattern
         self.initialized = True

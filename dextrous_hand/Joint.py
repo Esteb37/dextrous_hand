@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import dextrous_hand.ids as ids
-import dextrous_hand.architecture as architecture
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 
@@ -36,11 +35,13 @@ class Joint(ABC):
 
         self.id = id
 
+        from dextrous_hand.architecture import JOINT_MOTORS
+
         # Check if the joint has motors in the constants.py file
-        if self.id not in architecture.JOINT_MOTORS or len(architecture.JOINT_MOTORS[self.id]) == 0:
+        if self.id not in JOINT_MOTORS or len(JOINT_MOTORS[self.id]) == 0:
             raise Exception("Joint " + self.id.name + " has no motors")
 
-        self.motors = architecture.JOINT_MOTORS[self.id]
+        self.motors = [Motor(motor_id) for motor_id in JOINT_MOTORS[self.id]]
 
         self.initialized = True
 

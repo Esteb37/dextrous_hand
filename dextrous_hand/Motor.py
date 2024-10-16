@@ -2,7 +2,6 @@
 
 import dextrous_hand.constants as constants
 import dextrous_hand.ids as ids
-import numpy as np
 
 class Motor():
     """

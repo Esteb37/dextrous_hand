@@ -2,22 +2,7 @@
 
 from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.ids as ids
-from dextrous_hand.Joint import Joint
-
-class WristJoint(Joint):
-    def __init__(self, joint_id : ids.JOINTS):
-        """
-        params
-            id [JOINTS]: the joint's id
-        """
-        super().__init__(joint_id)
-
-    def motors2joint(self, motor_angles):
-        """
-        TODO: Implement this method.
-              It's probably just the angle of the motor through a gear ratio.
-        """
-        return motor_angles[0]
+from dextrous_hand.WristJoint import WristJoint
 
 class Wrist(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):
