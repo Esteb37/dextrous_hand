@@ -2,8 +2,8 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
-
+from std_msgs.msg import Float32MultiArray, Float32
+from dextrous_hand.utils import message_to_matrix
 from dextrous_hand.Hand import HAND
 
 class HandNode(Node):
@@ -16,11 +16,18 @@ class HandNode(Node):
     def __init__(self):
         super().__init__('hand_node')
 
-        self.subscription = self.create_subscription(
+        self.finger_subscription = self.create_subscription(
             Float32MultiArray,
             'finger_positions',
             self.finger_positions_callback,
             100)
+
+        self.wrist_subscription = self.create_subscription(
+            Float32,
+            'wrist_position',
+            self.wrist_position_callback,
+            100)
+
 
         self.get_logger().info('Hand node started')
 
@@ -32,7 +39,12 @@ class HandNode(Node):
         print(HAND)
 
     def finger_positions_callback(self, msg):
-        HAND.set_fingers(msg.data)
+        joint_matrix = message_to_matrix(msg, (5, 3))
+        HAND.set_fingers(joint_matrix)
+        HAND.write_motor_targets()
+
+    def wrist_position_callback(self, msg):
+        HAND.set_wrist(msg.data)
         HAND.write_motor_targets()
 
 def main(args=None):

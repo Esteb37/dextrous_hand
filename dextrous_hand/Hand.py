@@ -5,7 +5,6 @@ from dextrous_hand.Wrist import WRIST
 from dextrous_hand.utils import finger_pos_to_matrix
 from dextrous_hand.DynamixelClient import DynamixelClient
 
-
 class Hand():
     _instance = None
 
@@ -26,9 +25,12 @@ class Hand():
 
         self.initialized = True
 
-    def set_fingers(self, positions):
+    def set_fingers(self, positions : list[list[float]]):
         """
         Set the positions of all fingers simultaneously.
+
+        NOTE: The dimension of the position array should be 3x1 because the DIP
+              angle cannot be set.
 
         params
             positions: a matrix or dictionary of finger positions
@@ -57,9 +59,12 @@ class Hand():
         if type(positions) == dict:
             positions = finger_pos_to_matrix(positions)
 
+        assert len(positions) == 5
+        assert len(positions[0]) == 3
+
         # Write the positions to each finger
         for i, finger in enumerate(FINGERS):
-            finger.write(positions[i * 3 : (i + 1) * 3])
+            finger.write(positions[i])
 
         # Check if all fingers are at position
         at_position = True

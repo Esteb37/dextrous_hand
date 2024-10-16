@@ -69,6 +69,11 @@ class Subsystem(ABC):
         params
             joint_angles: a list of joint angles
         """
+
+        # Allow for single-joint subsystems to be controlled with a single float
+        if type(joint_angles) == float:
+            joint_angles = [joint_angles]
+
         motor_angles = self.joints2motors(joint_angles)
 
         for motor, angle in zip(self.motors, motor_angles): # type: ignore

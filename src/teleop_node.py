@@ -3,13 +3,13 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Float32MultiArray, Float32
 import numpy as np
 from pynput import keyboard # type: ignore
 import time
 
 from dextrous_hand.utils import matrix_to_message
-from dextrous_hand.Finger import FINGERS
+import dextrous_hand.ids as ids
 
 class TeleopNode(Node):
     """
@@ -31,10 +31,13 @@ class TeleopNode(Node):
 
     def __init__(self):
         super().__init__('teleop_node')
-        self.publisher = self.create_publisher(Float32MultiArray, 'finger_positions', 10)
+        self.fingers_publisher = self.create_publisher(Float32MultiArray, 'finger_positions', 10)
+        self.wrist_publisher = self.create_publisher(Float32, 'wrist_position', 10)
+
         self.get_logger().info('teleop node started')
         self.finger_positions = np.zeros((5, 3))
-        self.finger_id = 0
+        self.wrist_position = 0.0
+        self.subsystem_id = ids.SUBSYSTEMS.PINKY
         self.joint_id = 0
 
         # Start a keyboard listener
@@ -47,16 +50,24 @@ class TeleopNode(Node):
     def on_press(self, key):
         try:
             # Map keys to finger ids
-            if key.char == 'f':
-                self.finger_id = 0
-            elif key.char == 'r':
-                self.finger_id = 1
-            elif key.char == 'e':
-                self.finger_id = 2
+            if key.char == 'q':
+                self.subsystem_id = ids.SUBSYSTEMS.PINKY
+                self.joint_id = 0
             elif key.char == 'w':
-                self.finger_id = 3
-            elif key.char == 'q':
-                self.finger_id = 4
+                self.subsystem_id = ids.SUBSYSTEMS.RING
+                self.joint_id = 0
+            elif key.char == 'e':
+                self.subsystem_id = ids.SUBSYSTEMS.MIDDLE
+                self.joint_id = 0
+            elif key.char == 'r':
+                self.subsystem_id = ids.SUBSYSTEMS.INDEX
+                self.joint_id = 0
+            elif key.char == 't':
+                self.subsystem_id = ids.SUBSYSTEMS.THUMB
+                self.joint_id = 0
+            elif key.char == 'y':
+                self.subsystem_id = ids.SUBSYSTEMS.WRIST
+                self.joint_id = 0
 
             # Map keys to joint ids
             elif key.char in '123':
@@ -64,11 +75,20 @@ class TeleopNode(Node):
 
             # Adjust finger positions based on arrow keys
             elif key.char == "o":
-                self.finger_positions[self.finger_id][self.joint_id] += 0.1
+                if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
+                    self.wrist_position += 0.1
+                else:
+                    self.finger_positions[ids.finger_id_to_index(self.subsystem_id)][self.joint_id] += 0.1
             elif key.char == "l":
-                self.finger_positions[self.finger_id][self.joint_id] -= 0.1
+                if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
+                    self.wrist_position -= 0.1
+                else:
+                    self.finger_positions[ids.finger_id_to_index(self.subsystem_id)][self.joint_id] -= 0.1
 
-            print(FINGERS[self.finger_id].id.name, self.joint_id+1, self.finger_positions[self.finger_id][self.joint_id])
+            print(self.subsystem_id.name, self.wrist_position
+                                          if self.subsystem_id == ids.SUBSYSTEMS.WRIST else
+                                          self.finger_positions[ids.finger_id_to_index(self.subsystem_id)])
+            print()
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
@@ -76,8 +96,8 @@ class TeleopNode(Node):
     def run(self):
         while rclpy.ok():
             # Publish the current finger positions
-            msg = matrix_to_message(self.finger_positions)
-            self.publisher.publish(msg)
+            self.fingers_publisher.publish(matrix_to_message(self.finger_positions))
+            self.wrist_publisher.publish(Float32(data=self.wrist_position))
             time.sleep(1.0 / self.FREQUENCY)
 
 def main(args=None):

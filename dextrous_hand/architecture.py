@@ -5,25 +5,30 @@ from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD
 from dextrous_hand.WristJoint import WristJoint
 
 SUBSYSTEM_MOTORS = {
-    SUBSYSTEMS.PINKY :  [MOTORS.PINKY_UMBM,
-                         MOTORS.PINKY_URBL,
-                         MOTORS.PINKY_ULBR],
+    SUBSYSTEMS.PINKY :  [MOTORS.PINKY_URBL,
+                         MOTORS.PINKY_ULBR,
+                         MOTORS.PINKY_UMBM
+                         ],
 
-    SUBSYSTEMS.RING :   [MOTORS.RING_UMBM,
-                         MOTORS.RING_URBL,
-                         MOTORS.RING_ULBR],
+    SUBSYSTEMS.RING :   [MOTORS.RING_URBL,
+                         MOTORS.RING_ULBR,
+                         MOTORS.RING_UMBM
+                         ],
 
-    SUBSYSTEMS.MIDDLE : [MOTORS.MIDDLE_UMBM,
-                         MOTORS.MIDDLE_URBL,
-                         MOTORS.MIDDLE_ULBR],
+    SUBSYSTEMS.MIDDLE : [MOTORS.MIDDLE_URBL,
+                         MOTORS.MIDDLE_ULBR,
+                         MOTORS.MIDDLE_UMBM
+                         ],
 
-    SUBSYSTEMS.INDEX :  [MOTORS.INDEX_UMBM,
-                         MOTORS.INDEX_URBL,
-                         MOTORS.INDEX_ULBR],
+    SUBSYSTEMS.INDEX :  [MOTORS.INDEX_URBL,
+                         MOTORS.INDEX_ULBR,
+                         MOTORS.INDEX_UMBM
+                         ],
 
-    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_UMBM,
-                         MOTORS.THUMB_URBL,
-                         MOTORS.THUMB_ULBR],
+    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_URBL,
+                         MOTORS.THUMB_ULBR,
+                         MOTORS.THUMB_UMBM
+                         ],
 
     SUBSYSTEMS.WRIST :  [MOTORS.WRIST]
 }

@@ -2,6 +2,7 @@
 
 from dextrous_hand.Finger import FINGERS
 from std_msgs.msg import Float32MultiArray
+import numpy as np
 
 def matrix_to_fingers_pos(matrix):
     """
@@ -45,19 +46,22 @@ def finger_pos_to_matrix(positions):
 
     params
         positions: a dictionary of finger positions, of shape
-                    {THUMB: [float, float, float],
-                    INDEX: [float, float, float],
-                    ...
-                    PINKY: [float, float, float]}
+                    {
+                     PINKY: [float, float, float]
+                     RING: [float, float, float],
+                     ...
+                     THUMB: [float, float, float],
+
+                    }
 
     returns
         a matrix of finger positions, of shape
-                    [float, float, float,
-                    float, float, float,
-                    ...
-                    float, float, float]
-    raises
-        Exception: if the dictionary has the wrong number of keys or values
+                    [
+                     [float, float, float],
+                     [float, float, float],
+                     ...
+                     [float, float, float]
+                    ]
     """
     matrix = []
     for finger in FINGERS:
@@ -73,3 +77,9 @@ def matrix_to_message(matrix):
     data = list(matrix.flatten())
     msg.data = data
     return msg
+
+def message_to_matrix(message : Float32MultiArray, shape):
+    """
+    Takes a Float32MultiArray message and converts it to a matrix
+    """
+    return np.array(message.data).reshape(shape).tolist()

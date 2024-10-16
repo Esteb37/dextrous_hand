@@ -18,8 +18,7 @@ class Wrist(Subsystem):
         TODO: Implement this method
               It's probably just the angle of the joint through a gear ratio.
         """
-        joint_angle = joint_angles[0]
-        return joint_angle
+        return joint_angles
 
 # Singleton instance
 WRIST = Wrist(ids.SUBSYSTEMS.WRIST)
