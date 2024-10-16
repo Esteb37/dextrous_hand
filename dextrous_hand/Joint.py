@@ -67,6 +67,22 @@ class Joint(ABC):
         motor_angles = [motor.read() for motor in self.motors]
         return self.motors2joint(motor_angles)
 
+    def find_motor(self, partial_id):
+        """
+        Tries to find a motor whose name contains the provided substring
+
+        params
+            partial_id [MOTORS]: a substring of the motor's id
+
+        returns
+            The motor if found, None otherwise
+        """
+
+        motors = [motor for motor in self.motors if partial_id in motor.id.name]
+        if len(motors) == 0:
+            return None
+        return motors[0]
+
     def __str__(self):
         return self.id.name + ": " + f"{self.read():.2f} rad"
 

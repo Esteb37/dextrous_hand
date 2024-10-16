@@ -3,7 +3,7 @@
 from numpy import pi as PI
 from dextrous_hand.ids import MOTORS
 
-IS_SIMULATION = True # Set to True if the motor controller is not connected
+IS_SIMULATION = False # Set to True if the motor controller is not connected
 DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected to a different port
 BAUDRATE = 3000000
 

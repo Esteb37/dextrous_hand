@@ -49,7 +49,7 @@ class Subsystem(ABC):
         self.initialized = True
 
     @abstractmethod
-    def joints2motors(self, joint_angles):
+    def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angles of the joints to the angles of the motors
         Each subclass should uniquely implement this method
@@ -92,6 +92,38 @@ class Subsystem(ABC):
             True if all motors in the subsystem are at their target angles
         """
         return all([motor.at_angle() for motor in self.motors])
+
+    def find_joint(self, partial_id):
+        """
+        Tries to find a joint whose name contains the provided substring
+
+        params
+            partial_id [JOINTS]: a substring of the joint's id
+
+        returns
+            The joint if found, None otherwise
+        """
+
+        joints = [joint for joint in self.joints if partial_id in joint.id.name]
+        if len(joints) == 0:
+            return None
+        return joints[0]
+
+    def find_motor(self, partial_id):
+        """
+        Tries to find a motor whose name contains the provided substring
+
+        params
+            partial_id [MOTORS]: a substring of the motor's id
+
+        returns
+            The motor if found, None otherwise
+        """
+
+        motors = [motor for motor in self.motors if partial_id in motor.id.name]
+        if len(motors) == 0:
+            return None
+        return motors[0]
 
     def __str__(self):
         formatted_values = [f"{value:.2f}" for value in self.read()]
