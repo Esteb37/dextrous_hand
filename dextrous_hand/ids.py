@@ -7,25 +7,25 @@ class MOTORS(Enum):
     """
     Motor ports
     """
-    PINKY_UMBM = 0
-    PINKY_URBL = 1
-    PINKY_ULBR = 2
+    PINKY_URBL = 0
+    PINKY_ULBR = 1
+    PINKY_UMBM = 2
 
-    RING_UMBM = 3
-    RING_URBL = 4
-    RING_ULBR = 5
+    RING_URBL = 3
+    RING_ULBR = 4
+    RING_UMBM = 5
 
-    MIDDLE_UMBM = 6
-    MIDDLE_URBL = 7
-    MIDDLE_ULBR = 8
+    MIDDLE_URBL = 6
+    MIDDLE_ULBR = 7
+    MIDDLE_UMBM = 8
 
-    INDEX_UMBM = 9
-    INDEX_URBL = 10
-    INDEX_ULBR = 11
+    INDEX_URBL = 9
+    INDEX_ULBR = 10
+    INDEX_UMBM = 11
 
-    THUMB_UMBM = 12
-    THUMB_URBL = 13
-    THUMB_ULBR = 14
+    THUMB_URBL = 12
+    THUMB_ULBR = 13
+    THUMB_UMBM = 14
 
     WRIST = 15
 

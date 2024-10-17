@@ -7,6 +7,8 @@ IS_SIMULATION = False # Set to True if the motor controller is not connected
 DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected to a different port
 BAUDRATE = 3000000
 
+NODE_FREQUENCY_HZ = 1000
+
 FULL_RANGE = [-PI, PI]
 MOTOR_LIMITS = {
     MOTORS.THUMB_ULBR: FULL_RANGE,

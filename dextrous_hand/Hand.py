@@ -23,6 +23,8 @@ class Hand():
 
         self.motor_bridge = DynamixelClient()
 
+        self.motor_bridge.connect()
+
         self.initialized = True
 
     def set_fingers(self, positions : list[list[float]]):

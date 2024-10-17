@@ -11,6 +11,7 @@ import time
 from dextrous_hand.utils import matrix_to_message
 import dextrous_hand.ids as ids
 from dextrous_hand.Finger import finger_index
+from dextrous_hand.constants import NODE_FREQUENCY_HZ
 
 class TeleopNode(Node):
     """
@@ -28,7 +29,6 @@ class TeleopNode(Node):
     down: decrease joint angle
     """
 
-    FREQUENCY = 200 # Hz
 
     def __init__(self):
         super().__init__('teleop_node')
@@ -48,47 +48,71 @@ class TeleopNode(Node):
         # Run the publishing loop
         self.run()
 
+        self.all = False
+
     def on_press(self, key):
         try:
             # Map keys to finger ids
             if key.char == 'q':
                 self.subsystem_id = ids.SUBSYSTEMS.PINKY
                 self.joint_id = 0
+                self.all = False
             elif key.char == 'w':
                 self.subsystem_id = ids.SUBSYSTEMS.RING
                 self.joint_id = 0
+                self.all = False
             elif key.char == 'e':
                 self.subsystem_id = ids.SUBSYSTEMS.MIDDLE
                 self.joint_id = 0
+                self.all = False
             elif key.char == 'r':
                 self.subsystem_id = ids.SUBSYSTEMS.INDEX
                 self.joint_id = 0
+                self.all = False
             elif key.char == 't':
                 self.subsystem_id = ids.SUBSYSTEMS.THUMB
                 self.joint_id = 0
+                self.all = False
             elif key.char == 'y':
                 self.subsystem_id = ids.SUBSYSTEMS.WRIST
                 self.joint_id = 0
+                self.all = False
 
             # Map keys to joint ids
             elif key.char in '123':
                 self.joint_id = int(key.char) - 1
 
+            elif key.char == 'u':
+                self.all = True
+                self.joint_id = 0
+
             # Adjust finger positions based on arrow keys
             elif key.char == "o":
-                if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
-                    self.wrist_position += 0.1
+                if self.all:
+                    for i in range(5):
+                        self.finger_positions[i][self.joint_id] += 0.1
                 else:
-                    self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] += 0.1
-            elif key.char == "l":
-                if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
-                    self.wrist_position -= 0.1
-                else:
-                    self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] -= 0.1
+                    if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
+                        self.wrist_position += 0.1
+                    else:
+                        self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] += 0.1
 
-            print(self.subsystem_id.name, self.wrist_position
-                                          if self.subsystem_id == ids.SUBSYSTEMS.WRIST else
-                                          self.finger_positions[finger_index(self.subsystem_id)])
+            elif key.char == "l":
+                if self.all:
+                    for i in range(5):
+                        self.finger_positions[i][self.joint_id] -= 0.1
+                else:
+                    if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
+                        self.wrist_position -= 0.1
+                    else:
+                        self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] -= 0.1
+
+            print("ALL"  if self.all else self.subsystem_id.name,
+
+                  self.wrist_position
+                  if self.subsystem_id == ids.SUBSYSTEMS.WRIST else
+                  self.finger_positions[finger_index(self.subsystem_id)])
+
             print()
 
         except AttributeError:
@@ -99,7 +123,7 @@ class TeleopNode(Node):
             # Publish the current finger positions
             self.fingers_publisher.publish(matrix_to_message(self.finger_positions))
             self.wrist_publisher.publish(Float32(data=self.wrist_position))
-            time.sleep(1.0 / self.FREQUENCY)
+            time.sleep(1.0 / NODE_FREQUENCY_HZ)
 
 def main(args=None):
     rclpy.init(args=args)

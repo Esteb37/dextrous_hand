@@ -52,6 +52,7 @@ LEN_PROFILE_VELOCITY = 4
 LEN_MOVING_STATUS = 1
 
 DEFAULT_POS_SCALE = 2.0 * np.pi / 4096  # 0.088 degrees
+DEFAULT_POS_SHIFT = np.pi
 # See http://emanual.robotis.com/docs/en/dxl/x/xh430-v210/#goal-velocity
 DEFAULT_VEL_SCALE = 0.229 * 2.0 * np.pi / 60.0  # 0.229 rpm
 DEFAULT_CUR_SCALE = 1.34
@@ -159,14 +160,14 @@ class DynamixelClient:
         assert not self.is_connected, 'Client is already connected.'
 
         if self.port_handler.openPort():
-            LOG_INFO('Succeeded to open port: %s'.format(self.port_name))
+            LOG_INFO('Succeeded to open port: %s' % self.port_name)
         else:
             raise OSError(
                 ('Failed to open port at {} (Check that the device is powered '
                  'on and connected to your computer).').format(self.port_name))
 
         if self.port_handler.setBaudRate(self.baudrate):
-            LOG_INFO('Succeeded to set baudrate to %d'.format(self.baudrate))
+            LOG_INFO('Succeeded to set baudrate to %d' % self.baudrate)
         else:
             raise OSError(
                 ('Failed to set the baudrate to {} (Ensure that the device was '
@@ -210,7 +211,7 @@ class DynamixelClient:
                 ADDR_TORQUE_ENABLE,
             )
             if remaining_ids:
-                LOG_ERROR('Could not set torque %s for IDs: %s'.format(
+                LOG_ERROR('Could not set torque %s for IDs: %s' % (
                               'enabled' if enabled else 'disabled',
                               str(remaining_ids)))
             if retries == 0:
@@ -252,7 +253,7 @@ class DynamixelClient:
         assert len(motor_ids) == len(positions)
 
         # Convert to Dynamixel position space.
-        positions = positions / self._pos_vel_cur_reader.pos_scale
+        positions = (positions + DEFAULT_POS_SHIFT) / self._pos_vel_cur_reader.pos_scale
         times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION, # type: ignore
                         LEN_GOAL_POSITION)
         return times
@@ -321,7 +322,7 @@ class DynamixelClient:
                 errored_ids.append(motor_id)
 
         if errored_ids:
-            LOG_ERROR('Sync write failed for: %s'.format(str(errored_ids)))
+            LOG_ERROR('Sync write failed for: %s' % str(errored_ids))
         times.append(time.monotonic())
 
         comm_result = sync_writer.txPacket()
@@ -348,15 +349,20 @@ class DynamixelClient:
         error_message = None
         if comm_result != self.dxl.COMM_SUCCESS:
             error_message = self.packet_handler.getTxRxResult(comm_result)
+
         elif dxl_error is not None:
             error_message = self.packet_handler.getRxPacketError(dxl_error)
+
         if error_message:
             if dxl_id is not None:
                 error_message = '[Motor ID: {}] {}'.format(
                     dxl_id, error_message)
             if context is not None:
                 error_message = '> {}: {}'.format(context, error_message)
-            LOG_ERROR(error_message)
+
+            if (comm_result != -1000):
+                # Ignore "Port is busy" errors to allow multithreaded read-write
+                LOG_ERROR(error_message)
             return False
         return True
 
@@ -412,7 +418,7 @@ class DynamixelClient:
 class DynamixelReader:
     """Reads data from Dynamixel motors.
 
-    This wraps a GroupBulkRead from the DynamixelSDK.
+    This wraps a GroupSyncRead from the DynamixelSDK.
     """
 
     def __init__(self, client: DynamixelClient, motor_ids: Sequence[int],
@@ -424,14 +430,14 @@ class DynamixelReader:
         self.size = size
         self._initialize_data()
 
-        self.operation = self.client.dxl.GroupBulkRead(client.port_handler,
-                                                       client.packet_handler)
+        self.operation = self.client.dxl.GroupSyncRead(client.port_handler,
+                                                       client.packet_handler, address, size)
 
         for motor_id in motor_ids:
-            success = self.operation.addParam(motor_id, address, size)
+            success = self.operation.addParam(motor_id)
             if not success:
                 raise OSError(
-                    '[Motor ID: {}] Could not add parameter to bulk read.'
+                    '[Motor ID: {}] Could not add parameter to sync read.'
                     .format(motor_id))
 
     def read(self, retries: int = 1):
@@ -460,8 +466,8 @@ class DynamixelReader:
             self._update_data(i, motor_id)
 
         if errored_ids:
-            LOG_ERROR('Bulk read data is unavailable for: %s'.format(
-                          str(errored_ids)))
+            LOG_ERROR('Sync read data is unavailable for: %s' %
+                          str(errored_ids))
 
         return self._get_data()
 
@@ -514,7 +520,7 @@ class DynamixelPosVelCurReader(DynamixelReader):
         cur = unsigned_to_signed(cur, size=2)
         vel = unsigned_to_signed(vel, size=4)
         pos = unsigned_to_signed(pos, size=4)
-        self._pos_data[index] = float(pos) * self.pos_scale
+        self._pos_data[index] = float(pos) * self.pos_scale - DEFAULT_POS_SHIFT
         self._vel_data[index] = float(vel) * self.vel_scale
         self._cur_data[index] = float(cur) * self.cur_scale
 
