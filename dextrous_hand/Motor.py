@@ -53,7 +53,7 @@ class Motor():
         self.name = motor_id.name
 
         # Check if the motor's limits have been defined
-        if self.id not in ids.MOTOR_LIMITS or len(ids.MOTOR_LIMITS[self.id]) != 2:
+        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) != 2:
             raise Exception("Motor " + str(self.name) + " has no limits or invalid limits")
 
         self.angle_limits = constants.MOTOR_LIMITS[self.id]
