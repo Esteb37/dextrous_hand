@@ -1,3 +1,7 @@
+# Architecture
+
+![Architecture](architecture.png)
+
 # Setup
 
 ### We are using ROS 2 Humble, for Ubuntu Jammy 22.04
