@@ -1,6 +1,6 @@
 <mujoco>
     <compiler angle="radian"/>
-    <option collision="all"/>
+    <!-- <option collision="all"/> -->
     <default>
         <!-- use same geom params as the Shadow Hand model in IsaacGymEnv for now -->
         <!-- the density is adjusted so that the total weight of the hand part (not including the base) is the same as the real hand (106g) (therefore the base will have a wrong mass, which shouldn't matter for now) -->
@@ -42,6 +42,8 @@
         <mesh name="pinky_pp" file="mesh/pinky_pp.stl" scale="0.001 0.001 0.001"/>
         <mesh name="pinky_mp" file="mesh/pinky_mp.stl" scale="0.001 0.001 0.001"/>
         <mesh name="pinky_dp" file="mesh/pinky_dp.stl" scale="0.001 0.001 0.001"/>
+
+
     </asset>
     <contact>
         <!-- neighboring bodies are excluded from contact calculation -->
@@ -67,9 +69,11 @@
         <exclude body1="palm" body2="pinky_pp"/>
         <exclude body1="pinky_pp" body2="pinky_mp"/>
         <exclude body1="pinky_mp" body2="pinky_dp"/>
+
+        <exclude body1="root" body2="palm"/> <!-- modeling wrist -->
     </contact>
 
-    <!-- <sensor>
+    <sensor>
         <jointpos name="root2thumb_base" joint="root2thumb_base"/>
         <jointpos name="thumb_base2pp" joint="thumb_base2pp"/>
         <jointpos name="thumb_pp2mp" joint="thumb_pp2mp"/>
@@ -90,7 +94,7 @@
         <jointpos name="root2pinky_pp" joint="root2pinky_pp"/>
         <jointpos name="pinky_pp2mp" joint="pinky_pp2mp"/>
         <jointpos name="pinky_mp2dp" joint="pinky_mp2dp"/>
-    </sensor> -->
+    </sensor>
     
     <actuator>
         <!-- 
@@ -109,16 +113,22 @@
         <position name="thumb_pp2mp" joint="thumb_pp2mp" ctrlrange="0 0.96" kp="4"/>
 
         <position name="root2index_pp" joint="root2index_pp" ctrlrange="0 0.83"/>
+        <position name="root2index_pp_abd" joint="root2index_pp_abd" ctrlrange="-0.3 0.3"/>
         <position name="index_pp2mp" joint="index_pp2mp" ctrlrange="0 0.96" kp="4"/>
 
         <position name="root2middle_pp" joint="root2middle_pp" ctrlrange="0 0.83"/>
+        <position name="root2middle_pp_abd" joint="root2middle_pp_abd" ctrlrange="-0.3 0.3"/>
         <position name="middle_pp2mp" joint="middle_pp2mp" ctrlrange="0 0.96" kp="4"/>
 
         <position name="root2ring_pp" joint="root2ring_pp" ctrlrange="0 0.83"/>
+        <position name="root2ring_pp_abd" joint="root2ring_pp_abd" ctrlrange="-0.3 0.3"/>
         <position name="ring_pp2mp" joint="ring_pp2mp" ctrlrange="0 0.96" kp="4"/>
 
         <position name="root2pinky_pp" joint="root2pinky_pp" ctrlrange="0 0.83"/>
+        <position name="root2pinky_pp_abd" joint="root2pinky_pp_abd" ctrlrange="-0.3 0.3"/>
         <position name="pinky_pp2mp" joint="pinky_pp2mp" ctrlrange="0 0.96" kp="4"/>
+
+        <position name="wrist_base2palm" joint="wrist_base2palm" ctrlrange="-0.52 1.57" kp="4"/>
     </actuator>
 
     <!-- the rolling contact joints are modeled by two virtual joints, which have a constraint set here to constrain them to move together -->
@@ -152,6 +162,10 @@
             <joint joint="root2index_pp_virt" coef="1"/>
             <joint joint="root2index_pp" coef="-1"/>
         </fixed>
+        <fixed name="root2index_pp_abd">
+            <joint joint="root2index_pp_virt_abd" coef="1"/>
+            <joint joint="root2index_pp_abd" coef="-1"/>
+        </fixed>
         <fixed name="index_pp2mp">
             <joint joint="index_pp2mp_virt" coef="1"/>
             <joint joint="index_pp2mp" coef="-1"/>
@@ -165,6 +179,7 @@
             <joint joint="index_mp2dp" coef="-1"/>
         </fixed>
 
+
         <!-- Middle finger -->
         <fixed name="root2middle_pp">
             <joint joint="root2middle_pp_virt" coef="1"/>
@@ -173,6 +188,10 @@
         <fixed name="middle_pp2mp">
             <joint joint="middle_pp2mp_virt" coef="1"/>
             <joint joint="middle_pp2mp" coef="-1"/>
+        </fixed>
+        <fixed name="root2middle_pp_abd">
+            <joint joint="root2middle_pp_virt_abd" coef="1"/>
+            <joint joint="root2middle_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="middle_jointlink">
             <joint joint="middle_pp2mp" coef="0.71"/>
@@ -192,6 +211,10 @@
             <joint joint="ring_pp2mp_virt" coef="1"/>
             <joint joint="ring_pp2mp" coef="-1"/>
         </fixed>
+        <fixed name="root2ring_pp_abd">
+            <joint joint="root2ring_pp_virt_abd" coef="1"/>
+            <joint joint="root2ring_pp_abd" coef="-1"/>
+        </fixed>
         <fixed name="ring_jointlink">
             <joint joint="ring_pp2mp" coef="0.71"/>
             <joint joint="ring_mp2dp_virt" coef="-1"/>
@@ -209,6 +232,10 @@
         <fixed name="pinky_pp2mp">
             <joint joint="pinky_pp2mp_virt" coef="1"/>
             <joint joint="pinky_pp2mp" coef="-1"/>
+        </fixed>
+        <fixed name="root2pinky_pp_abd">
+            <joint joint="root2pinky_pp_virt_abd" coef="1"/>
+            <joint joint="root2pinky_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="pinky_jointlink">
             <joint joint="pinky_pp2mp" coef="0.71"/>

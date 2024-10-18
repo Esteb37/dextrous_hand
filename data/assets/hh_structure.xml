@@ -4,6 +4,7 @@
         <!-- so that the base can be colored separately in IsaacGym, make it into its own body -->
         <geom mesh="base" rgba="0.2 0.2 0.2 1"/>
         <body name="palm">
+            <joint name="wrist_base2palm" axis="-1 0 0" pos="0.0  0.0  0.0" range="-1 1.52"/>
             <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire palm structure, separate it into separate geoms -->
             <geom mesh="palm"/>
             <geom mesh="index_meta"/>
@@ -40,9 +41,11 @@
 
             <body name="index_pp_virt">
                 <joint name="root2index_pp_virt" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.029320000000000   0.115440000000000   0.017930000000000" range="0 0.83"/>
+                <joint name="root2index_pp_virt_abd" axis="0.0  -0.104241812967506  -0.990498583905110" pos="-0.029320000000000   0.115440000000000   0.017930000000000" range="-0.3 0.3"/>
                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
                 <body name="index_pp">
                     <joint name="root2index_pp" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.031385146447244   0.133190847457549   0.020084665795489" range="0 0.83"/>
+                    <joint name="root2index_pp_abd" axis="0.0  -0.104241812967506  -0.990498583905110" pos="-0.031385146447244   0.133190847457549   0.020084665795489" range="-0.3 0.3"/>
                     <geom mesh="index_pp"/>
                     <body name="index_mp_virt">
                         <joint name="index_pp2mp_virt" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.034941787550830   0.163761751412218   0.023795479109943" range="0 0.96"/>
@@ -67,9 +70,11 @@
 
             <body name="middle_pp_virt">
                 <joint name="root2middle_pp_virt" axis="-1     0     0" pos="-0.005500000000000   0.117620000000000   0.019690000000000" range="0 0.83"/>
+                <joint name="root2middle_pp_virt_abd" axis="0     0     -1" pos="-0.005500000000000   0.117620000000000   0.019690000000000" range="-0.3 0.3"/>
                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
                 <body name="middle_pp">
                     <joint name="root2middle_pp" axis="-1     0     0" pos="-0.005500000000000   0.135485830729544   0.021883648181293" range="0 0.83"/>
+                    <joint name="root2middle_pp_abd" axis="0     0     -1" pos="-0.005500000000000   0.135485830729544   0.021883648181293" range="-0.3 0.3"/>
                     <geom mesh="middle_pp"/>
                     <body name="middle_mp_virt">
                         <joint name="middle_pp2mp_virt" axis="-1     0     0" pos="-0.005500000000000   0.170224946036990   0.026149075200473" range="0 0.96"/>
@@ -94,9 +99,11 @@
 
             <body name="ring_pp_virt">
                 <joint name="root2ring_pp_virt" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.018090000000000   0.112480000000000   0.018220000000000" range="0 0.83"/>
+                <joint name="root2ring_pp_virt_abd" axis="-0.090425994580321   0.104241812967506   0.990498583905110" pos="0.018090000000000   0.112480000000000   0.018220000000000" range="-0.3 0.3"/>
                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
                 <body name="ring_pp">
                     <joint name="root2ring_pp" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.020155146447243   0.130230847457549   0.020374665795489" range="0 0.83"/>
+                    <joint name="root2ring_pp_abd" axis="-0.00425994580321   0.104241812967506   0.990498583905110" pos="0.020155146447243   0.130230847457549   0.020374665795489" range="-0.3 0.3"/>
                     <geom mesh="ring_pp"/>
                     <body name="ring_mp_virt">
                         <joint name="ring_pp2mp_virt" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.023711787550830   0.160801751412218   0.024085479109943" range="0 0.96"/>
@@ -121,9 +128,11 @@
 
             <body name="pinky_pp_virt">
                 <joint name="root2pinky_pp_virt" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.041170000000000   0.101870000000000   0.013200000000000" range="0 0.83"/>
+                <joint name="root2pinky_pp_virt_abd" axis="-0.210980299137689   0.223061123902897   0.954196651829969" pos="0.041170000000000   0.101870000000000   0.013200000000000" range="-0.3 0.3"/>
                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
                 <body name="pinky_pp">
                     <joint name="root2pinky_pp" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.045651869374116   0.119205095457698   0.015045890675491" range="0 0.83"/>
+                    <joint name="root2pinky_pp_abd" axis="0.210980299137689   0.223061123902897   -0.954196651829969" pos="0.045651869374116   0.119205095457698   0.015045890675491" range="-0.3 0.83"/>
                     <geom mesh="pinky_pp"/>
                     <body name="pinky_mp_virt">
                         <joint name="pinky_pp2mp_virt" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.052374673435289   0.145207738644245   0.017814726688728" range="0 0.96"/>
