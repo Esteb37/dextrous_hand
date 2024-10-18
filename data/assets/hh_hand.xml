@@ -1,7 +1,7 @@
-<mujoco model="right_faive_modular">
+<mujoco model="right_hh_modular">
     <compiler angle="radian"/>
-    <include file="faive_metadata.xml"/>
+    <include file="hh_metadata.xml"/>
     <worldbody>
-        <include file="faive_structure.xml"/>
+        <include file="hh_structure.xml"/>
     </worldbody>
 </mujoco>
