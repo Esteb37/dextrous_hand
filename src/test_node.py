@@ -5,16 +5,21 @@ from rclpy.node import Node
 import time
 import mujoco
 import mujoco.viewer
+from std_msgs.msg import Float32MultiArray
+
 
 class TestNode(Node):
     def __init__(self):
         super().__init__('test_node')
         self.get_logger().info('test_node started.')
-        xml_file = "/home/atharva/rwr_ws/src/dextrous_hand/data/assets/hh_hand.xml"
-        m = mujoco.MjModel.from_xml_path(xml_file)
-        d = mujoco.MjData(m)
+        self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'finger_positions', self.joint_command_callback, 10)
 
-        with mujoco.viewer.launch_passive(m, d) as viewer:
+        xml_file = "data/assets/hh_hand.xml"
+        self.m = mujoco.MjModel.from_xml_path(xml_file)
+        self.d = mujoco.MjData(self.m)
+        self.new_joint_angles = None
+
+        with mujoco.viewer.launch_passive(self.m, self.d) as viewer:
         # Close the viewer automatically after 30 wall-seconds.
             start = time.time()
             while viewer.is_running() and time.time() - start < 30:
@@ -22,19 +27,27 @@ class TestNode(Node):
 
                 # mj_step can be replaced with code that also evaluates
                 # a policy and applies a control signal before stepping the physics.
-                mujoco.mj_step(m, d)
+                if self.new_joint_angles is not None:
+                    for i in range(len(self.new_joint_angles.data)):
+                        self.d.qpos[i] = self.new_joint_angles.data[i]
+                        self.new_joint_angles = None  # Reset after applying
+
+                mujoco.mj_step(self.m, self.d)
 
                 # Example modification of a viewer option: toggle contact points every two seconds.
                 with viewer.lock():
-                    viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(d.time % 2)
+                    viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(self.d.time % 2)
 
                     # Pick up changes to the physics state, apply perturbations, update options from GUI.
                     viewer.sync()
 
                     # Rudimentary time keeping, will drift relative to wall clock.
-                    time_until_next_step = m.opt.timestep - (time.time() - step_start)
+                    time_until_next_step = self.m.opt.timestep - (time.time() - step_start)
                     if time_until_next_step > 0:
                         time.sleep(time_until_next_step)
+
+    def joint_command_callback(self, msg):
+        self.new_joint_angles = msg
 
 
 
