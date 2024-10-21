@@ -69,6 +69,47 @@
  - Add teleop control library
    - ```pip install pynput```
 
+# Running Teleop Control
+
+- ```cd``` to your ```ros2_ws``` workspace
+- ```colcon build```
+- Connect the motor controller
+- Give access to the port
+
+   ```sudo chmod 777 /dev/ttyUSB0```
+   or
+   ```sudo chmod 777 /dev/ttyUSB1```
+
+- Run hand node
+   ```ros2 run dextrous_hand hand_node```
+   Make sure all motors show as connected
+- In another window run teleop node
+   ```ros2 run dextrous_hand teleop_node```
+
+- Control the motors with the keyboard
+   - Select the subsystem
+      ```
+      q = pinky
+      w = ring
+      e = middle
+      r = index
+      t = thumb
+      y = wrist
+      u = all fingers (no wrist)
+      ```
+   - Select the joint
+      ```
+      1 = ABD (or wrist)
+      2 = MCP
+      3 = PIP/DIP
+      ```
+
+   - Control the motor
+      ```
+      o = add to angle
+      l = substract from angle
+      ```
+
 # Adding files
 
 ## Nodes
