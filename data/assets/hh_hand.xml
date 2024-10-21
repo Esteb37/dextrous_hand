@@ -1,0 +1,7 @@
+<mujoco model="right_hh_modular">
+    <compiler angle="radian"/>
+    <include file="hh_metadata.xml"/>
+    <worldbody>
+        <include file="hh_structure.xml"/>
+    </worldbody>
+</mujoco>
