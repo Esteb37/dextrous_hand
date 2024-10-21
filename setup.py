@@ -26,6 +26,8 @@ setup(
             'hand_node = src.hand_node:main',
             'basic_node = src.basic_node:main',
             'teleop_node = src.teleop_node:main',
+            'mujoco_node = src.mujoco_node:main',
+            'test_node = src.test_node:main',
         ],
     },
 )
