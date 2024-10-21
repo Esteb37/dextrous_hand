@@ -64,7 +64,7 @@
    - ```sudo apt install python3-pip```
 
  - Add Motor library
-   - ```pip install dynamixel_sdk```
+   - ```https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/library_setup/python_linux/#python-linux```
 
  - Add teleop control library
    - ```pip install pynput```

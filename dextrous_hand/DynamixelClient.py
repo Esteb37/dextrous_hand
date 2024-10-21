@@ -149,7 +149,7 @@ class DynamixelClient:
 
     @property
     def is_connected(self) -> bool:
-        return self.port_handler.is_open
+        return constants.IS_SIMULATION or self.port_handler.is_open
 
     def connect(self):
         """Connects to the Dynamixel motors.
@@ -157,6 +157,11 @@ class DynamixelClient:
         NOTE: This should be called after all DynamixelClients on the same
             process are created.
         """
+
+        if constants.IS_SIMULATION:
+            LOG_WARN('Simulation mode enabled. No connection to Dynamixel.')
+            return
+
         assert not self.is_connected, 'Client is already connected.'
 
         if self.port_handler.openPort():
@@ -178,7 +183,7 @@ class DynamixelClient:
 
     def disconnect(self):
         """Disconnects from the Dynamixel device."""
-        if not self.is_connected:
+        if constants.IS_SIMULATION or not self.is_connected:
             return
         if self.port_handler.is_using:
             LOG_ERROR('Port handler in use; cannot disconnect.')
