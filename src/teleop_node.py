@@ -14,6 +14,7 @@ from dextrous_hand.Finger import finger_index
 from dextrous_hand.constants import NODE_FREQUENCY_HZ
 from dextrous_hand.DynamixelClient import DynamixelClient
 from dextrous_hand.Hand import HAND
+from dextrous_hand import constants
 
 class TeleopNode(Node):
     """
@@ -61,8 +62,10 @@ class TeleopNode(Node):
         self.motor_bridge.disconnect()
 
         self.get_logger().info('Disconnecting...')
-        while self.motor_bridge.is_connected:
-            time.sleep(0.1)
+
+        if not constants.IS_SIMULATION:
+            while self.motor_bridge.is_connected:
+                time.sleep(0.1)
 
 
         self.get_logger().info('Disconnected')
