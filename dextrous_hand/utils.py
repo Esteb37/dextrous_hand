@@ -74,7 +74,7 @@ def matrix_to_message(matrix):
     Takes a matrix and converts it to a Float32MultiArray message
     """
     msg = Float32MultiArray()
-    data = list(matrix.flatten())
+    data = list(np.array(matrix).flatten())
     msg.data = data
     return msg
 

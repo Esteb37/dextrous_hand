@@ -64,10 +64,56 @@
    - ```sudo apt install python3-pip```
 
  - Add Motor library
-   - ```https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/library_setup/python_linux/#python-linux```
+   - ```
+      cd
+      git clone https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+      cd DynamixelSDK/python
+      sudo python3 setup.py install
+   ```
 
  - Add teleop control library
    - ```pip install pynput```
+
+# Running Teleop Control
+
+- ```cd``` to your ```ros2_ws``` workspace
+- ```colcon build```
+- Connect the motor controller
+- Give access to the port
+
+   ```sudo chmod 777 /dev/ttyUSB0```
+   or
+   ```sudo chmod 777 /dev/ttyUSB1```
+
+- Run hand node
+   ```ros2 run dextrous_hand hand_node```
+   Make sure all motors show as connected
+- In another window run teleop node
+   ```ros2 run dextrous_hand teleop_node```
+
+- Control the motors with the keyboard
+   - Select the subsystem
+      ```
+      q = pinky
+      w = ring
+      e = middle
+      r = index
+      t = thumb
+      y = wrist
+      u = all fingers (no wrist)
+      ```
+   - Select the joint
+      ```
+      1 = ABD (or wrist)
+      2 = MCP
+      3 = PIP/DIP
+      ```
+
+   - Control the motor
+      ```
+      o = add to angle
+      l = substract from angle
+      ```
 
 # Adding files
 
