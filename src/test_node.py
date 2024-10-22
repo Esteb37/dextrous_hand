@@ -14,15 +14,14 @@ class TestNode(Node):
         self.get_logger().info('test_node started.')
         self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'finger_positions', self.joint_command_callback, 10)
 
-        xml_file = "data/assets/hh_hand.xml"
+        xml_file = "/home/atharva/rwr_ws/src/dextrous_hand/data/assets/hh_hand.xml"
         self.m = mujoco.MjModel.from_xml_path(xml_file)
         self.d = mujoco.MjData(self.m)
         self.new_joint_angles = None
 
         with mujoco.viewer.launch_passive(self.m, self.d) as viewer:
-        # Close the viewer automatically after 30 wall-seconds.
             start = time.time()
-            while viewer.is_running() and time.time() - start < 30:
+            while viewer.is_running():
                 step_start = time.time()
 
                 # mj_step can be replaced with code that also evaluates
@@ -32,22 +31,30 @@ class TestNode(Node):
                         self.d.qpos[i] = self.new_joint_angles.data[i]
                         self.new_joint_angles = None  # Reset after applying
 
+                # print(self.d.qpos.shape)
                 mujoco.mj_step(self.m, self.d)
+                viewer.sync()
 
-                # Example modification of a viewer option: toggle contact points every two seconds.
-                with viewer.lock():
-                    viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(self.d.time % 2)
+                # Example modification of a viewer option: toggle contact points every two seconds
+                # Viewer.lock() is an important way to keep visualization synchronised over the multiple threads used by MuJoCo. 
+                # However, just using viewr.synch() after mujoco.mj_step also seemingly works fine ...
 
-                    # Pick up changes to the physics state, apply perturbations, update options from GUI.
-                    viewer.sync()
+                # with viewer.lock():
+                #     # uncomment this line if you don't want to visualise contact points
+                #     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = int(self.d.time % 2)
 
-                    # Rudimentary time keeping, will drift relative to wall clock.
-                    time_until_next_step = self.m.opt.timestep - (time.time() - step_start)
-                    if time_until_next_step > 0:
-                        time.sleep(time_until_next_step)
+                #     # Pick up changes to the physics state, apply perturbations, update options from GUI.
+                #     viewer.sync()
+
+                #     # Rudimentary time keeping, will drift relative to wall clock.
+                #     time_until_next_step = self.m.opt.timestep - (time.time() - step_start)
+                #     if time_until_next_step > 0:
+                #         time.sleep(time_until_next_step)
 
     def joint_command_callback(self, msg):
+        # Mapping function to be removed
         self.new_joint_angles = msg
+        print("New joint command recevied")
 
 
 
