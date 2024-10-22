@@ -12,6 +12,8 @@ from dextrous_hand.utils import matrix_to_message
 import dextrous_hand.ids as ids
 from dextrous_hand.Finger import finger_index
 from dextrous_hand.constants import NODE_FREQUENCY_HZ
+from dextrous_hand.DynamixelClient import DynamixelClient
+from dextrous_hand.Hand import HAND
 
 class TeleopNode(Node):
     """
@@ -21,12 +23,14 @@ class TeleopNode(Node):
     w: ring
     e: middle
     r: index
-    f: thumb
+    t: thumb
+    y: wrist
+    u: all fingers
     1: joint 1
     2: joint 2
     3: joint 3
-    up: increase joint angle
-    down: decrease joint angle
+    o: increase joint angle
+    l: decrease joint angle
     """
 
 
@@ -45,10 +49,32 @@ class TeleopNode(Node):
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
 
+        self.all = False
+
+        self.get_logger().info('Reading current angles...')
+        self.motor_bridge = DynamixelClient()
+
+        self.motor_bridge.connect()
+
+        self.motor_bridge.update_positions()
+
+        self.motor_bridge.disconnect()
+
+        self.get_logger().info('Disconnecting...')
+        while self.motor_bridge.is_connected:
+            time.sleep(0.1)
+
+
+        self.get_logger().info('Disconnected')
+
+        # Just the first three columns
+        self.finger_positions = np.array(HAND.get_fingers())[:, :3].tolist()
+
+        self.wrist_position = HAND.get_wrist()
+
         # Run the publishing loop
         self.run()
 
-        self.all = False
 
     def on_press(self, key):
         try:

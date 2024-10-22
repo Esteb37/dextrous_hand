@@ -6,6 +6,7 @@ from std_msgs.msg import Float32MultiArray, Float32
 from dextrous_hand.utils import message_to_matrix
 from dextrous_hand.Hand import HAND
 from dextrous_hand.constants import NODE_FREQUENCY_HZ
+from dextrous_hand.DynamixelClient import DynamixelClient
 import time
 import threading
 
@@ -33,6 +34,10 @@ class HandNode(Node):
 
         self.get_logger().info('Hand node started')
 
+        self.motor_bridge = DynamixelClient()
+
+        self.initialized = False
+
         self.write_timer = self.create_timer(1.0 / NODE_FREQUENCY_HZ, self.write)
 
         # Start the read thread
@@ -44,11 +49,16 @@ class HandNode(Node):
         joint_matrix = message_to_matrix(msg, (5, 3))
         HAND.set_fingers(joint_matrix)
 
+        if not self.initialized:
+            self.motor_bridge.connect()
+            self.initialized = True
+
     def wrist_position_callback(self, msg):
         HAND.set_wrist(msg.data)
 
     def write(self):
-        HAND.write_motor_targets()
+        if self.initialized:
+            self.motor_bridge.write_targets()
 
     def read_loop(self):
         """
@@ -59,8 +69,9 @@ class HandNode(Node):
             time.sleep(1 / NODE_FREQUENCY_HZ)
 
     def read(self):
-        HAND.update_motor_positions()
-        print(HAND)
+        if self.initialized:
+            self.motor_bridge.update_positions()
+            print(HAND)
 
 
 def main(args=None):
