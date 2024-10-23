@@ -41,16 +41,16 @@ class Finger(Subsystem):
         return self.get_joint("DIP")
 
     @property
-    def TRBL(self):
-        return self.get_motor("TRBL")
+    def FRBL(self):
+        return self.get_motor("FRBL")
 
     @property
-    def TLBR(self):
-        return self.get_motor("TLBR")
+    def FLBR(self):
+        return self.get_motor("FLBR")
 
     @property
-    def TMBM(self):
-        return self.get_motor("TMBM")
+    def FMBM(self):
+        return self.get_motor("FMBM")
 
 class Thumb(Finger):
     """
