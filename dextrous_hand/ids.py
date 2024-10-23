@@ -7,25 +7,25 @@ class MOTORS(Enum):
     """
     Motor ports
     """
-    PINKY_TRBL = 0
-    PINKY_TLBR = 1
-    PINKY_TMBM = 2
+    PINKY_FRBL = 0
+    PINKY_FLBR = 1
+    PINKY_FMBM = 2
 
-    RING_TRBL = 3
-    RING_TLBR = 4
-    RING_TMBM = 5
+    RING_FRBL = 3
+    RING_FLBR = 4
+    RING_FMBM = 5
 
-    MIDDLE_TRBL = 6
-    MIDDLE_TLBR = 7
-    MIDDLE_TMBM = 8
+    MIDDLE_FRBL = 6
+    MIDDLE_FLBR = 7
+    MIDDLE_FMBM = 8
 
-    INDEX_TRBL = 9
-    INDEX_TLBR = 10
-    INDEX_TMBM = 11
+    INDEX_FRBL = 9
+    INDEX_FLBR = 10
+    INDEX_FMBM = 11
 
-    THUMB_TRBL = 12
-    THUMB_TLBR = 13
-    THUMB_TMBM = 14
+    THUMB_FRBL = 12
+    THUMB_FLBR = 13
+    THUMB_FMBM = 14
 
     WRIST = 15
 

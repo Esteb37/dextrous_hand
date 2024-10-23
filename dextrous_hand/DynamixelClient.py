@@ -50,9 +50,9 @@ LEN_GOAL_PWM = 2
 LEN_GOAL_CURRENT = 2
 LEN_PROFILE_VELOCITY = 4
 LEN_MOVING_STATUS = 1
-
-DEFAULT_POS_SCALE = 2.0 * np.pi / 4096  # 0.088 degrees
-DEFAULT_POS_SHIFT = np.pi
+DXL_MAXIMUM_POSITION_VALUE = 4095
+DEFAULT_POS_SCALE = 2.0 * np.pi / DXL_MAXIMUM_POSITION_VALUE  # 0.088 degrees
+DXL_MAXIMUM_ANGLE_VALUE = DXL_MAXIMUM_POSITION_VALUE * DEFAULT_POS_SCALE
 # See http://emanual.robotis.com/docs/en/dxl/x/xh430-v210/#goal-velocity
 DEFAULT_VEL_SCALE = 0.229 * 2.0 * np.pi / 60.0  # 0.229 rpm
 DEFAULT_CUR_SCALE = 1.34
@@ -258,7 +258,11 @@ class DynamixelClient:
         assert len(motor_ids) == len(positions)
 
         # Convert to Dynamixel position space.
-        positions = (positions + DEFAULT_POS_SHIFT) / self._pos_vel_cur_reader.pos_scale
+        positions = positions / self._pos_vel_cur_reader.pos_scale
+
+        # Limit to the motor limit
+        positions = np.clip(positions, 0, DXL_MAXIMUM_POSITION_VALUE)
+
         times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION, # type: ignore
                         LEN_GOAL_POSITION)
         return times
@@ -393,7 +397,7 @@ class DynamixelClient:
         self.check_connected()
         self._pos_vel_cur_reader.read()
         for motor in self.motor_objects:
-            motor.angle = self._pos_vel_cur_reader._pos_data[motor.id.value]
+            motor.dxl_angle = self._pos_vel_cur_reader._pos_data[motor.id.value]
 
     def write_targets(self):
         """Writes the target positions to all motors."""
@@ -403,7 +407,7 @@ class DynamixelClient:
             return
 
         self.check_connected()
-        targets = np.array([motor.target for motor in self.motor_objects])
+        targets = np.array([motor.dxl_target for motor in self.motor_objects])
         self.write_desired_pos(self.motor_ids, targets)
 
     def __enter__(self):
@@ -525,7 +529,7 @@ class DynamixelPosVelCurReader(DynamixelReader):
         cur = unsigned_to_signed(cur, size=2)
         vel = unsigned_to_signed(vel, size=4)
         pos = unsigned_to_signed(pos, size=4)
-        self._pos_data[index] = float(pos) * self.pos_scale - DEFAULT_POS_SHIFT
+        self._pos_data[index] = float(pos) * self.pos_scale
         self._vel_data[index] = float(vel) * self.vel_scale
         self._cur_data[index] = float(cur) * self.cur_scale
 
