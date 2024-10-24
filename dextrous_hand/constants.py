@@ -1,13 +1,34 @@
 #!/usr/bin/env python3
 
 from numpy import pi as PI
-from dextrous_hand.ids import MOTORS
+from dextrous_hand.ids import MOTORS, STARTUP
+from dextrous_hand.HandConfig import HandConfig
 
 IS_SIMULATION = False # Set to True if the motor controller is not connected
 DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected to a different port
 BAUDRATE = 3000000
 
 NODE_FREQUENCY_HZ = 1000
+
+STARTUP_MODE = STARTUP.LAST
+"""
+Defines the startup mode for the hand. Options are:
+- HOME: The hand will start in the home configuration.
+- LAST: The hand will start in the last configuration it was in.
+- CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
+"""
+
+INITIAL_CONFIG = HandConfig(
+    PINKY = [0, 0, 0],
+    RING = [0, 0, 0],
+    MIDDLE = [0, 0, 0],
+    INDEX = [0, 0, 0],
+    THUMB = [0, 0, 0],
+    WRIST = [0]
+)
+"""
+Custom starting configuration
+"""
 
 FULL_RANGE = [0, 2*PI]
 MOTOR_LIMITS = {
