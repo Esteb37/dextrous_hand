@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from enum import Enum, auto
-from numpy import pi
 
 class MOTORS(Enum):
     """
@@ -35,7 +34,7 @@ class SUBSYSTEMS(Enum):
     Each subsystem has a unique ID, determined automatically by the Enum class.
     A subsystem is a unique element of the robot that can be controlled independently.
     """
-    PINKY = auto()
+    PINKY = 0
     RING = auto()
     MIDDLE = auto()
     INDEX = auto()
@@ -50,7 +49,7 @@ class JOINTS(Enum):
     PIP and DIP angles are always coupled.
     """
 
-    PINKY_ABD = auto()
+    PINKY_ABD = 0
     PINKY_MCP = auto()
     PINKY_PIP = auto()
     PINKY_DIP = auto()
@@ -76,3 +75,8 @@ class JOINTS(Enum):
     THUMB_DIP = auto()
 
     WRIST = auto()
+
+class STARTUP(Enum):
+    HOME = 0 # all joints set to 0
+    LAST = auto() # all joints set to their last known position
+    CUSTOM = auto() # all joints set to a custom position

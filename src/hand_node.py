@@ -2,9 +2,9 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray, Float32
-from dextrous_hand.utils import message_to_matrix
+from std_msgs.msg import Float32MultiArray
 from dextrous_hand.Hand import HAND
+from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand.constants import NODE_FREQUENCY_HZ
 from dextrous_hand.DynamixelClient import DynamixelClient
 import time
@@ -20,16 +20,10 @@ class HandNode(Node):
     def __init__(self):
         super().__init__('hand_node')
 
-        self.finger_subscription = self.create_subscription(
+        self.config_subscription = self.create_subscription(
             Float32MultiArray,
-            'finger_positions',
-            self.finger_positions_callback,
-            100)
-
-        self.wrist_subscription = self.create_subscription(
-            Float32,
-            'wrist_position',
-            self.wrist_position_callback,
+            'hand_config',
+            self.hand_config_callback,
             100)
 
         self.get_logger().info('Hand node started')
@@ -45,16 +39,12 @@ class HandNode(Node):
         self.read_thread.daemon = True
         self.read_thread.start()
 
-    def finger_positions_callback(self, msg):
-        joint_matrix = message_to_matrix(msg, (5, 3))
-        HAND.set_fingers(joint_matrix)
+    def hand_config_callback(self, msg):
+        HAND.set_config(HandConfig.from_msg(msg))
 
         if not self.initialized:
             self.motor_bridge.connect()
             self.initialized = True
-
-    def wrist_position_callback(self, msg):
-        HAND.set_wrist(msg.data)
 
     def write(self):
         if self.initialized:

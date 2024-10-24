@@ -83,13 +83,7 @@ MIDDLE = Finger(ids.SUBSYSTEMS.MIDDLE)
 INDEX = Finger(ids.SUBSYSTEMS.INDEX)
 THUMB = Thumb(ids.SUBSYSTEMS.THUMB)
 
-FINGERS = [PINKY, RING, MIDDLE, INDEX, THUMB]
+FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id != ids.SUBSYSTEMS.WRIST]
 """
  A collection of fingers for easy iteration.
 """
-
-def finger_index(id : ids.SUBSYSTEMS) -> int:
-    """
-    Convert a finger id to an index in the FINGERS list
-    """
-    return [finger.id for finger in FINGERS].index(id)
