@@ -5,7 +5,7 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from dextrous_hand.Hand import HAND
 from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.constants import NODE_FREQUENCY_HZ
+from dextrous_hand.constants import NODE_FREQUENCY_HZ, MANUAL_CONTROL
 from dextrous_hand.DynamixelClient import DynamixelClient
 import time
 import threading
@@ -20,17 +20,22 @@ class HandNode(Node):
     def __init__(self):
         super().__init__('hand_node')
 
-        self.config_subscription = self.create_subscription(
-            Float32MultiArray,
-            'hand_config',
-            self.hand_config_callback,
-            100)
-
-        self.get_logger().info('Hand node started')
-
         self.motor_bridge = DynamixelClient()
 
-        self.initialized = False
+        if MANUAL_CONTROL:
+            self.motor_bridge.connect()
+            self.motor_bridge.disable_torque()
+            self.get_logger().info("Manual control enabled. Torque disabled.")
+            self.initialized = True
+
+        else:
+            self.config_subscription = self.create_subscription(
+                Float32MultiArray,
+                'hand_config',
+                self.hand_config_callback,
+                100)
+
+            self.initialized = False
 
         self.write_timer = self.create_timer(1.0 / NODE_FREQUENCY_HZ, self.write)
 
@@ -38,6 +43,8 @@ class HandNode(Node):
         self.read_thread = threading.Thread(target=self.read_loop)
         self.read_thread.daemon = True
         self.read_thread.start()
+
+        self.get_logger().info('Hand node started')
 
     def hand_config_callback(self, msg):
         HAND.set_config(HandConfig.from_msg(msg))

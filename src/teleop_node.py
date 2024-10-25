@@ -57,14 +57,13 @@ class TeleopNode(Node):
 
             self.motor_bridge.update_positions()
 
-            self.motor_bridge.disconnect()
-
             self.get_logger().info('Disconnecting...')
 
-            if not constants.IS_SIMULATION:
-                while self.motor_bridge.is_connected:
-                    time.sleep(0.1)
+            self.motor_bridge.disconnect()
 
+            while self.motor_bridge.is_connected:
+                self.motor_bridge.disconnect()
+                time.sleep(0.1)
 
             self.get_logger().info('Disconnected')
 
@@ -136,7 +135,7 @@ class TeleopNode(Node):
                 for config in self.hand_config.FINGERS:
                     print(config)
             else:
-                print(self.hand_config[self.subsystem_id])
+                print(self.subsystem_id, self.hand_config[self.subsystem_id])
 
             print()
 

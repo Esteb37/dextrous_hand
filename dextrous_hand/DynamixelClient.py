@@ -135,6 +135,8 @@ class DynamixelClient:
         self.port_handler = self.dxl.PortHandler(self.port_name)
         self.packet_handler = self.dxl.PacketHandler(PROTOCOL_VERSION)
 
+        self.is_sim_connected = False
+
         self._pos_vel_cur_reader = DynamixelPosVelCurReader(
             self,
             self.motor_ids,
@@ -149,7 +151,10 @@ class DynamixelClient:
 
     @property
     def is_connected(self) -> bool:
-        return constants.IS_SIMULATION or self.port_handler.is_open
+        if constants.IS_SIMULATION:
+            return self.is_sim_connected
+        else:
+            return self.port_handler.is_open
 
     def connect(self):
         """Connects to the Dynamixel motors.
@@ -160,31 +165,54 @@ class DynamixelClient:
 
         if constants.IS_SIMULATION:
             LOG_WARN('Simulation mode enabled. No connection to Dynamixel.')
+            self.is_sim_connected = True
             return
 
         assert not self.is_connected, 'Client is already connected.'
 
-        if self.port_handler.openPort():
-            LOG_INFO('Succeeded to open port: %s' % self.port_name)
-        else:
-            raise OSError(
-                ('Failed to open port at {} (Check that the device is powered '
-                 'on and connected to your computer).').format(self.port_name))
+        try:
+            if self.port_handler.openPort():
+                LOG_INFO('Succeeded to open port: %s' % self.port_name)
+            else:
+                raise RuntimeError('Could not connect to the motor controller.')
+        except:
+            LOG_ERROR('Could not open port: %s. Check that the device is connected and that you have done "sudo chmod 777 %s"' % (self.port_name, self.port_name))
+            raise RuntimeError('Could not connect to the motor controller.')
 
-        if self.port_handler.setBaudRate(self.baudrate):
-            LOG_INFO('Succeeded to set baudrate to %d' % self.baudrate)
-        else:
-            raise OSError(
-                ('Failed to set the baudrate to {} (Ensure that the device was '
-                 'configured for this baudrate).').format(self.baudrate))
+        try:
+            if self.port_handler.setBaudRate(self.baudrate):
+                LOG_INFO('Succeeded to set baudrate to %d' % self.baudrate)
+            else:
+                raise RuntimeError('Could not connect to the motor controller.')
+        except:
+            LOG_ERROR('Failed to set the baudrate to %d (Ensure that the device was configured for this baudrate).' % self.baudrate)
+            raise RuntimeError('Could not connect to the motor controller.')
 
         # Start with all motors enabled.
-        self.set_torque_enabled(self.motor_ids, True)
+        remaining_ids = self.set_torque_enabled(self.motor_ids, True)
+
+        # Remove any motors that failed to enable torque.
+        self.motor_ids = [motor_id for motor_id in self.motor_ids if motor_id not in remaining_ids]
+        self.motor_objects = [motor for motor in self.motor_objects if motor.port not in remaining_ids]
+
+        if not self.motor_ids:
+            LOG_ERROR('Failed to enable torque for any motors.')
+            self.disconnect()
+
+        self._pos_vel_cur_reader.update_motor_ids(self.motor_ids)
+        self._moving_status_reader.update_motor_ids(self.motor_ids)
+
+        LOG_INFO('Connected to Dynamixel motors: %s' % str(self.motor_ids))
 
     def disconnect(self):
         """Disconnects from the Dynamixel device."""
-        if constants.IS_SIMULATION or not self.is_connected:
+        if constants.IS_SIMULATION:
+            self.is_sim_connected = False
             return
+
+        if not self.is_connected:
+            return
+
         if self.port_handler.is_using:
             LOG_ERROR('Port handler in use; cannot disconnect.')
             return
@@ -197,7 +225,7 @@ class DynamixelClient:
     def set_torque_enabled(self,
                            motor_ids: Sequence[int],
                            enabled: bool,
-                           retries: int = -1,
+                           retries: int = 0,
                            retry_interval: float = 0.25):
         """Sets whether torque is enabled for the motors.
 
@@ -219,10 +247,12 @@ class DynamixelClient:
                 LOG_ERROR('Could not set torque %s for IDs: %s' % (
                               'enabled' if enabled else 'disabled',
                               str(remaining_ids)))
+
             if retries == 0:
                 break
             time.sleep(retry_interval)
             retries -= 1
+        return remaining_ids
 
     def set_operating_mode(self, motor_ids: Sequence[int], mode_value: int):
         """
@@ -237,6 +267,14 @@ class DynamixelClient:
         self.set_torque_enabled(motor_ids, False)
         self.sync_write(motor_ids, [mode_value]*len(motor_ids), ADDR_OPERATING_MODE, LEN_OPERATING_MODE)
         self.set_torque_enabled(motor_ids, True)
+
+    def enable_torque(self):
+        """Enables torque for all motors."""
+        self.set_torque_enabled(self.motor_ids, True)
+
+    def disable_torque(self):
+        """Disables torque for all motors."""
+        self.set_torque_enabled(self.motor_ids, False)
 
     def read_pos_vel_cur(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Returns the positions, velocities, and currents."""
@@ -396,8 +434,8 @@ class DynamixelClient:
 
         self.check_connected()
         self._pos_vel_cur_reader.read()
-        for motor in self.motor_objects:
-            motor.dxl_angle = self._pos_vel_cur_reader._pos_data[motor.id.value]
+        for i, motor in enumerate(self.motor_objects):
+            motor.dxl_angle = self._pos_vel_cur_reader._pos_data[i]
 
     def write_targets(self):
         """Writes the target positions to all motors."""
@@ -459,10 +497,6 @@ class DynamixelReader:
                 comm_result, context='read')
             retries -= 1
 
-        # If we failed, send a copy of the previous data.
-        if not success:
-            return self._get_data()
-
         errored_ids = []
         for i, motor_id in enumerate(self.motor_ids):
             # Check if the data is available.
@@ -477,8 +511,18 @@ class DynamixelReader:
         if errored_ids:
             LOG_ERROR('Sync read data is unavailable for: %s' %
                           str(errored_ids))
-
         return self._get_data()
+
+    def update_motor_ids(self, motor_ids):
+        self.operation.clearParam()
+        for motor_id in motor_ids:
+            success = self.operation.addParam(motor_id)
+            if not success:
+                raise OSError(
+                    '[Motor ID: {}] Could not add parameter to sync read.'
+                    .format(motor_id))
+        self.motor_ids = motor_ids
+        self._initialize_data()
 
     def _initialize_data(self):
         """Initializes the cached data."""
