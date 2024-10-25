@@ -52,6 +52,12 @@ class Motor():
         self.port = motor_id.value
         self.name = motor_id.name
 
+        # Check if the motor's zero position has been defined
+        if self.id not in constants.MOTOR_ZEROS:
+            raise Exception("Motor " + str(self.name) + " has no zero position")
+
+        self.zero = constants.MOTOR_ZEROS[self.id]
+
         # Check if the motor's limits have been defined
         if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) != 2:
             raise Exception("Motor " + str(self.name) + " has no limits or invalid limits")
@@ -86,6 +92,26 @@ class Motor():
         """
         return self.angle
 
+    @property
+    def target(self):
+        return self.dxl_target - self.zero
+
+    @target.setter
+    def target(self, target):
+        target = target + self.zero
+        # Limit to dynamixel's range
+        from dextrous_hand.DynamixelClient import DXL_MAXIMUM_ANGLE_VALUE
+        target = min(max(target, 0), DXL_MAXIMUM_ANGLE_VALUE)
+        self.dxl_target = target
+
+    @property
+    def angle(self):
+        return self.dxl_angle - self.zero
+
+    @angle.setter
+    def angle(self, angle):
+        self.dxl_angle = angle + self.zero
+
     def at_angle(self):
         """
         returns:
@@ -94,4 +120,4 @@ class Motor():
         return abs(self.target - self.angle) < self.AT_ANGLE_THRESHOLD
 
     def __str__(self):
-        return "Motor %s" % self.name + ": " + f"{self.angle:.2f}" + " rad / " + f"{self.target:.2f}" + " rad"
+        return "Motor %s" % self.name + ": " + f"angle = {self.angle:.2f}" + " rad \t target = " + f"{self.target:.2f}" + " rad \t dxl_angle = " + f"{self.dxl_angle:.2f}" + " rad \t dxl_target = " + f"{self.dxl_target:.2f}" + " rad"
