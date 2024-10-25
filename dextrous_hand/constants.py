@@ -5,6 +5,9 @@ from dextrous_hand.ids import MOTORS, STARTUP
 from dextrous_hand.HandConfig import HandConfig
 
 IS_SIMULATION = False # Set to True if the motor controller is not connected
+
+MANUAL_CONTROL = False # Set to True to disable the hand and control the motors manually but still be able to read the sensors
+
 DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected to a different port
 BAUDRATE = 3000000
 
