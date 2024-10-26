@@ -64,6 +64,13 @@ class Motor():
 
         self.angle_limits = constants.MOTOR_LIMITS[self.id]
 
+
+        # Check if the motor's direction has been defined
+        if self.id not in constants.MOTOR_DIRECTIONS:
+            raise Exception("Motor " + str(self.name) + " has no direction")
+
+        self.direction = constants.MOTOR_DIRECTIONS[self.id].value
+
         self.target = 0.0
 
         self.angle = 0.0
@@ -94,11 +101,11 @@ class Motor():
 
     @property
     def target(self):
-        return self.dxl_target - self.zero
+        return (self.dxl_target - self.zero) * self.direction
 
     @target.setter
     def target(self, target):
-        target = target + self.zero
+        target = target * self.direction + self.zero
         # Limit to dynamixel's range
         from dextrous_hand.DynamixelClient import DXL_MAXIMUM_ANGLE_VALUE
         target = min(max(target, 0), DXL_MAXIMUM_ANGLE_VALUE)
@@ -106,11 +113,11 @@ class Motor():
 
     @property
     def angle(self):
-        return self.dxl_angle - self.zero
+        return (self.dxl_angle - self.zero) * self.direction
 
     @angle.setter
     def angle(self, angle):
-        self.dxl_angle = angle + self.zero
+        self.dxl_angle = angle * self.direction + self.zero
 
     def at_angle(self):
         """
