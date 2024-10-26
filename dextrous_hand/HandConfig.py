@@ -38,12 +38,12 @@ class HandConfig:
             THUMB = [float, float, float]
             WRIST = [float]
         """
-        self.PINKY = [0, 0, 0]
-        self.RING = [0, 0, 0]
-        self.MIDDLE = [0, 0, 0]
-        self.INDEX = [0, 0, 0]
-        self.THUMB = [0, 0, 0]
-        self.WRIST = [0]
+        self.PINKY = [0.0, 0.0, 0.0]
+        self.RING = [0.0, 0.0, 0.0]
+        self.MIDDLE = [0.0, 0.0, 0.0]
+        self.INDEX = [0.0, 0.0, 0.0]
+        self.THUMB = [0.0, 0.0, 0.0]
+        self.WRIST = [0.0]
 
         for key, value in kwargs.items():
 
@@ -105,7 +105,7 @@ class HandConfig:
         """
         The string representation of the HandConfig object
         """
-        return f"HandConfig(\n" + "\t".join([f"{key}={value},\n" for key, value in self.__dict__.items()]) + ")"
+        return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in self.__dict__.items()]) + ")"
 
     @staticmethod
     def default():

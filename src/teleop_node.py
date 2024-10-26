@@ -14,6 +14,7 @@ from dextrous_hand.DynamixelClient import DynamixelClient
 from dextrous_hand.Hand import HAND
 from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand import constants
+import dextrous_hand.configs as configs
 
 class TeleopNode(Node):
     """
@@ -82,62 +83,79 @@ class TeleopNode(Node):
 
     def on_press(self, key):
         try:
-            # Map keys to finger ids
-            if key.char == 'q':
-                self.subsystem_id = "PINKY"
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'w':
-                self.subsystem_id = "RING"
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'e':
-                self.subsystem_id = "MIDDLE"
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'r':
-                self.subsystem_id = "INDEX"
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 't':
-                self.subsystem_id = "THUMB"
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'y':
-                self.subsystem_id = "WRIST"
-                self.joint_id = 0
-                self.all = False
+            if key.char in "qwertyu123ol":
+                # Map keys to finger ids
+                if key.char == 'q':
+                    self.subsystem_id = "PINKY"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'w':
+                    self.subsystem_id = "RING"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'e':
+                    self.subsystem_id = "MIDDLE"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'r':
+                    self.subsystem_id = "INDEX"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 't':
+                    self.subsystem_id = "THUMB"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'y':
+                    self.subsystem_id = "WRIST"
+                    self.joint_id = 0
+                    self.all = False
 
-            # Map keys to joint ids
-            elif key.char in '123':
-                self.joint_id = int(key.char) - 1
+                # Map keys to joint ids
+                elif key.char in '123':
+                    self.joint_id = int(key.char) - 1
 
-            elif key.char == 'u':
-                self.all = True
-                self.joint_id = 0
+                elif key.char == 'u':
+                    self.all = True
+                    self.joint_id = 0
 
-            # Adjust finger positions based on arrow keys
-            elif key.char == "o":
+                # Adjust finger positions based on arrow keys
+                elif key.char == "o":
+                    if self.all:
+                        for finger_config in self.hand_config.FINGERS:
+                            finger_config[self.joint_id] += 0.1
+                    else:
+                        self.hand_config[self.subsystem_id][self.joint_id] += 0.1
+
+                elif key.char == "l":
+                    if self.all:
+                        for finger_config in self.hand_config.FINGERS:
+                            finger_config[self.joint_id] -= 0.1
+                    else:
+                        self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
+
                 if self.all:
-                    for finger_config in self.hand_config.FINGERS:
-                        finger_config[self.joint_id] += 0.1
+                    for config in self.hand_config.FINGERS:
+                        print(config)
                 else:
-                    self.hand_config[self.subsystem_id][self.joint_id] += 0.1
+                    print(self.subsystem_id, self.hand_config[self.subsystem_id])
 
-            elif key.char == "l":
-                if self.all:
-                    for finger_config in self.hand_config.FINGERS:
-                        finger_config[self.joint_id] -= 0.1
-                else:
-                    self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
+                print()
 
-            if self.all:
-                for config in self.hand_config.FINGERS:
-                    print(config)
-            else:
-                print(self.subsystem_id, self.hand_config[self.subsystem_id])
+            elif key.char in "zxcv":
+                if key.char == 'z':
+                    config = configs.HOME
+                elif key.char == 'x':
+                    config = configs.GRASP
+                elif key.char == 'c':
+                    config = configs.ROCK
+                elif key.char == 'v':
+                    config = configs.FINGER
 
-            print()
+                self.hand_config = config
+
+                print(config, self.hand_config)
+                print()
+
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
