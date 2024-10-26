@@ -22,6 +22,8 @@ class Hand():
 
         self.initialized = True
 
+        self.target = HandConfig.default()
+
     def set_config(self, config : HandConfig):
         """
         Set all fingers and wrist to the positions specified in the config
@@ -35,6 +37,8 @@ class Hand():
         raises
             Exception: if the positions array has the wrong number of elements
         """
+        self.target = config
+
         for subsystem in Finger.FINGERS + [WRIST]:
             subsystem.write(config[subsystem.id])
             if not subsystem.at_position():
@@ -44,6 +48,9 @@ class Hand():
 
     def get_config(self):
         return HandConfig.current()
+
+    def get_target(self):
+        return self.target
 
     def __str__(self):
         string = str(self.get_config()) + "\n"
