@@ -22,7 +22,7 @@ class ABD(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return self.get_motor("FRBL").read()
+        return self.get_motor("FLBR").read() -  self.get_motor("FRBL").read()
 
 class MCP(Joint):
     """
@@ -42,7 +42,7 @@ class MCP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return self.get_motor("FLBR").read()
+        return (self.get_motor("FLBR").read() + self.get_motor("FRBL").read()) / 2
 
 
 class PIP(Joint):
