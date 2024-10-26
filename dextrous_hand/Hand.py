@@ -46,7 +46,7 @@ class Hand():
         return HandConfig.current()
 
     def __str__(self):
-        string = ""
+        string = str(self.get_config()) + "\n"
         for subsystem in Finger.FINGERS + [WRIST]:
             string += str(subsystem) + "\n"
             for joint in subsystem.joints:

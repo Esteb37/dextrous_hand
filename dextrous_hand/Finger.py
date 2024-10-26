@@ -22,7 +22,7 @@ class Finger(Subsystem):
 
         assert len(joint_angles) == 3
 
-        return joint_angles
+        return [joint_angles[1] - joint_angles[0] / 2, joint_angles[1] + joint_angles[0] / 2, joint_angles[2]]
 
     @property
     def ABD(self):
