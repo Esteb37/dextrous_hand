@@ -3,6 +3,7 @@
 from numpy import pi as PI
 from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
 from dextrous_hand.HandConfig import HandConfig
+import dextrous_hand.configs as configs
 
 IS_SIMULATION = False # Set to True if the motor controller is not connected
 
@@ -21,20 +22,13 @@ Defines the startup mode for the hand. Options are:
 - CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
 """
 
-INITIAL_CONFIG = HandConfig(
-    PINKY=[1.9060182142257691, 2.111611022949219, 1.8290639209747315],
-	RING=[1.819780945777893, 1.7898578643798828, 2.0306746673583986],
-	MIDDLE=[1.9714220190048217, 1.93147855758667, 1.9444237327575684],
-	INDEX=[2.043586311340332, 2.174049997329712, 1.548026189804077],
-	THUMB=[0.0, 0.0, 0.0],
-	WRIST=[0.0]
-)
+INITIAL_CONFIG = configs.HOME
 
 """
 Custom starting configuration
 """
 
-FULL_RANGE = [0, 2*PI]
+FULL_RANGE = [-1.0, 2*PI]
 MOTOR_LIMITS = {
     MOTORS.THUMB_FLBR: FULL_RANGE,
     MOTORS.THUMB_FRBL: FULL_RANGE,
@@ -68,8 +62,8 @@ MOTOR_ZEROS = {
     MOTORS.THUMB_FMBM: 0,
 
     MOTORS.INDEX_FLBR: 3.40,
-    MOTORS.INDEX_FRBL: 2.94,
-    MOTORS.INDEX_FMBM: 3.11,
+    MOTORS.INDEX_FRBL: 3.00,
+    MOTORS.INDEX_FMBM: 3.35,
 
     MOTORS.MIDDLE_FLBR: 2.69,
     MOTORS.MIDDLE_FRBL: 3.94,

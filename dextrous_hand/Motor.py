@@ -127,4 +127,4 @@ class Motor():
         return abs(self.target - self.angle) < self.AT_ANGLE_THRESHOLD
 
     def __str__(self):
-        return "Motor %s" % self.name + ": " + f"angle = {self.angle:.2f}" + " rad \t target = " + f"{self.target:.2f}" + " rad \t dxl_angle = " + f"{self.dxl_angle:.2f}" + " rad \t dxl_target = " + f"{self.dxl_target:.2f}" + " rad"
+        return "Motor %s" % self.name + ": " + f"angle = {self.angle:.3f}" + " rad \t target = " + f"{self.target:.3f}" + " rad \t dxl_angle = " + f"{self.dxl_angle:.3f}" + " rad \t dxl_target = " + f"{self.dxl_target:.3f}" + " rad"
