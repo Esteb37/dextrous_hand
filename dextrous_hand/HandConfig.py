@@ -105,7 +105,7 @@ class HandConfig:
         """
         The string representation of the HandConfig object
         """
-        return f"HandConfig(\n" + "\t".join([f"{key}={value}\n" for key, value in self.__dict__.items()]) + ")"
+        return f"HandConfig(\n" + "\t".join([f"{key}={value},\n" for key, value in self.__dict__.items()]) + ")"
 
     @staticmethod
     def default():

@@ -6,27 +6,29 @@ class MOTORS(Enum):
     """
     Motor ports
     """
-    PINKY_FRBL = 0
-    PINKY_FLBR = 1
-    PINKY_FMBM = 2
+    THUMB_FRBL = 0
 
+    RING_FMBM = 1
+    RING_FLBR = 2
     RING_FRBL = 3
-    RING_FLBR = 4
-    RING_FMBM = 5
 
-    MIDDLE_FRBL = 6
-    MIDDLE_FLBR = 7
-    MIDDLE_FMBM = 8
+    PINKY_FRBL = 4
+    PINKY_FLBR = 5
+    PINKY_FMBM = 6
 
-    INDEX_FRBL = 9
+    THUMB_FLBR = 7
+
+    WRIST = 8
+
+    INDEX_FMBM = 9
     INDEX_FLBR = 10
-    INDEX_FMBM = 11
+    INDEX_FRBL = 11
 
-    THUMB_FRBL = 12
-    THUMB_FLBR = 13
-    THUMB_FMBM = 14
+    MIDDLE_FRBL = 12
+    MIDDLE_FLBR = 13
+    MIDDLE_FMBM = 14
 
-    WRIST = 15
+    THUMB_FMBM = 15
 
 class SUBSYSTEMS(Enum):
     """
@@ -80,3 +82,12 @@ class STARTUP(Enum):
     HOME = 0 # all joints set to 0
     LAST = auto() # all joints set to their last known position
     CUSTOM = auto() # all joints set to a custom position
+
+
+class MOTOR_DIRECTION(Enum):
+    """
+    Motor directions.
+    Each motor has a direction that determines the sign of the angle.
+    """
+    FORWARD = 1
+    REVERSED = -1
