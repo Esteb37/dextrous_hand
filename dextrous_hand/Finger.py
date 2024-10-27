@@ -84,6 +84,7 @@ INDEX = Finger(ids.SUBSYSTEMS.INDEX)
 THUMB = Thumb(ids.SUBSYSTEMS.THUMB)
 
 FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id != ids.SUBSYSTEMS.WRIST]
+FINGERS[ids.SUBSYSTEMS.THUMB.value] = Thumb(ids.SUBSYSTEMS.THUMB)
 """
  A collection of fingers for easy iteration.
 """

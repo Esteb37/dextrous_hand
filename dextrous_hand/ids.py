@@ -6,7 +6,7 @@ class MOTORS(Enum):
     """
     Motor ports
     """
-    THUMB_FRBL = 0
+    THUMB_MCP = 0
 
     RING_FMBM = 1
     RING_FLBR = 2
@@ -16,7 +16,7 @@ class MOTORS(Enum):
     PINKY_FLBR = 5
     PINKY_FMBM = 6
 
-    THUMB_FLBR = 7
+    THUMB_ABD = 7
 
     WRIST = 8
 
@@ -28,7 +28,7 @@ class MOTORS(Enum):
     MIDDLE_FLBR = 13
     MIDDLE_FMBM = 14
 
-    THUMB_FMBM = 15
+    THUMB_PIP = 15
 
 class SUBSYSTEMS(Enum):
     """

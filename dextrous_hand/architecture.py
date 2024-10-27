@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from dextrous_hand.ids import *
-from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD
+from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD, THUMB_ABD, THUMB_MCP, THUMB_PIP, THUMB_DIP
 from dextrous_hand.WristJoint import WristJoint
 
 
@@ -32,9 +32,9 @@ SUBSYSTEM_MOTORS = {
                          MOTORS.INDEX_FMBM
                          ],
 
-    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_FRBL,
-                         MOTORS.THUMB_FLBR,
-                         MOTORS.THUMB_FMBM
+    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_ABD,
+                         MOTORS.THUMB_MCP,
+                         MOTORS.THUMB_PIP
                          ],
 
     SUBSYSTEMS.WRIST :  [MOTORS.WRIST]
@@ -64,10 +64,10 @@ JOINT_MOTORS = {
     JOINTS.INDEX_PIP: [MOTORS.INDEX_FMBM],
     JOINTS.INDEX_DIP: [MOTORS.INDEX_FMBM],
 
-    JOINTS.THUMB_ABD: [MOTORS.THUMB_FRBL, MOTORS.THUMB_FLBR],
-    JOINTS.THUMB_MCP: [MOTORS.THUMB_FRBL, MOTORS.THUMB_FLBR],
-    JOINTS.THUMB_PIP: [MOTORS.THUMB_FMBM],
-    JOINTS.THUMB_DIP: [MOTORS.THUMB_FMBM],
+    JOINTS.THUMB_ABD: [MOTORS.THUMB_ABD],
+    JOINTS.THUMB_MCP: [MOTORS.THUMB_MCP],
+    JOINTS.THUMB_PIP: [MOTORS.THUMB_PIP],
+    JOINTS.THUMB_DIP: [MOTORS.THUMB_PIP],
 
     JOINTS.WRIST: [MOTORS.WRIST]}
 """
@@ -95,10 +95,10 @@ SUBSYSTEM_JOINTS = {
                        PIP(JOINTS.INDEX_PIP),
                        DIP(JOINTS.INDEX_DIP)],
 
-    SUBSYSTEMS.THUMB: [ABD(JOINTS.THUMB_ABD),
-                       MCP(JOINTS.THUMB_MCP),
-                       PIP(JOINTS.THUMB_PIP),
-                       DIP(JOINTS.THUMB_DIP)],
+    SUBSYSTEMS.THUMB: [THUMB_ABD(JOINTS.THUMB_ABD),
+                       THUMB_MCP(JOINTS.THUMB_MCP),
+                       THUMB_PIP(JOINTS.THUMB_PIP),
+                       THUMB_DIP(JOINTS.THUMB_DIP)],
 
     SUBSYSTEMS.WRIST: [WristJoint(JOINTS.WRIST)]
 }
