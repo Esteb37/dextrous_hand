@@ -39,12 +39,13 @@ class Hand():
         """
         self.target = config
 
+        all_at_position = True
         for subsystem in Finger.FINGERS + [WRIST]:
             subsystem.write(config[subsystem.id])
-            if not subsystem.at_position():
-                return False
+            all_at_position = all_at_position and subsystem.at_position()
 
-        return True
+
+        return all_at_position
 
     def get_config(self):
         return HandConfig.current()
@@ -53,7 +54,9 @@ class Hand():
         return self.target
 
     def __str__(self):
-        string = str(self.get_config()) + "\n"
+        string = "--------Hand--------\n\nTarget:\n"
+        string += str(self.get_target()) + "\n\nCurrent:\n"
+        string += str(self.get_config()) + "\n"
         for subsystem in Finger.FINGERS + [WRIST]:
             string += str(subsystem) + "\n"
             for joint in subsystem.joints:
