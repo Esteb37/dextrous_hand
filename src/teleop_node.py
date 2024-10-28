@@ -141,7 +141,7 @@ class TeleopNode(Node):
 
                 print()
 
-            elif key.char in "zxcvb":
+            elif key.char in "zxcvbnm":
                 if key.char == 'z':
                     config = configs.HOME
                     print("HOME", config)
@@ -157,6 +157,12 @@ class TeleopNode(Node):
                 elif key.char == 'b':
                     config = configs.LOVE
                     print("LOVE", config)
+                elif key.char == 'n':
+                    config = configs.THUMB
+                    print("THUMB", config)
+                elif key.char == 'm':
+                    config = configs.SPOCK
+                    print("SPOCK", config)
 
                 self.hand_config = config
 
