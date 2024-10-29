@@ -21,10 +21,6 @@ class Finger(Subsystem):
         theta_abd_max=range_abd[1]
         theta_abd_min=range_abd[0] # for now we assume that the theta_abd_max==theta_abd_min
 
-        def in_angle_space(abd_angle,flex_angle):
-            a = -theta_flex_max/theta_abd_max
-            return -a*abs(abd_angle)+flex_angle<=theta_flex_max and flex_angle>=theta_flex_min
-        
         def above(line,x,y):
             return -line[0]*x+y>line[1]
 
@@ -36,34 +32,33 @@ class Finger(Subsystem):
             x_q = (x + a * (y - b)) / (a**2 + 1)
             y_q = a * x_q + b
             return x_q, y_q
-            
-        if in_angle_space(abd_angle,flex_angle):
-            return abd_angle,flex_angle
+
+        # find closest point in the boundaries
+        a = theta_flex_max/theta_abd_max
+        b = theta_flex_max
+        b2 = -theta_abd_max/a
+
+        zone_1 = above((-1/a,b),abd_angle,flex_angle) and above((1/a,b),abd_angle,flex_angle)
+        zone_2 = below_on((-1/a,b),abd_angle,flex_angle) and above((-1/a,b2),abd_angle,flex_angle) and above((a,b),abd_angle,flex_angle)
+        zone_3 = below_on((-1/a,b2),abd_angle,flex_angle) and abd_angle<-theta_abd_max
+        zone_4 = abd_angle>-theta_abd_max and abd_angle<theta_abd_max and flex_angle<0
+        zone_5 = abd_angle>theta_abd_max and below_on((1/a,b2),abd_angle,flex_angle)
+        zone_6 = below_on((1/a,b),abd_angle,flex_angle) and above((1/a,b2),abd_angle,flex_angle) and above((-a,b),abd_angle,flex_angle)
+
+        if zone_1:
+            return theta_flex_min, theta_flex_max
+        elif zone_2:
+            return closest_from((a,b), abd_angle,flex_angle)
+        elif zone_3:
+            return -theta_abd_max, theta_flex_min
+        elif zone_4:
+            return closest_from((0,0), abd_angle,flex_angle)
+        elif zone_5:
+            return theta_abd_max, theta_flex_min
+        elif zone_6:
+            return closest_from((-a,b), abd_angle,flex_angle)
         else:
-            # find closest point in the boundaries
-            a = theta_flex_max/theta_abd_max
-            b = theta_flex_max
-            b2 = -theta_abd_max/a
-
-            zone_1 = above((-1/a,b),abd_angle,flex_angle) and above((1/a,b),abd_angle,flex_angle)
-            zone_2 = below_on((-1/a,b),abd_angle,flex_angle) and above((-1/a,b2),abd_angle,flex_angle)
-            zone_3 = below_on((-1/a,b2),abd_angle,flex_angle) and abd_angle<-theta_abd_max
-            zone_4 = abd_angle>-theta_abd_max and abd_angle<theta_abd_max
-            zone_5 = abd_angle>theta_abd_max and below_on((1/a,b2),abd_angle,flex_angle)
-            zone_6 = below_on((1/a,b),abd_angle,flex_angle) and above((1/a,b2),abd_angle,flex_angle)
-
-            if zone_1:
-                return theta_flex_min, theta_flex_max
-            elif zone_2:
-                return closest_from((a,b), abd_angle,flex_angle)
-            elif zone_3:
-                return -theta_abd_max, theta_flex_max
-            elif zone_4:
-                return closest_from((0,0), abd_angle,flex_angle)
-            elif zone_5:
-                return theta_abd_max, 0
-            elif zone_6:
-                return closest_from((-a,b), abd_angle,flex_angle)
+          return abd_angle,flex_angle
     
     def joints2motors(self, joint_angles) -> list[float]:
         """
