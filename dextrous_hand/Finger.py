@@ -74,7 +74,7 @@ class Finger(Subsystem):
         TODO: Implement this method
         """
         assert len(joint_angles) == 3
-        joint_angles[0],joint_angles[1] = find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
+        joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
         virtual_tendons_diff=[]
         for i, joint in enumerate(self.joints):
@@ -86,7 +86,7 @@ class Finger(Subsystem):
         
         motor_angles=[]
         for tendons_diff in tendons_length_diff:
-            motor_angles.append(start_angle + tendons_diff[0]/SPOOL_RADIUS)
+            motor_angles.append(tendons_diff[0]/SPOOL_RADIUS)
         # !!!!! adjust the sign to the direction of the motor
         # here it assumes that the the motor will pull when turning with a positive angle
 
