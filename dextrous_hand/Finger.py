@@ -14,7 +14,7 @@ class Finger(Subsystem):
         super().__init__(id)
 
 
-    def find_closest_in_space(range_abd, range_flex, abd_angle, flex_angle):
+    def find_closest_in_space(self, range_abd, range_flex, abd_angle, flex_angle):
         theta_flex_max=range_flex[1]
         theta_flex_min=range_flex[0]
 
@@ -77,8 +77,9 @@ class Finger(Subsystem):
         joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
         virtual_tendons_diff=[]
-        for i, joint in enumerate(self.joints):
-            virtual_tendons_diff.append(joint.joint2length(joint_angles[i]))
+        for i, joint_angle in enumerate(joint_angles):
+            virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
+
 
         tendons_pair_motor_1 = (virtual_tendons_diff[0][0]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][1]+virtual_tendons_diff[1][1])
         tendons_pair_motor_2 = (virtual_tendons_diff[0][1]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][0]+virtual_tendons_diff[1][1])
