@@ -92,7 +92,7 @@ class Joint(ABC):
         C_I1 = rot_mat_z(joint/2)
         C_I2 = rot_mat_z(joint)
 
-        centers_vect = self.geometry["centers_distance"]
+        centers_vect = np.array([0,self.geometry["centers_distance"],0])
         p1 = self.geometry["T1"]
         p2 = self.geometry["T2"]
         p3 = self.geometry["T3"]

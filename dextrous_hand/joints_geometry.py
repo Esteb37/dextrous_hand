@@ -4,14 +4,14 @@ from numpy import pi as PI
 from dextrous_hand.ids import JOINTS
 
 GEOMETRY_TYPES = {
-    "P4_FINGER_ABD":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[-PI/2,PI/2]},
-    "P4_FINGER_MCP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[0,PI/2]},
-    "P4_FINGER_PIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[0,PI/2]},
-    "P4_FINGER_DIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[0,PI/2]},
+    "P4_FINGER_ABD":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[-PI/2,PI/2]},
+    "P4_FINGER_MCP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
+    "P4_FINGER_PIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
+    "P4_FINGER_DIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
     "THUMB_ABD":{"radius":1, "range":[-PI/2,PI/2]},
     "THUMB_MCP":{"radius":1, "range":[0,PI/2]},
-    "THUMB_PIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[0,PI/2]},
-    "THUMB_DIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_12_0":1, "range":[0,PI/2]},
+    "THUMB_PIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
+    "THUMB_DIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
     "WRIST":{"radius":1}
 }
 
