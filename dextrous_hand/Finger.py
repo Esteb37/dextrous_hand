@@ -78,7 +78,7 @@ class Finger(Subsystem):
 
         tendons_pair_motor_1 = (virtual_tendons_diff[0][0]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][1]+virtual_tendons_diff[1][1])
         tendons_pair_motor_2 = (virtual_tendons_diff[0][1]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][0]+virtual_tendons_diff[1][1])
-        tendons_length_diff=[tendons_pair_motor_1, tendons_pair_motor_2]
+        tendons_length_diff=[tendons_pair_motor_1, tendons_pair_motor_2, virtual_tendons_diff[2]]
         
         motor_angles=[]
         for tendons_diff in tendons_length_diff:
@@ -138,7 +138,14 @@ class Thumb(Finger):
         """
         assert len(joint_angles) == 3
 
-        return joint_angles
+        motors_angles=[]
+        pin_joints = [joint_angles[0],joint_angles[1]]
+        for i, joint_angle in enumerate(pin_joints):
+            motors_angles.append(self.joints[i].joint2length(joint_angle))
+        
+        motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
+
+        return motors_angles
 
 # Singleton instances
 PINKY = Finger(ids.SUBSYSTEMS.PINKY)
