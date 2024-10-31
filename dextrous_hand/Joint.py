@@ -4,6 +4,8 @@ import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 
+from dextrous_hand.constants import SPOOL_RADIUS
+
 import math
 import numpy as np
 
@@ -85,6 +87,10 @@ class Joint(ABC):
         """
         TODO: Make this method general to the case of pin joints 
         """
+        if "radius" in self.geometry:
+            a = self.geometry["radius"]/SPOOL_RADIUS
+            return a*joint
+
         def rot_mat_z(tetha):
             C_z = np.array([[math.cos(tetha), -math.sin(tetha), 0],[math.sin(tetha), -math.cos(tetha), 0],[0,0,1]])
             return C_z
