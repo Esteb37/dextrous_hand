@@ -72,7 +72,7 @@ class TeleopNode(Node):
             self.hand_config = HAND.get_config()
 
         elif constants.STARTUP_MODE == ids.STARTUP.CUSTOM:
-            self.hand_config = constants.INITIAL_CONFIG
+            self.hand_config = configs.HOME
 
         else:
             self.hand_config = HandConfig.default()
