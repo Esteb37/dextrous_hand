@@ -2,9 +2,8 @@
 
 from numpy import pi as PI
 from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
-import dextrous_hand.configs as configs
 
-IS_SIMULATION = False # Set to True if the motor controller is not connected
+IS_SIMULATION = True # Set to True if the motor controller is not connected
 
 MANUAL_CONTROL = False # Set to True to disable the hand and control the motors manually but still be able to read the sensors
 
@@ -19,12 +18,6 @@ Defines the startup mode for the hand. Options are:
 - HOME: The hand will start in the home configuration.
 - LAST: The hand will start in the last configuration it was in.
 - CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
-"""
-
-INITIAL_CONFIG = configs.HOME
-
-"""
-Custom starting configuration
 """
 
 FULL_RANGE = [0.0, 2 *PI]
