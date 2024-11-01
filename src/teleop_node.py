@@ -3,18 +3,18 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import Float32MultiArray, Float32
+from std_msgs.msg import Float32MultiArray
 import numpy as np
 from pynput import keyboard # type: ignore
 import time
 
-from dextrous_hand.utils import matrix_to_message
 import dextrous_hand.ids as ids
-from dextrous_hand.Finger import finger_index
 from dextrous_hand.constants import NODE_FREQUENCY_HZ
 from dextrous_hand.DynamixelClient import DynamixelClient
 from dextrous_hand.Hand import HAND
+from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand import constants
+import dextrous_hand.configs as configs
 
 class TeleopNode(Node):
     """
@@ -37,12 +37,9 @@ class TeleopNode(Node):
 
     def __init__(self):
         super().__init__('teleop_node')
-        self.fingers_publisher = self.create_publisher(Float32MultiArray, 'finger_positions', 10)
-        self.wrist_publisher = self.create_publisher(Float32, 'wrist_position', 10)
+        self.config_publisher = self.create_publisher(Float32MultiArray, 'hand_config', 10)
 
         self.get_logger().info('teleop node started')
-        self.finger_positions = np.zeros((5, 3))
-        self.wrist_position = 0.0
         self.subsystem_id = ids.SUBSYSTEMS.PINKY
         self.joint_id = 0
 
@@ -52,28 +49,33 @@ class TeleopNode(Node):
 
         self.all = False
 
-        self.get_logger().info('Reading current angles...')
-        self.motor_bridge = DynamixelClient()
+        if constants.STARTUP_MODE == ids.STARTUP.LAST:
 
-        self.motor_bridge.connect()
+            self.get_logger().info('Reading current angles...')
+            self.motor_bridge = DynamixelClient()
 
-        self.motor_bridge.update_positions()
+            self.motor_bridge.connect()
 
-        self.motor_bridge.disconnect()
+            self.motor_bridge.update_positions()
 
-        self.get_logger().info('Disconnecting...')
+            self.get_logger().info('Disconnecting...')
 
-        if not constants.IS_SIMULATION:
+            self.motor_bridge.disconnect()
+
             while self.motor_bridge.is_connected:
+                self.motor_bridge.disconnect()
                 time.sleep(0.1)
 
+            self.get_logger().info('Disconnected')
 
-        self.get_logger().info('Disconnected')
+            # Just the first three columns
+            self.hand_config = HAND.get_config()
 
-        # Just the first three columns
-        self.finger_positions = np.array(HAND.get_fingers())[:, :3].tolist()
+        elif constants.STARTUP_MODE == ids.STARTUP.CUSTOM:
+            self.hand_config = configs.HOME
 
-        self.wrist_position = HAND.get_wrist()
+        else:
+            self.hand_config = HandConfig.default()
 
         # Run the publishing loop
         self.run()
@@ -81,68 +83,103 @@ class TeleopNode(Node):
 
     def on_press(self, key):
         try:
-            # Map keys to finger ids
-            if key.char == 'q':
-                self.subsystem_id = ids.SUBSYSTEMS.PINKY
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'w':
-                self.subsystem_id = ids.SUBSYSTEMS.RING
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'e':
-                self.subsystem_id = ids.SUBSYSTEMS.MIDDLE
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'r':
-                self.subsystem_id = ids.SUBSYSTEMS.INDEX
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 't':
-                self.subsystem_id = ids.SUBSYSTEMS.THUMB
-                self.joint_id = 0
-                self.all = False
-            elif key.char == 'y':
-                self.subsystem_id = ids.SUBSYSTEMS.WRIST
-                self.joint_id = 0
-                self.all = False
+            if key.char in "qwertyu123ol":
+                # Map keys to finger ids
+                if key.char == 'q':
+                    self.subsystem_id = "PINKY"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'w':
+                    self.subsystem_id = "RING"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'e':
+                    self.subsystem_id = "MIDDLE"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'r':
+                    self.subsystem_id = "INDEX"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 't':
+                    self.subsystem_id = "THUMB"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'y':
+                    self.subsystem_id = "WRIST"
+                    self.joint_id = 0
+                    self.all = False
 
-            # Map keys to joint ids
-            elif key.char in '123':
-                self.joint_id = int(key.char) - 1
+                # Map keys to joint ids
+                elif key.char in '123':
+                    self.joint_id = int(key.char) - 1
 
-            elif key.char == 'u':
-                self.all = True
-                self.joint_id = 0
+                elif key.char == 'u':
+                    self.all = True
+                    self.joint_id = 0
 
-            # Adjust finger positions based on arrow keys
-            elif key.char == "o":
-                if self.all:
-                    for i in range(5):
-                        self.finger_positions[i][self.joint_id] += 0.1
-                else:
-                    if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
-                        self.wrist_position += 0.1
+                # Adjust finger positions based on arrow keys
+                elif key.char == "o":
+                    if self.all:
+                        for finger_config in self.hand_config.FINGERS:
+                            finger_config[self.joint_id] += 0.1
                     else:
-                        self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] += 0.1
+                        self.hand_config[self.subsystem_id][self.joint_id] += 0.1
 
-            elif key.char == "l":
-                if self.all:
-                    for i in range(5):
-                        self.finger_positions[i][self.joint_id] -= 0.1
-                else:
-                    if self.subsystem_id == ids.SUBSYSTEMS.WRIST:
-                        self.wrist_position -= 0.1
+                elif key.char == "l":
+                    if self.all:
+                        for finger_config in self.hand_config.FINGERS:
+                            finger_config[self.joint_id] -= 0.1
                     else:
-                        self.finger_positions[finger_index(self.subsystem_id)][self.joint_id] -= 0.1
+                        self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
 
-            print("ALL"  if self.all else self.subsystem_id.name,
+                if self.all:
+                    for config in self.hand_config.FINGERS:
+                        print(config)
+                else:
+                    print(self.subsystem_id, self.hand_config[self.subsystem_id])
 
-                  self.wrist_position
-                  if self.subsystem_id == ids.SUBSYSTEMS.WRIST else
-                  self.finger_positions[finger_index(self.subsystem_id)])
+                print()
 
-            print()
+            elif key.char in "zxcvbnm":
+                if key.char == 'z':
+                    config = configs.HOME
+                    print("HOME", config)
+                elif key.char == 'x':
+                    config = configs.GRASP
+                    print("GRASP", config)
+                elif key.char == 'c':
+                    config = configs.ROCK
+                    print("ROCK", config)
+                elif key.char == 'v':
+                    config = configs.FINGER
+                    print("FINGER", config)
+                elif key.char == 'b':
+                    config = configs.LOVE
+                    print("LOVE", config)
+                elif key.char == 'n':
+                    config = configs.THUMB
+                    print("THUMB", config)
+                elif key.char == 'm':
+                    config = configs.SPOCK
+                    print("SPOCK", config)
+
+                self.hand_config = config
+
+                print()
+
+            if key.char == "a":
+                angle = (np.sin(time.time()) * np.pi + np.pi) / 2
+                self.hand_config = HandConfig(
+                    PINKY=[0.0, 0.0, angle],
+                    RING=[0.0, 0.0, angle],
+                    MIDDLE=[0.0, 0.0, angle],
+                    INDEX=[0.0, 0.0, angle],
+                    THUMB=[0.0, 0.0, angle],
+                    WRIST=[0.0]
+                )
+                print(angle)
+
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
@@ -150,8 +187,7 @@ class TeleopNode(Node):
     def run(self):
         while rclpy.ok():
             # Publish the current finger positions
-            self.fingers_publisher.publish(matrix_to_message(self.finger_positions))
-            self.wrist_publisher.publish(Float32(data=self.wrist_position))
+            self.config_publisher.publish(self.hand_config.as_msg())
             time.sleep(1.0 / NODE_FREQUENCY_HZ)
 
 def main(args=None):

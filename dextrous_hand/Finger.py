@@ -26,7 +26,7 @@ class Finger(Subsystem):
 
         def below_on(line,x,y):
             return -line[0]*x+y<=line[1]
-        
+
         def closest_from(line,x,y):
             a, b = line
             x_q = (x + a * (y - b)) / (a**2 + 1)
@@ -59,7 +59,12 @@ class Finger(Subsystem):
             return closest_from((-a,b), abd_angle,flex_angle)
         else:
           return abd_angle,flex_angle
-    
+
+    def restrict_joint_angles(self, joint_angles):
+          joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
+
+          return joint_angles
+
     def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angles of the joints to the angles of the motors.
@@ -69,17 +74,15 @@ class Finger(Subsystem):
         TODO: Implement this method
         """
         assert len(joint_angles) == 3
-        joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
         virtual_tendons_diff=[]
         for i, joint_angle in enumerate(joint_angles):
             virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
 
-
         tendons_pair_motor_1 = (virtual_tendons_diff[0][0]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][1]+virtual_tendons_diff[1][1])
         tendons_pair_motor_2 = (virtual_tendons_diff[0][1]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][0]+virtual_tendons_diff[1][1])
         tendons_length_diff=[tendons_pair_motor_1, tendons_pair_motor_2, virtual_tendons_diff[2]]
-        
+
         motor_angles=[]
         for tendons_diff in tendons_length_diff:
             motor_angles.append(tendons_diff[0]/SPOOL_RADIUS)
@@ -105,16 +108,16 @@ class Finger(Subsystem):
         return self.get_joint("DIP")
 
     @property
-    def TRBL(self):
-        return self.get_motor("TRBL")
+    def FRBL(self):
+        return self.get_motor("FRBL")
 
     @property
-    def TLBR(self):
-        return self.get_motor("TLBR")
+    def FLBR(self):
+        return self.get_motor("FLBR")
 
     @property
-    def TMBM(self):
-        return self.get_motor("TMBM")
+    def FMBM(self):
+        return self.get_motor("FMBM")
 
 class Thumb(Finger):
     """
@@ -142,7 +145,7 @@ class Thumb(Finger):
         pin_joints = [joint_angles[0],joint_angles[1]]
         for i, joint_angle in enumerate(pin_joints):
             motors_angles.append(self.joints[i].joint2length(joint_angle))
-        
+
         motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
 
         return motors_angles
@@ -154,13 +157,8 @@ MIDDLE = Finger(ids.SUBSYSTEMS.MIDDLE)
 INDEX = Finger(ids.SUBSYSTEMS.INDEX)
 THUMB = Thumb(ids.SUBSYSTEMS.THUMB)
 
-FINGERS = [PINKY, RING, MIDDLE, INDEX, THUMB]
+FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id != ids.SUBSYSTEMS.WRIST]
+FINGERS[ids.SUBSYSTEMS.THUMB.value] = Thumb(ids.SUBSYSTEMS.THUMB)
 """
  A collection of fingers for easy iteration.
 """
-
-def finger_index(id : ids.SUBSYSTEMS) -> int:
-    """
-    Convert a finger id to an index in the FINGERS list
-    """
-    return [finger.id for finger in FINGERS].index(id)

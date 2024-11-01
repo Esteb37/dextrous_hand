@@ -1,40 +1,84 @@
 #!/usr/bin/env python3
 
 from dextrous_hand.ids import *
-from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD
+from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD, THUMB_ABD, THUMB_MCP, THUMB_PIP, THUMB_DIP
 from dextrous_hand.WristJoint import WristJoint
 
 
+def find_parent_subsystem(id : JOINTS | MOTORS) -> SUBSYSTEMS | None:
+    """
+    Find the parent subsystem of a joint
+    """
+    if type(id) == JOINTS:
+        for subsystem in SUBSYSTEM_JOINTS:
+            ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
+            if id in ids:
+                return subsystem
+
+    if type(id) == MOTORS:
+        for subsystem in SUBSYSTEM_MOTORS:
+            if id in SUBSYSTEM_MOTORS[subsystem]:
+                return subsystem
+
+
+def find_parent_joint(id : MOTORS) -> JOINTS | None:
+    """
+    Find the parent joint of a motor
+    """
+    for joint in JOINT_MOTORS:
+        if id in JOINT_MOTORS[joint]:
+            return joint
+
+def find_joint_index(parent : SUBSYSTEMS, joint_id : JOINTS) -> int:
+    """
+    Find the index of a joint in a list of joints
+    """
+    joints = SUBSYSTEM_JOINTS[parent]
+    joint_ids = [joint.id for joint in joints]
+    return joint_ids.index(joint_id)
+
+def find_motor_index(parent : SUBSYSTEMS | JOINTS, motor_id : MOTORS) -> int:
+    """
+    Find the index of a motor in a list of motors
+    """
+
+    if type(parent) == SUBSYSTEMS:
+        motors = SUBSYSTEM_MOTORS[parent]
+    elif type(parent) == JOINTS:
+        motors = JOINT_MOTORS[parent]
+
+    return motors.index(motor_id)
+
 """
-    TRLB = Top right, bottom left
-    TLBR = Top left, bottom right
-    TMBM = Top middle, bottom middle
+    TRLB = Front right, back left
+    FLBR = Front left, back right
+    FMBM = Front middle, back middle
 """
 
 SUBSYSTEM_MOTORS = {
-    SUBSYSTEMS.PINKY :  [MOTORS.PINKY_TRBL,
-                         MOTORS.PINKY_TLBR,
-                         MOTORS.PINKY_TMBM
+    SUBSYSTEMS.PINKY :  [MOTORS.PINKY_FRBL,
+                         MOTORS.PINKY_FLBR,
+                         MOTORS.PINKY_FMBM
                          ],
 
-    SUBSYSTEMS.RING :   [MOTORS.RING_TRBL,
-                         MOTORS.RING_TLBR,
-                         MOTORS.RING_TMBM
+    SUBSYSTEMS.RING :   [MOTORS.RING_FRBL,
+                         MOTORS.RING_FLBR,
+                         MOTORS.RING_FMBM
                          ],
 
-    SUBSYSTEMS.MIDDLE : [MOTORS.MIDDLE_TRBL,
-                         MOTORS.MIDDLE_TLBR,
-                         MOTORS.MIDDLE_TMBM
+    SUBSYSTEMS.MIDDLE : [MOTORS.MIDDLE_FRBL,
+                         MOTORS.MIDDLE_FLBR,
+                         MOTORS.MIDDLE_FMBM
                          ],
 
-    SUBSYSTEMS.INDEX :  [MOTORS.INDEX_TRBL,
-                         MOTORS.INDEX_TLBR,
-                         MOTORS.INDEX_TMBM
+    SUBSYSTEMS.INDEX :  [MOTORS.INDEX_FRBL,
+                         MOTORS.INDEX_FLBR,
+                         MOTORS.INDEX_FMBM
                          ],
 
-    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_TRBL,
-                         MOTORS.THUMB_TLBR,
-                         MOTORS.THUMB_TMBM
+    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_ABD,
+                         MOTORS.THUMB_MCP,
+                         MOTORS.THUMB_PIP
                          ],
 
     SUBSYSTEMS.WRIST :  [MOTORS.WRIST]
@@ -44,30 +88,30 @@ Motors for each subsystem
 """
 
 JOINT_MOTORS = {
-    JOINTS.PINKY_ABD: [MOTORS.PINKY_TRBL, MOTORS.PINKY_TLBR],
-    JOINTS.PINKY_MCP: [MOTORS.PINKY_TRBL, MOTORS.PINKY_TLBR],
-    JOINTS.PINKY_PIP: [MOTORS.PINKY_TMBM],
-    JOINTS.PINKY_DIP: [MOTORS.PINKY_TMBM],
+    JOINTS.PINKY_ABD: [MOTORS.PINKY_FRBL, MOTORS.PINKY_FLBR],
+    JOINTS.PINKY_MCP: [MOTORS.PINKY_FRBL, MOTORS.PINKY_FLBR],
+    JOINTS.PINKY_PIP: [MOTORS.PINKY_FMBM],
+    JOINTS.PINKY_DIP: [MOTORS.PINKY_FMBM],
 
-    JOINTS.RING_ABD: [MOTORS.RING_TRBL, MOTORS.RING_TLBR],
-    JOINTS.RING_MCP: [MOTORS.RING_TRBL, MOTORS.RING_TLBR],
-    JOINTS.RING_PIP: [MOTORS.RING_TMBM],
-    JOINTS.RING_DIP: [MOTORS.RING_TMBM],
+    JOINTS.RING_ABD: [MOTORS.RING_FRBL, MOTORS.RING_FLBR],
+    JOINTS.RING_MCP: [MOTORS.RING_FRBL, MOTORS.RING_FLBR],
+    JOINTS.RING_PIP: [MOTORS.RING_FMBM],
+    JOINTS.RING_DIP: [MOTORS.RING_FMBM],
 
-    JOINTS.MIDDLE_ABD: [MOTORS.MIDDLE_TRBL, MOTORS.MIDDLE_TLBR],
-    JOINTS.MIDDLE_MCP: [MOTORS.MIDDLE_TRBL, MOTORS.MIDDLE_TLBR],
-    JOINTS.MIDDLE_PIP: [MOTORS.MIDDLE_TMBM],
-    JOINTS.MIDDLE_DIP: [MOTORS.MIDDLE_TMBM],
+    JOINTS.MIDDLE_ABD: [MOTORS.MIDDLE_FRBL, MOTORS.MIDDLE_FLBR],
+    JOINTS.MIDDLE_MCP: [MOTORS.MIDDLE_FRBL, MOTORS.MIDDLE_FLBR],
+    JOINTS.MIDDLE_PIP: [MOTORS.MIDDLE_FMBM],
+    JOINTS.MIDDLE_DIP: [MOTORS.MIDDLE_FMBM],
 
-    JOINTS.INDEX_ABD: [MOTORS.INDEX_TRBL, MOTORS.INDEX_TLBR],
-    JOINTS.INDEX_MCP: [MOTORS.INDEX_TRBL, MOTORS.INDEX_TLBR],
-    JOINTS.INDEX_PIP: [MOTORS.INDEX_TMBM],
-    JOINTS.INDEX_DIP: [MOTORS.INDEX_TMBM],
+    JOINTS.INDEX_ABD: [MOTORS.INDEX_FRBL, MOTORS.INDEX_FLBR],
+    JOINTS.INDEX_MCP: [MOTORS.INDEX_FRBL, MOTORS.INDEX_FLBR],
+    JOINTS.INDEX_PIP: [MOTORS.INDEX_FMBM],
+    JOINTS.INDEX_DIP: [MOTORS.INDEX_FMBM],
 
-    JOINTS.THUMB_ABD: [MOTORS.THUMB_TRBL, MOTORS.THUMB_TLBR],
-    JOINTS.THUMB_MCP: [MOTORS.THUMB_TRBL, MOTORS.THUMB_TLBR],
-    JOINTS.THUMB_PIP: [MOTORS.THUMB_TMBM],
-    JOINTS.THUMB_DIP: [MOTORS.THUMB_TMBM],
+    JOINTS.THUMB_ABD: [MOTORS.THUMB_ABD],
+    JOINTS.THUMB_MCP: [MOTORS.THUMB_MCP],
+    JOINTS.THUMB_PIP: [MOTORS.THUMB_PIP],
+    JOINTS.THUMB_DIP: [MOTORS.THUMB_PIP],
 
     JOINTS.WRIST: [MOTORS.WRIST]}
 """
@@ -95,10 +139,10 @@ SUBSYSTEM_JOINTS = {
                        PIP(JOINTS.INDEX_PIP),
                        DIP(JOINTS.INDEX_DIP)],
 
-    SUBSYSTEMS.THUMB: [ABD(JOINTS.THUMB_ABD),
-                       MCP(JOINTS.THUMB_MCP),
-                       PIP(JOINTS.THUMB_PIP),
-                       DIP(JOINTS.THUMB_DIP)],
+    SUBSYSTEMS.THUMB: [THUMB_ABD(JOINTS.THUMB_ABD),
+                       THUMB_MCP(JOINTS.THUMB_MCP),
+                       THUMB_PIP(JOINTS.THUMB_PIP),
+                       THUMB_DIP(JOINTS.THUMB_DIP)],
 
     SUBSYSTEMS.WRIST: [WristJoint(JOINTS.WRIST)]
 }
