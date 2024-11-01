@@ -6,11 +6,11 @@ from dextrous_hand.HandConfig import HandConfig
 HOME = HandConfig.default()
 
 GRASP = HandConfig(
-	PINKY=[0.000, 2.265, 2.030],
-	RING=[0.000, 1.728, 2.115],
-	MIDDLE=[0.000, 2.107, 1.996],
-	INDEX=[0.000, 2.189, 2.063],
-	THUMB=[1.559, 2.111, 0.888],
+	PINKY=[0, 2.262, 3.1],
+	RING=[0, 1.876, 2.213],
+	MIDDLE=[0.209, 2.214, 2.108],
+	INDEX=[0.001, 2.191, 2.275],
+	THUMB=[1.055, 2.069, 0.741],
 	WRIST=[0.000],
 )
 
@@ -25,7 +25,7 @@ ROCK = HandConfig(
 )
 
 FINGER = HandConfig(
-	PINKY=[0.000, 2.265, 2.030],
+	PINKY=[0.000, 2.265, 3.1],
 	RING=[0.000, 1.728, 2.115],
 	MIDDLE=[0.000, 0.000, 0.000],
 	INDEX=[0.000, 2.189, 2.063],
@@ -35,7 +35,7 @@ FINGER = HandConfig(
 
 
 LOVE = HandConfig(
-	PINKY=[0.000, 2.265, 2.030],
+	PINKY=[0.000, 2.265, 3.1],
 	RING=[0.000, 1.728, 2.115],
 	MIDDLE=[0.000, 0.000, 0.000],
 	INDEX=[0.000, 0.000, 0.000],
@@ -44,7 +44,7 @@ LOVE = HandConfig(
 )
 
 THUMB = HandConfig(
-	PINKY=[0.000, 2.265, 2.030],
+	PINKY=[0.000, 2.265, 3.1],
 	RING=[0.000, 1.728, 2.115],
 	MIDDLE=[0.000, 2.107, 1.996],
 	INDEX=[0.000, 2.189, 2.063],

@@ -2,7 +2,6 @@
 
 from numpy import pi as PI
 from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
-from dextrous_hand.HandConfig import HandConfig
 import dextrous_hand.configs as configs
 
 IS_SIMULATION = False # Set to True if the motor controller is not connected
@@ -28,11 +27,11 @@ INITIAL_CONFIG = configs.HOME
 Custom starting configuration
 """
 
-FULL_RANGE = [0.0, PI]
+FULL_RANGE = [0.0, 2 *PI]
 MOTOR_LIMITS = {
-    MOTORS.THUMB_ABD: [0, 1.571],
-    MOTORS.THUMB_MCP: [0, 2.123],
-    MOTORS.THUMB_PIP: [0, 0.9],
+    MOTORS.THUMB_ABD: FULL_RANGE,
+    MOTORS.THUMB_MCP: FULL_RANGE,
+    MOTORS.THUMB_PIP: FULL_RANGE,
 
     MOTORS.INDEX_FLBR: FULL_RANGE,
     MOTORS.INDEX_FRBL: FULL_RANGE,
@@ -57,9 +56,9 @@ Hard limits for the motors to prevent overextension.
 """
 
 MOTOR_ZEROS = {
-    MOTORS.THUMB_ABD: 4.054,
-    MOTORS.THUMB_MCP: 3.412,
-    MOTORS.THUMB_PIP: 1.645,
+    MOTORS.THUMB_ABD: 3.409,
+    MOTORS.THUMB_MCP: 2.989,
+    MOTORS.THUMB_PIP: 1.654,
 
     MOTORS.INDEX_FLBR: 3.465,
     MOTORS.INDEX_FRBL: 2.877,
@@ -75,7 +74,7 @@ MOTOR_ZEROS = {
 
     MOTORS.PINKY_FLBR: 3.531,
     MOTORS.PINKY_FRBL: 3.725,
-    MOTORS.PINKY_FMBM: 1.659,
+    MOTORS.PINKY_FMBM: 4.144,
 
     MOTORS.WRIST: 3.141
 }
