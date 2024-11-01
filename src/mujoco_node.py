@@ -70,7 +70,7 @@ class MujocoNode(Node):
         if self.viewer.is_running():
             for config_joint, sim_joint in JOINT_MAP.items():
                 joint_index = self.joint_names.index(sim_joint)
-                self.data.qpos[joint_index] = self.config.get_joint(config_joint)
+                self.data.qpos[joint_index] = self.config[config_joint]
 
             mujoco.mj_step(self.model, self.data)
             self.viewer.sync()  # Sync the viewer with the new simulation state

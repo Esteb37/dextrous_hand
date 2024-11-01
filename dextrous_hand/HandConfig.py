@@ -3,7 +3,7 @@ import dextrous_hand.utils as utils
 from dextrous_hand import ids
 from std_msgs.msg import Float32MultiArray
 
-HandConfigIndex = int | str | ids.SUBSYSTEMS
+HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS
 
 @dataclass
 class HandConfig:
@@ -45,6 +45,15 @@ class HandConfig:
         self.THUMB = [0.0, 0.0, 0.0]
         self.WRIST = [0.0]
 
+        from dextrous_hand.architecture import SUBSYSTEM_JOINTS
+        self.joint_map = {}
+
+        for subsystem in ids.SUBSYSTEMS:
+            for joint in SUBSYSTEM_JOINTS[subsystem]:
+                joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
+                index = joint_ids.index(joint.id)
+                self.joint_map[joint.id] = (subsystem, index)
+
         for key, value in kwargs.items():
 
             if type(value) is float:
@@ -68,6 +77,9 @@ class HandConfig:
             return getattr(self, list(ids.SUBSYSTEMS)[key].name)
         elif isinstance(key, ids.SUBSYSTEMS):
             return getattr(self, key.name)
+        elif isinstance(key, ids.JOINTS):
+            subsystem, index = self.joint_map[key]
+            return self[subsystem][index]
         else:
             raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
 
@@ -91,6 +103,9 @@ class HandConfig:
         elif isinstance(key, ids.SUBSYSTEMS):
             key = key.name
             setattr(self, key, value)
+        elif isinstance(key, ids.JOINTS):
+            subsystem, index = self.joint_map[key]
+            self[subsystem][index] = value
         else:
             raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
 
@@ -105,7 +120,10 @@ class HandConfig:
         """
         The string representation of the HandConfig object
         """
-        return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in self.__dict__.items()]) + ")"
+        d = self.__dict__.copy()
+        d.pop("joint_map")
+
+        return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in d.items()]) + ")"
 
     @staticmethod
     def default():
@@ -170,27 +188,3 @@ class HandConfig:
         Returns only the finger configurations
         """
         return [self[finger] for finger in set(ids.SUBSYSTEMS).difference({ids.SUBSYSTEMS.WRIST})]
-
-    def set_joint(self, joint_id : ids.JOINTS, value : float):
-        """
-        Set the configuration of a single joint
-        """
-        from dextrous_hand.architecture import find_parent_subsystem, find_joint_index
-
-        subsystem = find_parent_subsystem(joint_id)
-
-        if subsystem is not None:
-            index = find_joint_index(subsystem, joint_id)
-            self[subsystem][index] = value
-
-    def get_joint(self, joint_id : ids.JOINTS):
-        """
-        Get the configuration of a single joint
-        """
-        from dextrous_hand.architecture import find_parent_subsystem, find_joint_index
-
-        subsystem = find_parent_subsystem(joint_id)
-
-        if subsystem is not None:
-            index = find_joint_index(subsystem, joint_id)
-            return self[subsystem][index]
