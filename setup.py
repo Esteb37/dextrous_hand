@@ -27,7 +27,6 @@ setup(
             'basic_node = src.basic_node:main',
             'teleop_node = src.teleop_node:main',
             'mujoco_node = src.mujoco_node:main',
-            'sim_teleop_node = src.sim_teleop_node:main'
         ],
     },
 )

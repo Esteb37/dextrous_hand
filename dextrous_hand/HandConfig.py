@@ -170,3 +170,27 @@ class HandConfig:
         Returns only the finger configurations
         """
         return [self[finger] for finger in set(ids.SUBSYSTEMS).difference({ids.SUBSYSTEMS.WRIST})]
+
+    def set_joint(self, joint_id : ids.JOINTS, value : float):
+        """
+        Set the configuration of a single joint
+        """
+        from dextrous_hand.architecture import find_parent_subsystem, find_joint_index
+
+        subsystem = find_parent_subsystem(joint_id)
+
+        if subsystem is not None:
+            index = find_joint_index(subsystem, joint_id)
+            self[subsystem][index] = value
+
+    def get_joint(self, joint_id : ids.JOINTS):
+        """
+        Get the configuration of a single joint
+        """
+        from dextrous_hand.architecture import find_parent_subsystem, find_joint_index
+
+        subsystem = find_parent_subsystem(joint_id)
+
+        if subsystem is not None:
+            index = find_joint_index(subsystem, joint_id)
+            return self[subsystem][index]

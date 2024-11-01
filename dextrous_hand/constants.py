@@ -4,7 +4,7 @@ from numpy import pi as PI
 from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
 import dextrous_hand.configs as configs
 
-IS_SIMULATION = False # Set to True if the motor controller is not connected
+IS_SIMULATION = True # Set to True if the motor controller is not connected
 
 MANUAL_CONTROL = False # Set to True to disable the hand and control the motors manually but still be able to read the sensors
 

@@ -5,6 +5,50 @@ from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD, THUMB_ABD, THUMB_MCP,
 from dextrous_hand.WristJoint import WristJoint
 
 
+def find_parent_subsystem(id : JOINTS | MOTORS) -> SUBSYSTEMS | None:
+    """
+    Find the parent subsystem of a joint
+    """
+    if type(id) == JOINTS:
+        for subsystem in SUBSYSTEM_JOINTS:
+            ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
+            if id in ids:
+                return subsystem
+
+    if type(id) == MOTORS:
+        for subsystem in SUBSYSTEM_MOTORS:
+            if id in SUBSYSTEM_MOTORS[subsystem]:
+                return subsystem
+
+
+def find_parent_joint(id : MOTORS) -> JOINTS | None:
+    """
+    Find the parent joint of a motor
+    """
+    for joint in JOINT_MOTORS:
+        if id in JOINT_MOTORS[joint]:
+            return joint
+
+def find_joint_index(parent : SUBSYSTEMS, joint_id : JOINTS) -> int:
+    """
+    Find the index of a joint in a list of joints
+    """
+    joints = SUBSYSTEM_JOINTS[parent]
+    joint_ids = [joint.id for joint in joints]
+    return joint_ids.index(joint_id)
+
+def find_motor_index(parent : SUBSYSTEMS | JOINTS, motor_id : MOTORS) -> int:
+    """
+    Find the index of a motor in a list of motors
+    """
+
+    if type(parent) == SUBSYSTEMS:
+        motors = SUBSYSTEM_MOTORS[parent]
+    elif type(parent) == JOINTS:
+        motors = JOINT_MOTORS[parent]
+
+    return motors.index(motor_id)
+
 """
     TRLB = Front right, back left
     FLBR = Front left, back right
