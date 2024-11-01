@@ -87,7 +87,7 @@ class Joint(ABC):
         return motors[0]
 
     def __str__(self):
-        return self.id.name + ": " + f"{self.read():.2f} rad"
+        return self.id.name + ": " + f"{self.read():.3f} rad"
 
     def __getitem__(self, motor_index):
         """
