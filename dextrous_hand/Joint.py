@@ -4,7 +4,7 @@ import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 
-from dextrous_hand.constants import SPOOL_RADIUS
+from dextrous_hand.constants import SPOOL_RADIUS, IS_SIMULATION
 
 import math
 import numpy as np
@@ -56,6 +56,8 @@ class Joint(ABC):
 
         self.geometry = JOINTS_GEOMETRY[self.id]
 
+        self.target = 0.0
+
         self.initialized = True
 
     @abstractmethod
@@ -71,7 +73,7 @@ class Joint(ABC):
             the angle of the joint
         """
         pass
-    
+
     def joint2length(self, joint):
         """
         Map the joint angle to the lenght of the associated pair of tendons
@@ -85,7 +87,7 @@ class Joint(ABC):
         """
 
         """
-        TODO: Make this method general to the case of pin joints 
+        TODO: Make this method general to the case of pin joints
         """
         if "radius" in self.geometry:
             a = self.geometry["radius"]/SPOOL_RADIUS
@@ -94,7 +96,7 @@ class Joint(ABC):
         def rot_mat_z(tetha):
             C_z = np.array([[math.cos(tetha), -math.sin(tetha), 0],[math.sin(tetha), -math.cos(tetha), 0],[0,0,1]])
             return C_z
-        
+
         C_I1 = rot_mat_z(joint/2)
         C_I2 = rot_mat_z(joint)
 
@@ -117,6 +119,9 @@ class Joint(ABC):
         returns:
             The joint's current angle in radians
         """
+        if IS_SIMULATION:
+            return self.target
+
         motor_angles = [motor.read() for motor in self.motors]
         return self.motors2joint(motor_angles)
 
@@ -140,7 +145,7 @@ class Joint(ABC):
         return motors[0]
 
     def __str__(self):
-        return self.id.name + ": " + f"{self.read():.2f} rad"
+        return self.id.name + ": " + f"{self.read():.3f} rad"
 
     def __getitem__(self, motor_index):
         """
