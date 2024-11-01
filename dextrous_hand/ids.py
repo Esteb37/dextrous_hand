@@ -1,33 +1,34 @@
 #!/usr/bin/env python3
 
 from enum import Enum, auto
-from numpy import pi
 
 class MOTORS(Enum):
     """
     Motor ports
     """
-    PINKY_TRBL = 0
-    PINKY_TLBR = 1
-    PINKY_TMBM = 2
+    THUMB_MCP = 0
 
-    RING_TRBL = 3
-    RING_TLBR = 4
-    RING_TMBM = 5
+    RING_FMBM = 1
+    RING_FLBR = 2
+    RING_FRBL = 3
 
-    MIDDLE_TRBL = 6
-    MIDDLE_TLBR = 7
-    MIDDLE_TMBM = 8
+    PINKY_FRBL = 4
+    PINKY_FLBR = 5
+    PINKY_FMBM = 6
 
-    INDEX_TRBL = 9
-    INDEX_TLBR = 10
-    INDEX_TMBM = 11
+    THUMB_ABD = 7
 
-    THUMB_TRBL = 12
-    THUMB_TLBR = 13
-    THUMB_TMBM = 14
+    WRIST = 8
 
-    WRIST = 15
+    INDEX_FMBM = 9
+    INDEX_FLBR = 10
+    INDEX_FRBL = 11
+
+    MIDDLE_FRBL = 12
+    MIDDLE_FLBR = 13
+    MIDDLE_FMBM = 14
+
+    THUMB_PIP = 15
 
 class SUBSYSTEMS(Enum):
     """
@@ -35,7 +36,7 @@ class SUBSYSTEMS(Enum):
     Each subsystem has a unique ID, determined automatically by the Enum class.
     A subsystem is a unique element of the robot that can be controlled independently.
     """
-    PINKY = auto()
+    PINKY = 0
     RING = auto()
     MIDDLE = auto()
     INDEX = auto()
@@ -50,7 +51,7 @@ class JOINTS(Enum):
     PIP and DIP angles are always coupled.
     """
 
-    PINKY_ABD = auto()
+    PINKY_ABD = 0
     PINKY_MCP = auto()
     PINKY_PIP = auto()
     PINKY_DIP = auto()
@@ -76,3 +77,17 @@ class JOINTS(Enum):
     THUMB_DIP = auto()
 
     WRIST = auto()
+
+class STARTUP(Enum):
+    HOME = 0 # all joints set to 0
+    LAST = auto() # all joints set to their last known position
+    CUSTOM = auto() # all joints set to a custom position
+
+
+class MOTOR_DIRECTION(Enum):
+    """
+    Motor directions.
+    Each motor has a direction that determines the sign of the angle.
+    """
+    FORWARD = 1
+    REVERSED = -1

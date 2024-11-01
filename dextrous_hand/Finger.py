@@ -22,7 +22,7 @@ class Finger(Subsystem):
 
         assert len(joint_angles) == 3
 
-        return joint_angles
+        return [joint_angles[1] - joint_angles[0] / 2, joint_angles[1] + joint_angles[0] / 2, joint_angles[2]]
 
     @property
     def ABD(self):
@@ -41,16 +41,16 @@ class Finger(Subsystem):
         return self.get_joint("DIP")
 
     @property
-    def TRBL(self):
-        return self.get_motor("TRBL")
+    def FRBL(self):
+        return self.get_motor("FRBL")
 
     @property
-    def TLBR(self):
-        return self.get_motor("TLBR")
+    def FLBR(self):
+        return self.get_motor("FLBR")
 
     @property
-    def TMBM(self):
-        return self.get_motor("TMBM")
+    def FMBM(self):
+        return self.get_motor("FMBM")
 
 class Thumb(Finger):
     """
@@ -83,13 +83,8 @@ MIDDLE = Finger(ids.SUBSYSTEMS.MIDDLE)
 INDEX = Finger(ids.SUBSYSTEMS.INDEX)
 THUMB = Thumb(ids.SUBSYSTEMS.THUMB)
 
-FINGERS = [PINKY, RING, MIDDLE, INDEX, THUMB]
+FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id != ids.SUBSYSTEMS.WRIST]
+FINGERS[ids.SUBSYSTEMS.THUMB.value] = Thumb(ids.SUBSYSTEMS.THUMB)
 """
  A collection of fingers for easy iteration.
 """
-
-def finger_index(id : ids.SUBSYSTEMS) -> int:
-    """
-    Convert a finger id to an index in the FINGERS list
-    """
-    return [finger.id for finger in FINGERS].index(id)
