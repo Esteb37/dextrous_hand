@@ -168,6 +168,18 @@ class TeleopNode(Node):
 
                 print()
 
+            if key.char == "a":
+                angle = (np.sin(time.time()) * np.pi + np.pi) / 2
+                self.hand_config = HandConfig(
+                    PINKY=[0.0, 0.0, angle],
+                    RING=[0.0, 0.0, angle],
+                    MIDDLE=[0.0, 0.0, angle],
+                    INDEX=[0.0, 0.0, angle],
+                    THUMB=[0.0, 0.0, angle],
+                    WRIST=[0.0]
+                )
+                print(angle)
+
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
