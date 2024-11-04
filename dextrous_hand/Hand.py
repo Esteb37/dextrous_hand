@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Finger import FINGERS
+import dextrous_hand.Finger as Finger
 from dextrous_hand.Wrist import WRIST
-from dextrous_hand.utils import finger_pos_to_matrix
+from dextrous_hand.HandConfig import HandConfig
 
 class Hand():
     _instance = None
@@ -22,78 +22,71 @@ class Hand():
 
         self.initialized = True
 
-    def set_fingers(self, positions : list[list[float]]):
-        """
-        Set the positions of all fingers simultaneously.
+        self.target = HandConfig.default()
 
-        NOTE: The dimension of the position array should be 3x1 because the DIP
-              angle cannot be set.
+    def set_config(self, config : HandConfig):
+        """
+        Set all fingers and wrist to the positions specified in the config
 
         params
-            positions: a matrix or dictionary of finger positions
-                matrix:
-
-                        [float, float, float, <- Finger 1
-                        float, float, float,
-                        ...
-                        float, float, float]
-
-                dictionary:
-
-                        {THUMB: [float, float, float],
-                        INDEX: [float, float, float],
-                        ...
-                        PINKY: [float, float, float]}
+            config: the configuration to set the hand to
 
         returns
-            True if all fingers are at their target positions
+            True if all subsystems are at position
 
         raises
             Exception: if the positions array has the wrong number of elements
         """
+        self.target = config
 
-        # If positions is a dictionary, convert it to a matrix
-        if type(positions) == dict:
-            positions = finger_pos_to_matrix(positions)
+        all_at_position = True
+        for subsystem in Finger.FINGERS + [WRIST]:
+            subsystem.write(config[subsystem.id])
+            all_at_position = all_at_position and subsystem.at_position()
 
-        assert len(positions) == len(FINGERS)
-        assert len(positions[0]) == 3
+        return all_at_position
 
-        # Write the positions to each finger
-        for i, finger in enumerate(FINGERS):
-            finger.write(positions[i])
+    def get_config(self):
+        return HandConfig.current()
 
-        # Check if all fingers are at position
-        at_position = True
-        for finger in FINGERS:
-            at_position = at_position and finger.at_position()
-        return at_position
-
-    def set_wrist(self, position):
-        return WRIST.write(position)
-
-    def get_fingers(self):
-
-        # Get the positions of all fingers
-        positions = []
-        for finger in FINGERS:
-            # only the first 3 columns
-            positions.append(finger.read())
-
-        return positions
-
-    def get_wrist(self):
-        return float(WRIST.read()[0])
+    def get_target(self):
+        return self.target
 
     def __str__(self):
-        string = ""
-        for subsystem in FINGERS + [WRIST]:
+        string = "--------Hand--------\n\nTarget:\n"
+        string += str(self.get_target()) + "\n\nCurrent:\n"
+        string += str(self.get_config()) + "\n"
+        for subsystem in Finger.FINGERS + [WRIST]:
             string += str(subsystem) + "\n"
             for joint in subsystem.joints:
                 string += "\t" + str(joint) + "\n"
                 for motor in joint.motors:
                     string += "\t\t" + str(motor) + "\n"
         return string
+
+    @property
+    def PINKY(self):
+        return Finger.PINKY
+
+    @property
+    def RING(self):
+        return Finger.RING
+
+    @property
+    def MIDDLE(self):
+        return Finger.MIDDLE
+
+    @property
+    def INDEX(self):
+        return Finger.INDEX
+
+    @property
+    def THUMB(self):
+        return Finger.THUMB
+
+    @property
+    def WRIST(self):
+        return WRIST
 
 # Singleton instance
 HAND = Hand()

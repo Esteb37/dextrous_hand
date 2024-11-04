@@ -140,3 +140,19 @@
  - **/launch** - ROS Launch files
  - **/test** - Any code that does not correspond to a node (i.e. test code and experiments)
  - **/data** - Images, text-files, ML models etc
+
+
+# Building With Symlink 
+ - Open your bashrc and add ```alias colcon_build='colcon build --symlink-install'```
+ - source bashrc
+ - Now you can build once with colcon_build.
+ - Build everytime you add a new file.
+ - No need to rebuild for every change made in a Python file.
+ - Need to rebuild for every change made in a C++ file.
+# SetupTools Error
+ - If you have the setup tools error, do the following in a new terminal:```pip list | grep setuptools```
+ - You should see that your setuptools version is > 58.2.0
+ - Downgrade the version : ```pip install --upgrade pip setuptools==58.2.0```
+ - ```pip list | grep setuptools``` to check if downgrade successfull
+ - You should not have this error again
+   
