@@ -7,7 +7,7 @@ import mujoco.viewer
 from std_msgs.msg import Float32MultiArray
 from pathlib import Path
 from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.ids import JOINTS
+from dextrous_hand.ids import JOINTS, POSE
 
 JOINT_MAP = {
     JOINTS.WRIST: "wrist_base2palm",
@@ -30,6 +30,13 @@ JOINT_MAP = {
     JOINTS.PINKY_MCP: "root2pinky_pp_virt",
     JOINTS.PINKY_ABD: "root2pinky_pp_virt_abd",
     JOINTS.PINKY_PIP: "pinky_pp2mp_virt",
+
+    POSE.X: "iframe2base_x",
+    POSE.Y: "iframe2base_y",
+    POSE.Z: "iframe2base_z",
+    POSE.ROLL: "iframe2base_roll",
+    POSE.PITCH: "iframe2base_pitch",
+    POSE.YAW: "iframe2base_yaw",
 }
 
 class MujocoNode(Node):
@@ -61,8 +68,6 @@ class MujocoNode(Node):
         self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
 
         self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)]
-
-        print(self.joint_names)
 
         self.config = HandConfig.default()
 
