@@ -41,7 +41,7 @@ class Finger(Subsystem):
         zone_1 = above((-1/a,b),abd_angle,flex_angle) and above((1/a,b),abd_angle,flex_angle)
         zone_2 = below_on((-1/a,b),abd_angle,flex_angle) and above((-1/a,b2),abd_angle,flex_angle) and above((a,b),abd_angle,flex_angle)
         zone_3 = below_on((-1/a,b2),abd_angle,flex_angle) and abd_angle<-theta_abd_max
-        zone_4 = abd_angle>-theta_abd_max and abd_angle<theta_abd_max and flex_angle<0
+        zone_4 = abd_angle>=-theta_abd_max and abd_angle<=theta_abd_max and flex_angle<0
         zone_5 = abd_angle>theta_abd_max and below_on((1/a,b2),abd_angle,flex_angle)
         zone_6 = below_on((1/a,b),abd_angle,flex_angle) and above((1/a,b2),abd_angle,flex_angle) and above((-a,b),abd_angle,flex_angle)
 
