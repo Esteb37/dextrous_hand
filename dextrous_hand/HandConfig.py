@@ -5,8 +5,7 @@ from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import PoseStamped
 from scipy.spatial.transform import Rotation as R
 
-HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS | ids.POSE
-
+HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS
 @dataclass
 class HandConfig:
     """
@@ -57,19 +56,11 @@ class HandConfig:
         self.joint_map = {}
 
         for subsystem in ids.SUBSYSTEMS:
-            if subsystem not in [ids.SUBSYSTEMS.POSITION, ids.SUBSYSTEMS.ORIENTATION]:
-                for joint in SUBSYSTEM_JOINTS[subsystem]:
-                    joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
-                    index = joint_ids.index(joint.id)
-                    self.joint_map[joint.id] = (subsystem, index)
+            for joint in SUBSYSTEM_JOINTS[subsystem]:
+                joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
+                index = joint_ids.index(joint.id)
+                self.joint_map[joint.id] = (subsystem, index)
 
-        self.joint_map[ids.POSE.X] = (ids.SUBSYSTEMS.POSITION, 0)
-        self.joint_map[ids.POSE.Y] = (ids.SUBSYSTEMS.POSITION, 1)
-        self.joint_map[ids.POSE.Z] = (ids.SUBSYSTEMS.POSITION, 2)
-
-        self.joint_map[ids.POSE.ROLL] = (ids.SUBSYSTEMS.ORIENTATION, 0)
-        self.joint_map[ids.POSE.PITCH] = (ids.SUBSYSTEMS.ORIENTATION, 1)
-        self.joint_map[ids.POSE.YAW] = (ids.SUBSYSTEMS.ORIENTATION, 2)
 
         for key, value in kwargs.items():
             if type(value) == float:
@@ -96,9 +87,6 @@ class HandConfig:
         elif isinstance(key, ids.JOINTS):
             subsystem, index = self.joint_map[key]
             return self[subsystem][index]
-        elif isinstance(key, ids.POSE):
-            subsystem, index = self.joint_map[key]
-            return self[subsystem][index]
         else:
             raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
 
@@ -123,9 +111,6 @@ class HandConfig:
             key = key.name
             setattr(self, key, value)
         elif isinstance(key, ids.JOINTS):
-            subsystem, index = self.joint_map[key]
-            self[subsystem][index] = value
-        elif isinstance(key, ids.POSE):
             subsystem, index = self.joint_map[key]
             self[subsystem][index] = value
         else:
