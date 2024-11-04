@@ -7,7 +7,6 @@ import mujoco.viewer
 from std_msgs.msg import Float32MultiArray
 from pathlib import Path
 from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.Hand import HAND
 from dextrous_hand.ids import JOINTS
 
 JOINT_MAP = {
@@ -58,6 +57,8 @@ class MujocoNode(Node):
         self.model = mujoco.MjModel.from_xml_path(xml_path.as_posix())
         self.data = mujoco.MjData(self.model)
 
+        self.config = HandConfig()
+
         # Launch the viewer in a non-blocking way
         self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
 
@@ -69,17 +70,16 @@ class MujocoNode(Node):
         if self.viewer.is_running():
             for config_joint, sim_joint in JOINT_MAP.items():
                 joint_index = self.joint_names.index(sim_joint)
-                config = HAND.get_config()
-                self.data.qpos[joint_index] = config[config_joint]
+                self.data.qpos[joint_index] = self.config[config_joint]
 
             mujoco.mj_step(self.model, self.data)
             self.viewer.sync()  # Sync the viewer with the new simulation state
 
-
     def joint_command_callback(self, msg):
         # Mapping function to be removed
-        config = HandConfig.from_msg(msg)
-        HAND.set_config(config)
+        self.config = HandConfig.from_msg(msg)
+        print(self.config)
+
 
     def destroy(self):
         self.viewer.close()
