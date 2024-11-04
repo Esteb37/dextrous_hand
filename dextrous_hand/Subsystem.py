@@ -86,7 +86,7 @@ class Subsystem(ABC):
         """
         return [joint.read() for joint in self.joints]
 
-    def at_position(self):
+    def at_target(self):
         """
         returns
             True if all motors in the subsystem are at their target angles

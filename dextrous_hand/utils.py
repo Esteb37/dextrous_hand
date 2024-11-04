@@ -2,6 +2,8 @@
 
 from std_msgs.msg import Float32MultiArray
 import numpy as np
+from scipy.spatial.transform import Rotation as R
+from geometry_msgs.msg import PoseStamped, Quaternion, Point
 
 def matrix_to_message(matrix):
     """
@@ -25,3 +27,24 @@ def message_to_matrix(message : Float32MultiArray, num_rows):
     num_cols = len(message.data) // num_rows
     shape = (num_rows, num_cols)
     return np.array(message.data).reshape(shape).tolist()
+
+def pos_orient_to_pose(pos : list[float], orient : list[float]):
+    """
+    Takes a position and orientation and converts it to a Pose message
+    """
+    pose = PoseStamped()
+    pose.pose.position = Point(x = pos[0], y = pos[1], z = pos[2])
+    orientation = R.from_euler('xyz', orient, degrees = True).as_quat()
+
+    pose.pose.orientation = Quaternion(x = orientation[0], y = orientation[1], z = orientation[2], w = orientation[3])
+
+    return pose
+
+def pose_to_pos_orient(pose : PoseStamped) -> tuple[list[float], list[float]]:
+    """
+    Takes a Pose message and converts it to a position and orientation
+    """
+    pos = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
+    orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w]).as_euler('xyz', degrees = True).tolist()
+
+    return pos, orientation

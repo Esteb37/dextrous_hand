@@ -2,8 +2,10 @@ from dataclasses import dataclass
 import dextrous_hand.utils as utils
 from dextrous_hand import ids
 from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import PoseStamped
+from scipy.spatial.transform import Rotation as R
 
-HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS
+HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS | ids.POSE
 
 @dataclass
 class HandConfig:
@@ -25,6 +27,8 @@ class HandConfig:
     INDEX : list[float]
     THUMB : list[float]
     WRIST : list[float]
+    POSITION : list[float]
+    ORIENTATION : list[float]
 
     def __init__(self, **kwargs):
         """
@@ -37,6 +41,8 @@ class HandConfig:
             INDEX = [float, float, float]
             THUMB = [float, float, float]
             WRIST = [float]
+            POSITION = [float, float, float]
+            ORIENTATION = [float, float, float]
         """
         self.PINKY = [0.0, 0.0, 0.0]
         self.RING = [0.0, 0.0, 0.0]
@@ -44,19 +50,29 @@ class HandConfig:
         self.INDEX = [0.0, 0.0, 0.0]
         self.THUMB = [0.0, 0.0, 0.0]
         self.WRIST = [0.0]
+        self.POSITION = [0.0, 0.0, 0.0]
+        self.ORIENTATION = [0.0, 0.0, 0.0]
 
         from dextrous_hand.architecture import SUBSYSTEM_JOINTS
         self.joint_map = {}
 
         for subsystem in ids.SUBSYSTEMS:
-            for joint in SUBSYSTEM_JOINTS[subsystem]:
-                joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
-                index = joint_ids.index(joint.id)
-                self.joint_map[joint.id] = (subsystem, index)
+            if subsystem not in [ids.SUBSYSTEMS.POSITION, ids.SUBSYSTEMS.ORIENTATION]:
+                for joint in SUBSYSTEM_JOINTS[subsystem]:
+                    joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
+                    index = joint_ids.index(joint.id)
+                    self.joint_map[joint.id] = (subsystem, index)
+
+        self.joint_map[ids.POSE.X] = (ids.SUBSYSTEMS.POSITION, 0)
+        self.joint_map[ids.POSE.Y] = (ids.SUBSYSTEMS.POSITION, 1)
+        self.joint_map[ids.POSE.Z] = (ids.SUBSYSTEMS.POSITION, 2)
+
+        self.joint_map[ids.POSE.ROLL] = (ids.SUBSYSTEMS.ORIENTATION, 0)
+        self.joint_map[ids.POSE.PITCH] = (ids.SUBSYSTEMS.ORIENTATION, 1)
+        self.joint_map[ids.POSE.YAW] = (ids.SUBSYSTEMS.ORIENTATION, 2)
 
         for key, value in kwargs.items():
-
-            if type(value) is float:
+            if type(value) == float:
                 value = [value]
 
             self[key] = value
@@ -78,6 +94,9 @@ class HandConfig:
         elif isinstance(key, ids.SUBSYSTEMS):
             return getattr(self, key.name)
         elif isinstance(key, ids.JOINTS):
+            subsystem, index = self.joint_map[key]
+            return self[subsystem][index]
+        elif isinstance(key, ids.POSE):
             subsystem, index = self.joint_map[key]
             return self[subsystem][index]
         else:
@@ -106,9 +125,11 @@ class HandConfig:
         elif isinstance(key, ids.JOINTS):
             subsystem, index = self.joint_map[key]
             self[subsystem][index] = value
+        elif isinstance(key, ids.POSE):
+            subsystem, index = self.joint_map[key]
+            self[subsystem][index] = value
         else:
             raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
-
 
     def __iter__(self):
         """
@@ -144,6 +165,8 @@ class HandConfig:
             INDEX = matrix[ids.SUBSYSTEMS.INDEX.value][:3],
             THUMB = matrix[ids.SUBSYSTEMS.THUMB.value][:3],
             WRIST = matrix[ids.SUBSYSTEMS.WRIST.value][:1],
+            POSITION = matrix[ids.SUBSYSTEMS.POSITION.value][:3],
+            ORIENTATION = matrix[ids.SUBSYSTEMS.ORIENTATION.value][:3]
         )
 
     @staticmethod
@@ -153,12 +176,16 @@ class HandConfig:
         """
         from dextrous_hand.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
         from dextrous_hand.Wrist import WRIST
+        from dextrous_hand.Arm import ARM
         return HandConfig(PINKY = PINKY.read()[:3],
                           RING = RING.read()[:3],
                           MIDDLE = MIDDLE.read()[:3],
                           INDEX = INDEX.read()[:3],
                           THUMB = THUMB.read()[:3],
-                          WRIST = WRIST.read()[:1])
+                          WRIST = WRIST.read()[:1],
+                          POSITION = ARM.position[:3],
+                          ORIENTATION = ARM.orientation[:3]
+                          )
 
     @staticmethod
     def from_msg(msg : Float32MultiArray):
@@ -182,9 +209,16 @@ class HandConfig:
         """
         return utils.matrix_to_message(self.as_matrix())
 
+    def pose_msg(self):
+        """
+        Returns the hand configuration as a ROS PoseStamped message
+        """
+        from dextrous_hand.Arm import ARM
+        return ARM.target_msg()
+
     @property
     def FINGERS(self):
         """
         Returns only the finger configurations
         """
-        return [self[finger] for finger in set(ids.SUBSYSTEMS).difference({ids.SUBSYSTEMS.WRIST})]
+        return [self[id] for id in ids.SUBSYSTEMS if id.value < ids.SUBSYSTEMS.WRIST.value]

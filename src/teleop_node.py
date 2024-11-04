@@ -83,7 +83,7 @@ class TeleopNode(Node):
 
     def on_press(self, key):
         try:
-            if key.char in "qwertyu123ol":
+            if key.char in "qwertyu123oplk":
                 # Map keys to finger ids
                 if key.char == 'q':
                     self.subsystem_id = "PINKY"
@@ -109,6 +109,14 @@ class TeleopNode(Node):
                     self.subsystem_id = "WRIST"
                     self.joint_id = 0
                     self.all = False
+                elif key.char == 'p':
+                    self.subsystem_id = "POSITION"
+                    self.joint_id = 0
+                    self.all = False
+                elif key.char == 'o':
+                    self.subsystem_id = "ORIENTATION"
+                    self.joint_id = 0
+                    self.all = False
 
                 # Map keys to joint ids
                 elif key.char in '123':
@@ -119,7 +127,7 @@ class TeleopNode(Node):
                     self.joint_id = 0
 
                 # Adjust finger positions based on arrow keys
-                elif key.char == "o":
+                elif key.char == "k":
                     if self.all:
                         for finger_config in self.hand_config.FINGERS:
                             finger_config[self.joint_id] += 0.1
@@ -183,6 +191,8 @@ class TeleopNode(Node):
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
+
+        print(self.hand_config)
 
     def run(self):
         while rclpy.ok():

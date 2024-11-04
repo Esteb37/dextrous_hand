@@ -101,3 +101,9 @@ MOTOR_DIRECTIONS = {
 """
 Direction of the motors.
 """
+
+FRANKA_CENTER_POSITION = [0.5, 0.0, 0.3]
+FRANKA_CENTER_ORIENTATION = [PI, 0.0, 0.0]
+"""
+Center position and orientation of the Franka arm.
+"""

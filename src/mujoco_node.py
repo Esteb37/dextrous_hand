@@ -62,6 +62,8 @@ class MujocoNode(Node):
 
         self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)]
 
+        print(self.joint_names)
+
         self.config = HandConfig.default()
 
         self.create_timer(0.01, self.update_simulation)  # 100 Hz update rate
@@ -79,6 +81,7 @@ class MujocoNode(Node):
     def joint_command_callback(self, msg):
         # Mapping function to be removed
         self.config = HandConfig.from_msg(msg)
+        print(self.config)
 
     def destroy(self):
         self.viewer.close()

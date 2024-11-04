@@ -83,7 +83,7 @@ MIDDLE = Finger(ids.SUBSYSTEMS.MIDDLE)
 INDEX = Finger(ids.SUBSYSTEMS.INDEX)
 THUMB = Thumb(ids.SUBSYSTEMS.THUMB)
 
-FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id != ids.SUBSYSTEMS.WRIST]
+FINGERS = [Finger(id) for id in ids.SUBSYSTEMS if id.value < ids.SUBSYSTEMS.WRIST.value]
 FINGERS[ids.SUBSYSTEMS.THUMB.value] = Thumb(ids.SUBSYSTEMS.THUMB)
 """
  A collection of fingers for easy iteration.
