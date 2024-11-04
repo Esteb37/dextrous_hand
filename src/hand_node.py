@@ -47,7 +47,7 @@ class HandNode(Node):
         self.read_thread.start()
 
         self.arm_msg = HAND.get_config().pose_msg()
-        self.arm_subscription = self.create_subscription(PoseStamped,'i_dont_know_what_to_name_this',self.arm_config_callback,10)
+        self.arm_subscription = self.create_subscription(PoseStamped,'/franka/end_effector_pose',self.arm_config_callback,10)
         self.arm_publisher = self.create_publisher(PoseStamped, '/franka/end_effector_pose_cmd', 10)
 
         self.get_logger().info('Hand node started')
@@ -61,7 +61,7 @@ class HandNode(Node):
 
     def write(self):
         if self.initialized:
-            self.arm_publisher.publish(HAND.get_config().pose_msg())
+            self.arm_publisher.publish(HAND.get_target().pose_msg())
             self.motor_bridge.write_targets()
 
     def read_loop(self):
