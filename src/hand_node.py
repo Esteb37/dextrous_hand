@@ -4,11 +4,13 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from dextrous_hand.Hand import HAND
+from dextrous_hand.Arm import ARM
 from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand.constants import NODE_FREQUENCY_HZ, MANUAL_CONTROL
 from dextrous_hand.DynamixelClient import DynamixelClient
 import time
 import threading
+from geometry_msgs.msg import PoseStamped
 
 class HandNode(Node):
     """
@@ -44,6 +46,10 @@ class HandNode(Node):
         self.read_thread.daemon = True
         self.read_thread.start()
 
+        self.arm_msg = HAND.get_config().pose_msg()
+        self.arm_subscription = self.create_subscription(PoseStamped,'i_dont_know_what_to_name_this',self.arm_config_callback,10)
+        self.arm_publisher = self.create_publisher(PoseStamped, '/franka/end_effector_pose_cmd', 10)
+
         self.get_logger().info('Hand node started')
 
     def hand_config_callback(self, msg):
@@ -55,6 +61,7 @@ class HandNode(Node):
 
     def write(self):
         if self.initialized:
+            self.arm_publisher.publish(HAND.get_config().pose_msg())
             self.motor_bridge.write_targets()
 
     def read_loop(self):
@@ -68,8 +75,11 @@ class HandNode(Node):
     def read(self):
         if self.initialized:
             self.motor_bridge.update_positions()
+            ARM.update(self.arm_msg)
             print(HAND)
 
+    def arm_config_callback(self, msg):
+        self.arm_msg = msg
 
 def main(args=None):
     rclpy.init(args=args)

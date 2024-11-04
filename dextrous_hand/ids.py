@@ -43,6 +43,9 @@ class SUBSYSTEMS(Enum):
     THUMB = auto()
     WRIST = auto()
 
+    POSITION = auto()
+    ORIENTATION = auto()
+
 class JOINTS(Enum):
     """
     Joint IDs.
@@ -91,3 +94,16 @@ class MOTOR_DIRECTION(Enum):
     """
     FORWARD = 1
     REVERSED = -1
+
+class POSE(Enum):
+    """
+    The IDS related to the Hand's Pose
+    """
+
+    X = 0
+    Y = auto()
+    Z = auto()
+
+    ROLL = auto()
+    PITCH = auto()
+    YAW = auto()

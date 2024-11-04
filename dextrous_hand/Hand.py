@@ -3,6 +3,7 @@
 import dextrous_hand.Finger as Finger
 from dextrous_hand.Wrist import WRIST
 from dextrous_hand.HandConfig import HandConfig
+from dextrous_hand.Arm import ARM
 
 class Hand():
     _instance = None
@@ -39,13 +40,15 @@ class Hand():
         """
         self.target = config
 
-        all_at_position = True
+        all_at_target = True
         for subsystem in Finger.FINGERS + [WRIST]:
             subsystem.write(config[subsystem.id])
-            all_at_position = all_at_position and subsystem.at_position()
+            all_at_target = all_at_target and subsystem.at_target()
 
+        ARM.write(config["POSITION"], config["ORIENTATION"])
+        all_at_target = all_at_target and ARM.at_target()
 
-        return all_at_position
+        return all_at_target
 
     def get_config(self):
         return HandConfig.current()
@@ -63,6 +66,8 @@ class Hand():
                 string += "\t" + str(joint) + "\n"
                 for motor in joint.motors:
                     string += "\t\t" + str(motor) + "\n"
+
+        string += str(ARM) + "\n"
         return string
 
     @property
