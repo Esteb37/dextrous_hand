@@ -55,7 +55,6 @@ class HandConfig:
                 self.joint_map[joint.id] = (subsystem, index)
 
         from dextrous_hand.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
-        from dextrous_hand.Wrist import WRIST
         for key, value in kwargs.items():
 
             if key == "PINKY":
@@ -68,10 +67,8 @@ class HandConfig:
                 self.INDEX = INDEX.restrict_joint_angles(value)
             elif key == "THUMB":
                 self.THUMB = THUMB.restrict_joint_angles(value)
-            elif key == "WRIST":
-                self.WRIST = WRIST.restrict_joint_angles(value)
-
-            self[key] = value
+            else:
+                self[key] = value
 
     def __getitem__(self, key : HandConfigIndex):
         """
