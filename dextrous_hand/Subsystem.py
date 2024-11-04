@@ -62,6 +62,9 @@ class Subsystem(ABC):
         """
         pass
 
+    def restrict_joint_angles(self, joint_angles):
+        return joint_angles
+
     def write(self, joint_angles):
         """
         Map joint angles to motor angles and write to the motors
@@ -73,6 +76,11 @@ class Subsystem(ABC):
         # Allow for single-joint subsystems to be controlled with a single float
         if type(joint_angles) == float:
             joint_angles = [joint_angles]
+
+        joint_angles = self.restrict_joint_angles(joint_angles)
+
+        for i, angle in enumerate(joint_angles):
+            self.joints[i].target = angle
 
         motor_angles = self.joints2motors(joint_angles)
 
@@ -132,7 +140,7 @@ class Subsystem(ABC):
         return motors[0]
 
     def __str__(self):
-        formatted_values = [f"{value:.2f}" for value in self.read()]
+        formatted_values = [f"{value:.3f}" for value in self.read()]
         return self.id.name + ": " + str(formatted_values)
 
     def __getitem__(self, joint_index):
