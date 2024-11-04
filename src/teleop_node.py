@@ -127,19 +127,25 @@ class TeleopNode(Node):
                     self.joint_id = 0
 
                 # Adjust finger positions based on arrow keys
-                elif key.char == "k":
+                elif key.char == "l":
                     if self.all:
                         for finger_config in self.hand_config.FINGERS:
                             finger_config[self.joint_id] += 0.1
                     else:
-                        self.hand_config[self.subsystem_id][self.joint_id] += 0.1
+                        if self.subsystem_id == "POSITION":
+                            self.hand_config[self.subsystem_id][self.joint_id] += 0.01
+                        else:
+                            self.hand_config[self.subsystem_id][self.joint_id] += 0.1
 
-                elif key.char == "l":
+                elif key.char == "k":
                     if self.all:
                         for finger_config in self.hand_config.FINGERS:
                             finger_config[self.joint_id] -= 0.1
                     else:
-                        self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
+                        if self.subsystem_id == "POSITION":
+                            self.hand_config[self.subsystem_id][self.joint_id] -= 0.01
+                        else:
+                            self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
 
                 if self.all:
                     for config in self.hand_config.FINGERS:
@@ -184,7 +190,6 @@ class TeleopNode(Node):
                     MIDDLE=[0.0, 0.0, angle],
                     INDEX=[0.0, 0.0, angle],
                     THUMB=[0.0, 0.0, angle],
-                    WRIST=[0.0]
                 )
                 print(angle)
 

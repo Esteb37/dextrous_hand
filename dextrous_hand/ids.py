@@ -81,6 +81,13 @@ class JOINTS(Enum):
 
     WRIST = auto()
 
+    POSE_X = auto()
+    POSE_Y = auto()
+    POSE_Z = auto()
+    POSE_ROLL = auto()
+    POSE_PITCH = auto()
+    POSE_YAW = auto()
+
 class STARTUP(Enum):
     HOME = 0 # all joints set to 0
     LAST = auto() # all joints set to their last known position
@@ -94,16 +101,3 @@ class MOTOR_DIRECTION(Enum):
     """
     FORWARD = 1
     REVERSED = -1
-
-class POSE(Enum):
-    """
-    The IDS related to the Hand's Pose
-    """
-
-    X = 0
-    Y = auto()
-    Z = auto()
-
-    ROLL = auto()
-    PITCH = auto()
-    YAW = auto()

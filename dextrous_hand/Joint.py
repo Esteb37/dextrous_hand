@@ -94,3 +94,52 @@ class Joint(ABC):
         To support 'obj[motor_index]' for getting motors
         """
         return self.motors[motor_index]
+
+
+class VirtualJoint():
+    """
+    A virtual joint is a joint that is not self-actuated
+    """
+    # For the singleton pattern
+    _instances = {}
+
+    def __new__(cls, name, *args, **kwargs):
+        """
+        Singleton pattern. Make sure only one instance of each Joint is created.
+        If a joint with the same name has already been created, return that instance.
+        """
+        if name not in cls._instances:
+            cls._instances[name] = super(VirtualJoint, cls).__new__(cls)
+        return cls._instances[name]
+
+    def __init__(self, id : ids.JOINTS):
+        """
+        params
+            id [JOINTS]: the joint's id
+
+        raises
+            Exception: if the joint has no motors
+        """
+        # Avoid reinitialization if already initialized
+        if hasattr(self, 'initialized') and self.initialized:
+            return
+
+        self.id = id
+        self.initialized = True
+        self.value = 0
+
+    def read(self):
+        """
+        returns:
+            The joint's current angle in radians
+        """
+        return self.value
+
+    def write(self, value):
+        """
+        Set the joint's value
+        """
+        self.value = value
+
+    def __str__(self):
+        return self.id.name + ": " + f"{self.read():.3f}"

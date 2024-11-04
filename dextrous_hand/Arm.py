@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from geometry_msgs.msg import Point, Quaternion
 from dextrous_hand.constants import FRANKA_CENTER_ORIENTATION, FRANKA_CENTER_POSITION, IS_SIMULATION
 from dextrous_hand.utils import pos_orient_to_pose, pose_to_pos_orient
 from scipy.spatial.transform import Rotation as R
