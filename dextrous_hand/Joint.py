@@ -94,7 +94,7 @@ class Joint(ABC):
             return a*joint
 
         def rot_mat_z(tetha):
-            C_z = np.array([[math.cos(tetha), -math.sin(tetha), 0],[math.sin(tetha), -math.cos(tetha), 0],[0,0,1]])
+            C_z = np.array([[math.cos(tetha), -math.sin(tetha), 0],[math.sin(tetha), math.cos(tetha), 0],[0,0,1]])
             return C_z
 
         C_I1 = rot_mat_z(joint/2)
@@ -109,7 +109,7 @@ class Joint(ABC):
         tendon_12 = C_I1@centers_vect+C_I2@p2-p1
         length_12 = self.geometry["length_12_0"] - np.linalg.norm(tendon_12)
 
-        tendon_34 = C_I1@centers_vect+C_I2@p3-p4
+        tendon_34 = C_I1@centers_vect+C_I2@p4-p3
         length_34 = self.geometry["length_34_0"] - np.linalg.norm(tendon_34)
 
         return (length_12, length_34)
