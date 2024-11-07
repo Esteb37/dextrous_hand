@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.constants import FRANKA_CENTER_ORIENTATION, FRANKA_CENTER_POSITION, IS_SIMULATION
+from dextrous_hand.constants import ARM_CONSTANTS, IS_SIMULATION
 from dextrous_hand.utils import pos_orient_to_pose, pose_to_pos_orient
 from scipy.spatial.transform import Rotation as R
 
@@ -23,8 +23,11 @@ class Arm:
         if hasattr(self, 'initialized') and self.initialized:
             return
 
-        self._target = pos_orient_to_pose(FRANKA_CENTER_POSITION, FRANKA_CENTER_ORIENTATION)
-        self._pose = pos_orient_to_pose(FRANKA_CENTER_POSITION, FRANKA_CENTER_ORIENTATION)
+        self._target = pos_orient_to_pose(ARM_CONSTANTS["CENTER_POSITION"],
+                                          ARM_CONSTANTS["CENTER_ORIENTATION"])
+
+        self._pose = pos_orient_to_pose(ARM_CONSTANTS["CENTER_POSITION"],
+                                        ARM_CONSTANTS["CENTER_ORIENTATION"])
 
         self.initialized = True
 
@@ -35,13 +38,13 @@ class Arm:
 
         if positive:
             for i in range(3):
-                position[i] += FRANKA_CENTER_POSITION[i]
-                orientation_rad[i] += FRANKA_CENTER_ORIENTATION[i]
+                position[i] += ARM_CONSTANTS["CENTER_POSITION"][i]
+                orientation_rad[i] += ARM_CONSTANTS["CENTER_ORIENTATION"][i]
 
         else:
             for i in range(3):
-                position[i] -= FRANKA_CENTER_POSITION[i]
-                orientation_rad[i] -= FRANKA_CENTER_ORIENTATION[i]
+                position[i] -= ARM_CONSTANTS["CENTER_POSITION"][i]
+                orientation_rad[i] -= ARM_CONSTANTS["CENTER_ORIENTATION"][i]
 
         new_pose = pos_orient_to_pose(position, orientation_rad)
 

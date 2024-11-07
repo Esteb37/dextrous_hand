@@ -2,8 +2,7 @@ from dataclasses import dataclass
 import dextrous_hand.utils as utils
 from dextrous_hand import ids
 from std_msgs.msg import Float32MultiArray
-from geometry_msgs.msg import PoseStamped
-from scipy.spatial.transform import Rotation as R
+from dextrous_hand.constants import CONFIGS
 
 HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS
 @dataclass
@@ -29,7 +28,7 @@ class HandConfig:
     POSITION : list[float]
     ORIENTATION : list[float]
 
-    def __init__(self, **kwargs):
+    def __init__(self, config_name = None, **kwargs):
         """
         Initialize the HandConfig object with the given values or zeros if not provided
 
@@ -60,6 +59,15 @@ class HandConfig:
                 joint_ids = [joint.id for joint in SUBSYSTEM_JOINTS[subsystem]]
                 index = joint_ids.index(joint.id)
                 self.joint_map[joint.id] = (subsystem, index)
+
+        if config_name is not None:
+            if config_name not in CONFIGS:
+                raise ValueError(f"Config {config_name} not found in CONFIGS")
+
+            for key, value in CONFIGS[config_name].items():
+                if type(value) is float:
+                    value = [value]
+                self[key] = value
 
         for key, value in kwargs.items():
             if type(value) is float:

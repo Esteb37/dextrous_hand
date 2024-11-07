@@ -9,12 +9,10 @@ from pynput import keyboard # type: ignore
 import time
 
 import dextrous_hand.ids as ids
-from dextrous_hand.constants import NODE_FREQUENCY_HZ
 from dextrous_hand.DynamixelClient import DynamixelClient
 from dextrous_hand.Hand import HAND
 from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand import constants
-import dextrous_hand.configs as configs
 
 class TeleopNode(Node):
     """
@@ -49,7 +47,7 @@ class TeleopNode(Node):
 
         self.all = False
 
-        if constants.STARTUP_MODE == ids.STARTUP.LAST:
+        if constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.LAST.value:
 
             self.get_logger().info('Reading current angles...')
             self.motor_bridge = DynamixelClient()
@@ -71,8 +69,8 @@ class TeleopNode(Node):
             # Just the first three columns
             self.hand_config = HAND.get_config()
 
-        elif constants.STARTUP_MODE == ids.STARTUP.CUSTOM:
-            self.hand_config = configs.HOME
+        elif constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.CUSTOM.value:
+            self.hand_config = HandConfig("HOME")
 
         else:
             self.hand_config = HandConfig.default()
@@ -157,28 +155,22 @@ class TeleopNode(Node):
 
             elif key.char in "zxcvbnm":
                 if key.char == 'z':
-                    config = configs.HOME
-                    print("HOME", config)
+                    config = "HOME"
                 elif key.char == 'x':
-                    config = configs.GRASP
-                    print("GRASP", config)
+                    config = "GRASP"
                 elif key.char == 'c':
-                    config = configs.ROCK
-                    print("ROCK", config)
+                    config = "ROCK"
                 elif key.char == 'v':
-                    config = configs.FINGER
-                    print("FINGER", config)
+                    config = "FINGER"
                 elif key.char == 'b':
-                    config = configs.LOVE
-                    print("LOVE", config)
+                    config = "LOVE"
                 elif key.char == 'n':
-                    config = configs.THUMB
-                    print("THUMB", config)
+                    config = "THUMB"
                 elif key.char == 'm':
-                    config = configs.SPOCK
-                    print("SPOCK", config)
+                    config = "SPOCK"
 
-                self.hand_config = config
+                print(config)
+                self.hand_config = HandConfig(config)
 
             if key.char == "a":
                 angle = (np.sin(time.time()) * np.pi + np.pi) / 2
@@ -200,7 +192,7 @@ class TeleopNode(Node):
         while rclpy.ok():
             # Publish the current finger positions
             self.config_publisher.publish(self.hand_config.as_msg())
-            time.sleep(1.0 / NODE_FREQUENCY_HZ)
+            time.sleep(1.0 / constants.NODE_FREQUENCY_HZ)
 
 def main(args=None):
     rclpy.init(args=args)

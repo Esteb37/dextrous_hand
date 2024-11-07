@@ -5,7 +5,7 @@ from rclpy.node import Node
 import mujoco
 import mujoco.viewer
 from std_msgs.msg import Float32MultiArray
-from pathlib import Path
+from dextrous_hand.utils import parent_dir
 from dextrous_hand.HandConfig import HandConfig
 from dextrous_hand.ids import JOINTS
 
@@ -45,31 +45,18 @@ class MujocoNode(Node):
         self.get_logger().info('mujoco_node started.')
         self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'hand_config', self.joint_command_callback, 10)
 
-        # Go back until you find the "install" folder
-        current_dir = Path(__file__).resolve().parent
 
-        # Traverse upward until "install" directory is found
-        install_dir = None
-        for parent in current_dir.parents:
-            if parent.name == "install":
-                install_dir = parent
-                break
+        xml_path = parent_dir() + "/data/assets/hh_hand.xml"
 
-        if install_dir is None:
-            raise FileNotFoundError("Could not find the 'install' directory")
-
-        parent_dir = install_dir.parent
-        xml_path = parent_dir / "src" / "dextrous_hand" / "data" / "assets" / "hh_hand.xml"
-
-        self.model = mujoco.MjModel.from_xml_path(xml_path.as_posix())
-        self.data = mujoco.MjData(self.model)
+        self.model = mujoco.MjModel.from_xml_path(xml_path) # type: ignore
+        self.data = mujoco.MjData(self.model) # type: ignore
 
         self.config = HandConfig()
 
         # Launch the viewer in a non-blocking way
         self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
 
-        self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)]
+        self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)] # type: ignore
 
         self.create_timer(0.01, self.update_simulation)  # 100 Hz update rate
 
@@ -79,7 +66,7 @@ class MujocoNode(Node):
                 joint_index = self.joint_names.index(sim_joint)
                 self.data.qpos[joint_index] = self.config[config_joint]
 
-            mujoco.mj_step(self.model, self.data)
+            mujoco.mj_step(self.model, self.data) # type: ignore
             self.viewer.sync()  # Sync the viewer with the new simulation state
 
     def joint_command_callback(self, msg):

@@ -3,7 +3,7 @@
 from dextrous_hand.Subsystem import Subsystem
 import dextrous_hand.ids as ids
 
-from dextrous_hand.constants import SPOOL_RADIUS
+from dextrous_hand.joints_geometry import SPOOL_RADIUS
 
 class Finger(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):

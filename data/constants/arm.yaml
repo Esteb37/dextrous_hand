@@ -1,0 +1,5 @@
+PI: &pi 3.141592
+MPI: &mpi -3.141592
+
+CENTER_POSITION: [0.5, 0.0, 0.3]
+CENTER_ORIENTATION: [*pi, 0.0, 0.0]
