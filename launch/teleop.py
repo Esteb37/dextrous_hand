@@ -7,11 +7,15 @@ def generate_launch_description():
             package='dextrous_hand',
             executable='hand_node',
             name='hand_node',
+            parameters=[
+                {"is_simulation": False}
+            ],
+            emulate_tty=True
         ),
         Node(
             package='dextrous_hand',
             executable='teleop_node',
             name='teleop_node',
-            output='screen'
+            emulate_tty=True
         ),
     ])

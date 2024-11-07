@@ -6,7 +6,7 @@ from std_msgs.msg import Float32MultiArray
 from dextrous_hand.Hand import HAND
 from dextrous_hand.Arm import ARM
 from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.constants import NODE_FREQUENCY_HZ, MANUAL_CONTROL
+from dextrous_hand.constants import NODE_FREQUENCY_HZ, GLOBAL_CONSTANTS
 from dextrous_hand.DynamixelClient import DynamixelClient
 import time
 import threading
@@ -24,7 +24,13 @@ class HandNode(Node):
 
         self.motor_bridge = DynamixelClient()
 
-        if MANUAL_CONTROL:
+        self.declare_parameter("is_simulation", False)
+        self.declare_parameter("manual_control", False)
+
+        GLOBAL_CONSTANTS["IS_SIMULATION"] = self.get_parameter("is_simulation").value
+        GLOBAL_CONSTANTS["MANUAL_CONTROL"] = self.get_parameter("manual_control").value
+
+        if GLOBAL_CONSTANTS["MANUAL_CONTROL"]:
             self.motor_bridge.connect()
             self.motor_bridge.disable_torque()
             self.get_logger().info("Manual control enabled. Torque disabled.")
@@ -40,6 +46,7 @@ class HandNode(Node):
             self.initialized = False
 
         self.write_timer = self.create_timer(1.0 / NODE_FREQUENCY_HZ, self.write)
+        self.print_timer = self.create_timer(0.1, self.print)
 
         # Start the read thread
         self.read_thread = threading.Thread(target=self.read_loop)
@@ -76,6 +83,9 @@ class HandNode(Node):
         if self.initialized:
             self.motor_bridge.update_positions()
             ARM.update(self.arm_msg)
+
+    def print(self):
+        if self.initialized:
             print(HAND)
 
     def arm_config_callback(self, msg):

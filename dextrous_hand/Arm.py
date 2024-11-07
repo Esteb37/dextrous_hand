@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.constants import ARM_CONSTANTS, IS_SIMULATION
+from dextrous_hand.constants import ARM_CONSTANTS, GLOBAL_CONSTANTS
 from dextrous_hand.utils import pos_orient_to_pose, pose_to_pos_orient
 from scipy.spatial.transform import Rotation as R
 
@@ -82,7 +82,7 @@ class Arm:
         return self._target
 
     def update(self, current_pose):
-        if IS_SIMULATION:
+        if GLOBAL_CONSTANTS["IS_SIMULATION"]:
             self._pose = self._target
         else:
             self._pose = current_pose

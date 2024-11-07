@@ -4,7 +4,7 @@ import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 from dextrous_hand.joints_geometry import SPOOL_RADIUS
-from dextrous_hand.constants import IS_SIMULATION
+from dextrous_hand.constants import GLOBAL_CONSTANTS
 
 import math
 import numpy as np
@@ -119,7 +119,7 @@ class Joint(ABC):
         returns:
             The joint's current angle in radians
         """
-        if IS_SIMULATION:
+        if GLOBAL_CONSTANTS["IS_SIMULATION"]:
             return self.target
 
         motor_angles = [motor.read() for motor in self.motors]
