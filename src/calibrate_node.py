@@ -7,7 +7,7 @@ from ruamel.yaml import YAML
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from dextrous_hand.DynamixelClient import DynamixelClient
-from dextrous_hand import constants
+from dextrous_hand.constants import GLOBAL_CONSTANTS
 from dextrous_hand.utils import parent_dir
 
 class CalibrateNode(Node):
@@ -18,7 +18,7 @@ class CalibrateNode(Node):
 
         self.get_logger().info('Calibration node started')
 
-        if constants.IS_SIMULATION:
+        if GLOBAL_CONSTANTS["IS_SIMULATION"]:
             self.get_logger().error("IS_SIMULATION must be set to False for calibration.")
             return
 

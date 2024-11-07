@@ -151,7 +151,7 @@ class DynamixelClient:
 
     @property
     def is_connected(self) -> bool:
-        if constants.IS_SIMULATION:
+        if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
             return self.is_sim_connected
         else:
             return self.port_handler.is_open
@@ -163,7 +163,7 @@ class DynamixelClient:
             process are created.
         """
 
-        if constants.IS_SIMULATION:
+        if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
             LOG_WARN('Simulation mode enabled. No connection to Dynamixel.')
             self.is_sim_connected = True
             return
@@ -206,7 +206,7 @@ class DynamixelClient:
 
     def disconnect(self):
         """Disconnects from the Dynamixel device."""
-        if constants.IS_SIMULATION:
+        if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
             self.is_sim_connected = False
             return
 
@@ -427,7 +427,7 @@ class DynamixelClient:
         """
 
         # If we are in simulation, just set the angles to the target (infinite speed)
-        if constants.IS_SIMULATION:
+        if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
             for motor in self.motors:
                 motor.angle = motor.target
             return
@@ -441,7 +441,7 @@ class DynamixelClient:
         """Writes the target positions to all motors."""
 
         # If we are in simulation, do nothing
-        if constants.IS_SIMULATION:
+        if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
             return
 
         self.check_connected()
