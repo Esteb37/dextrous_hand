@@ -92,6 +92,16 @@
    ```ros2 run dextrous_hand teleop_node```
 
 - Control the motors with the keyboard
+   - Select predefined configuration
+      ```
+      z = Home
+      x = Grasp
+      c = Rock
+      v = Middle finger
+      b = Peace sign
+      n = Thumbs up
+      m = Spock salute
+      ```
    - Select the subsystem
       ```
       q = pinky
@@ -101,19 +111,29 @@
       t = thumb
       y = wrist
       u = all fingers (no wrist)
+      o = orientation
+      p = position
       ```
    - Select the joint
       ```
-      1 = ABD (or wrist)
-      2 = MCP
-      3 = PIP/DIP
+      1 = ABD | wrist | position X | orientation roll
+      2 = MCP | position Y | orientation pitch
+      3 = PIP/DIP | position Z | orientation yaw
       ```
 
-   - Control the motor
+   - Control the joint
       ```
-      o = add to angle
-      l = substract from angle
+      l = add to angle
+      k = substract from angle
       ```
+
+# Calibration
+   - Set all the fingers and wrist to the desired zero position
+   - Run ```calibration_node```
+   - If motor direction also needs to be calibrated
+      - Select ```y``` when prompted
+      - Flex all the finger joints towards the inside of the palm and the wrist forward.
+      - Press ```enter```
 
 # Adding files
 
@@ -142,7 +162,7 @@
  - **/data** - Images, text-files, ML models etc
 
 
-# Building With Symlink 
+# Building With Symlink
  - Open your bashrc and add ```alias colcon_build='colcon build --symlink-install'```
  - source bashrc
  - Now you can build once with colcon_build.
@@ -155,4 +175,3 @@
  - Downgrade the version : ```pip install --upgrade pip setuptools==58.2.0```
  - ```pip list | grep setuptools``` to check if downgrade successfull
  - You should not have this error again
-   

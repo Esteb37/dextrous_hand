@@ -47,7 +47,7 @@ class CalibrateNode(Node):
         response = input()
         if response == 'y':
             motor_bridge.disable_torque()
-            print("Do full MCP and PIP flexion and press enter.")
+            print("Flex all the finger joints towards the inside of the palm and the wrist forward.")
             input()
             motor_bridge.read_directions()
 
