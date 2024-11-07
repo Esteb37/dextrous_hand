@@ -57,12 +57,12 @@ class MujocoNode(Node):
         self.model = mujoco.MjModel.from_xml_path(xml_path.as_posix())
         self.data = mujoco.MjData(self.model)
 
+        self.config = HandConfig()
+
         # Launch the viewer in a non-blocking way
         self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
 
         self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)]
-
-        self.config = HandConfig.default()
 
         self.create_timer(0.01, self.update_simulation)  # 100 Hz update rate
 
@@ -75,10 +75,11 @@ class MujocoNode(Node):
             mujoco.mj_step(self.model, self.data)
             self.viewer.sync()  # Sync the viewer with the new simulation state
 
-
     def joint_command_callback(self, msg):
         # Mapping function to be removed
         self.config = HandConfig.from_msg(msg)
+        print(self.config)
+
 
     def destroy(self):
         self.viewer.close()

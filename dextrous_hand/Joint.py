@@ -4,6 +4,11 @@ import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
 
+from dextrous_hand.constants import SPOOL_RADIUS, IS_SIMULATION
+
+import math
+import numpy as np
+
 class Joint(ABC):
     """
     A joint is a motor or a collection of motors that move together to achieve a specific angle.
@@ -43,6 +48,16 @@ class Joint(ABC):
 
         self.motors = [Motor(motor_id) for motor_id in JOINT_MOTORS[self.id]]
 
+        from dextrous_hand.joints_geometry import JOINTS_GEOMETRY
+
+         # Check if the joint has geometry in the joints_geometry.py file
+        if self.id not in JOINTS_GEOMETRY or len(JOINTS_GEOMETRY[self.id]) == 0:
+            raise Exception("Joint " + self.id.name + " has no geometry")
+
+        self.geometry = JOINTS_GEOMETRY[self.id]
+
+        self.target = 0.0
+
         self.initialized = True
 
     @abstractmethod
@@ -59,11 +74,54 @@ class Joint(ABC):
         """
         pass
 
+    def joint2length(self, joint):
+        """
+        Map the joint angle to the lenght of the associated pair of tendons
+        Each subclass should uniquely implement this method
+
+        params
+            joint: the angle of the joint
+
+        returns
+            a tuple containing the length of the inner and outer tendon
+        """
+
+        """
+        TODO: Make this method general to the case of pin joints
+        """
+        if "radius" in self.geometry:
+            a = self.geometry["radius"]/SPOOL_RADIUS
+            return a*joint
+
+        def rot_mat_z(tetha):
+            C_z = np.array([[math.cos(tetha), -math.sin(tetha), 0],[math.sin(tetha), math.cos(tetha), 0],[0,0,1]])
+            return C_z
+
+        C_I1 = rot_mat_z(joint/2)
+        C_I2 = rot_mat_z(joint)
+
+        centers_vect = np.array([0,self.geometry["centers_distance"],0])
+        p1 = self.geometry["T1"]
+        p2 = self.geometry["T2"]
+        p3 = self.geometry["T3"]
+        p4 = self.geometry["T4"]
+
+        tendon_12 = C_I1@centers_vect+C_I2@p2-p1
+        length_12 = self.geometry["length_12_0"] - np.linalg.norm(tendon_12)
+
+        tendon_34 = C_I1@centers_vect+C_I2@p4-p3
+        length_34 = self.geometry["length_34_0"] - np.linalg.norm(tendon_34)
+
+        return (length_12, length_34)
+
     def read(self):
         """
         returns:
             The joint's current angle in radians
         """
+        if IS_SIMULATION:
+            return self.target
+
         motor_angles = [motor.read() for motor in self.motors]
         return self.motors2joint(motor_angles)
 

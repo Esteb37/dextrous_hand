@@ -44,7 +44,6 @@ class Hand():
             subsystem.write(config[subsystem.id])
             all_at_position = all_at_position and subsystem.at_position()
 
-
         return all_at_position
 
     def get_config(self):

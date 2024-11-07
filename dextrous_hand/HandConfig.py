@@ -55,11 +55,21 @@ class HandConfig:
                 self.joint_map[joint.id] = (subsystem, index)
 
         for key, value in kwargs.items():
-
             if type(value) is float:
                 value = [value]
-
             self[key] = value
+
+        self.restrict()
+
+    def restrict(self):
+        from dextrous_hand.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
+        self.PINKY = PINKY.restrict_joint_angles(self.PINKY)
+        self.RING = RING.restrict_joint_angles(self.RING)
+        self.MIDDLE = MIDDLE.restrict_joint_angles(self.MIDDLE)
+        self.INDEX = INDEX.restrict_joint_angles(self.INDEX)
+        self.THUMB = THUMB.restrict_joint_angles(self.THUMB)
+
+
 
     def __getitem__(self, key : HandConfigIndex):
         """
@@ -108,7 +118,7 @@ class HandConfig:
             self[subsystem][index] = value
         else:
             raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
-
+        self.restrict()
 
     def __iter__(self):
         """
@@ -165,13 +175,16 @@ class HandConfig:
         """
         Generates a hand configuration from a ROS Float32MultiArray message
         """
-        return HandConfig.from_matrix(utils.message_to_matrix(msg, len(ids.SUBSYSTEMS)))
+        config = HandConfig.from_matrix(utils.message_to_matrix(msg, len(ids.SUBSYSTEMS)))
+        config.restrict()
+        return config
 
     def as_matrix(self):
         """
         Returns the hand configuration as a matrix of floats
         """
         matrix = []
+        self.restrict()
         for i in range(len(ids.SUBSYSTEMS)):
             matrix.append(self[i])
         return matrix
@@ -180,6 +193,7 @@ class HandConfig:
         """
         Returns the hand configuration as a ROS Float32MultiArray message
         """
+        self.restrict()
         return utils.matrix_to_message(self.as_matrix())
 
     @property
