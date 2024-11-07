@@ -4,6 +4,7 @@ from std_msgs.msg import Float32MultiArray
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
+from pathlib import Path
 
 def matrix_to_message(matrix):
     """
@@ -48,3 +49,27 @@ def pose_to_pos_orient(pose : PoseStamped) -> tuple[list[float], list[float]]:
     orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w]).as_euler('xyz', degrees = True).tolist()
 
     return pos, orientation
+
+
+def parent_dir():
+    # Go back until you find the "install" folder
+    current_dir = Path(__file__).resolve().parent
+
+    # Traverse upward until "install" directory is found
+    install_dir = None
+    for parent in current_dir.parents:
+        if parent.name == "install":
+            install_dir = parent
+            break
+
+    if install_dir is None:
+        for parent in current_dir.parents:
+            if parent.name == "src":
+                install_dir = parent
+                break
+
+    if install_dir is None:
+        raise FileNotFoundError("Could not find the install or src directory.")
+
+    parent_dir = install_dir.parent
+    return (parent_dir / "src" / "dextrous_hand").as_posix()

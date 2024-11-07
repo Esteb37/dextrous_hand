@@ -53,23 +53,22 @@ class Motor():
         self.name = motor_id.name
 
         # Check if the motor's zero position has been defined
-        if self.id not in constants.MOTOR_ZEROS:
+        self.zero = constants.MOTOR_CONSTANTS[self.name]["zero"]
+
+        if  self.zero is None:
             raise Exception("Motor " + str(self.name) + " has no zero position")
 
-        self.zero = constants.MOTOR_ZEROS[self.id]
+        self.angle_limits = constants.MOTOR_CONSTANTS[self.name]["range"]
 
         # Check if the motor's limits have been defined
-        if self.id not in constants.MOTOR_LIMITS or len(constants.MOTOR_LIMITS[self.id]) != 2:
+        if self.angle_limits is None or len(self.angle_limits) != 2:
             raise Exception("Motor " + str(self.name) + " has no limits or invalid limits")
 
-        self.angle_limits = constants.MOTOR_LIMITS[self.id]
-
+        self.direction = constants.MOTOR_CONSTANTS[self.name]["direction"]
 
         # Check if the motor's direction has been defined
-        if self.id not in constants.MOTOR_DIRECTIONS:
+        if self.direction is None:
             raise Exception("Motor " + str(self.name) + " has no direction")
-
-        self.direction = constants.MOTOR_DIRECTIONS[self.id].value
 
         self.target = 0.0
 

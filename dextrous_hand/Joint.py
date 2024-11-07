@@ -3,8 +3,8 @@
 import dextrous_hand.ids as ids
 from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
-
-from dextrous_hand.constants import SPOOL_RADIUS, IS_SIMULATION
+from dextrous_hand.joints_geometry import SPOOL_RADIUS
+from dextrous_hand.constants import IS_SIMULATION
 
 import math
 import numpy as np

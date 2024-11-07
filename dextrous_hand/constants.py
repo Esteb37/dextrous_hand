@@ -1,111 +1,14 @@
 #!/usr/bin/env python3
 
-from numpy import pi as PI
-from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
+import yaml
+from dextrous_hand.utils import parent_dir
+constants_dir = parent_dir() + '/data/constants/'
 
-IS_SIMULATION = False # Set to True if the motor controller is not connected
+ARM_CONSTANTS = yaml.safe_load(open(constants_dir + 'arm.yaml'))
+GLOBAL_CONSTANTS  = yaml.safe_load(open(constants_dir + 'global.yaml'))
+MOTOR_CONSTANTS = yaml.safe_load(open(constants_dir + 'motors.yaml'))
+CONFIGS = yaml.safe_load(open(constants_dir + 'configs.yaml'))
 
-MANUAL_CONTROL = False # Set to True to disable the hand and control the motors manually but still be able to read the sensors
-
-DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected to a different port
-BAUDRATE = 3000000
-
-NODE_FREQUENCY_HZ = 1000
-
-SPOOL_RADIUS = 8.5
-
-STARTUP_MODE = STARTUP.LAST
-"""
-Defines the startup mode for the hand. Options are:
-- HOME: The hand will start in the home configuration.
-- LAST: The hand will start in the last configuration it was in.
-- CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
-"""
-
-FULL_RANGE = [-PI, PI]
-MOTOR_LIMITS = {
-    MOTORS.THUMB_ABD: FULL_RANGE,
-    MOTORS.THUMB_MCP: FULL_RANGE,
-    MOTORS.THUMB_PIP: FULL_RANGE,
-
-    MOTORS.INDEX_FLBR: FULL_RANGE,
-    MOTORS.INDEX_FRBL: FULL_RANGE,
-    MOTORS.INDEX_FMBM: FULL_RANGE,
-
-    MOTORS.MIDDLE_FLBR: FULL_RANGE,
-    MOTORS.MIDDLE_FRBL: FULL_RANGE,
-    MOTORS.MIDDLE_FMBM: FULL_RANGE,
-
-    MOTORS.RING_FLBR: FULL_RANGE,
-    MOTORS.RING_FRBL: FULL_RANGE,
-    MOTORS.RING_FMBM: FULL_RANGE,
-
-    MOTORS.PINKY_FLBR: FULL_RANGE,
-    MOTORS.PINKY_FRBL: FULL_RANGE,
-    MOTORS.PINKY_FMBM: FULL_RANGE,
-
-    MOTORS.WRIST: FULL_RANGE
-}
-"""
-Hard limits for the motors to prevent overextension.
-"""
-
-MOTOR_ZEROS = {
-    MOTORS.THUMB_ABD: 3.409,
-    MOTORS.THUMB_MCP: 2.989,
-    MOTORS.THUMB_PIP: 1.654,
-
-    MOTORS.INDEX_FLBR: 4.623,
-    MOTORS.INDEX_FRBL: 4.649,
-    MOTORS.INDEX_FMBM: 1.040,
-
-    MOTORS.MIDDLE_FLBR: 2.487,
-    MOTORS.MIDDLE_FRBL: 3.759,
-    MOTORS.MIDDLE_FMBM: 3.342,
-
-    MOTORS.RING_FLBR: 2.335,
-    MOTORS.RING_FRBL: 3.736,
-    MOTORS.RING_FMBM: 3.798,
-
-    MOTORS.PINKY_FLBR: 3.531,
-    MOTORS.PINKY_FRBL: 3.725,
-    MOTORS.PINKY_FMBM: 4.144,
-
-    MOTORS.WRIST: 3.141
-}
-"""
-Offset to zero the motors.
-"""
-
-MOTOR_DIRECTIONS = {
-    MOTORS.THUMB_ABD: MOTOR_DIRECTION.FORWARD,
-    MOTORS.THUMB_MCP: MOTOR_DIRECTION.REVERSED,
-    MOTORS.THUMB_PIP: MOTOR_DIRECTION.FORWARD,
-
-    MOTORS.INDEX_FLBR: MOTOR_DIRECTION.REVERSED,
-    MOTORS.INDEX_FRBL: MOTOR_DIRECTION.REVERSED,
-    MOTORS.INDEX_FMBM: MOTOR_DIRECTION.FORWARD,
-
-    MOTORS.MIDDLE_FLBR: MOTOR_DIRECTION.FORWARD,
-    MOTORS.MIDDLE_FRBL: MOTOR_DIRECTION.REVERSED,
-    MOTORS.MIDDLE_FMBM: MOTOR_DIRECTION.REVERSED,
-
-    MOTORS.RING_FLBR: MOTOR_DIRECTION.FORWARD,
-    MOTORS.RING_FRBL: MOTOR_DIRECTION.REVERSED,
-    MOTORS.RING_FMBM: MOTOR_DIRECTION.REVERSED,
-
-    MOTORS.PINKY_FLBR: MOTOR_DIRECTION.FORWARD,
-    MOTORS.PINKY_FRBL: MOTOR_DIRECTION.REVERSED,
-    MOTORS.PINKY_FMBM: MOTOR_DIRECTION.FORWARD,
-
-    MOTORS.WRIST: MOTOR_DIRECTION.FORWARD
-}
-"""
-Direction of the motors.
-"""
-
-FRANKA_CENTER_POSITION = [0.5, 0.0, 0.3]
-FRANKA_CENTER_ORIENTATION = [PI, 0.0, 0.0]
-"""
-Center position and orientation of the Franka arm.
-"""
+IS_SIMULATION = GLOBAL_CONSTANTS['IS_SIMULATION']
+MANUAL_CONTROL = GLOBAL_CONSTANTS['MANUAL_CONTROL']
+NODE_FREQUENCY_HZ = GLOBAL_CONSTANTS['NODE_FREQUENCY_HZ']

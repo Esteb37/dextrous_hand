@@ -1,34 +1,32 @@
 #!/usr/bin/env python3
 
 from enum import Enum, auto
-
+from dextrous_hand.constants import MOTOR_CONSTANTS
 class MOTORS(Enum):
     """
     Motor ports
     """
+    PINKY_FMBM = MOTOR_CONSTANTS["PINKY_FMBM"]["port"]
+    PINKY_FRBL = MOTOR_CONSTANTS["PINKY_FRBL"]["port"]
+    PINKY_FLBR = MOTOR_CONSTANTS["PINKY_FLBR"]["port"]
 
-    INDEX_FMBM = 0
+    RING_FMBM = MOTOR_CONSTANTS["RING_FMBM"]["port"]
+    RING_FRBL = MOTOR_CONSTANTS["RING_FRBL"]["port"]
+    RING_FLBR = MOTOR_CONSTANTS["RING_FLBR"]["port"]
 
-    RING_FMBM = 1
-    RING_FLBR = 2
-    RING_FRBL = 3
+    INDEX_FMBM = MOTOR_CONSTANTS["INDEX_FMBM"]["port"]
+    INDEX_FRBL = MOTOR_CONSTANTS["INDEX_FRBL"]["port"]
+    INDEX_FLBR = MOTOR_CONSTANTS["INDEX_FLBR"]["port"]
 
-    PINKY_FRBL = 4
-    PINKY_FLBR = 5
-    PINKY_FMBM = 6
+    THUMB_ABD = MOTOR_CONSTANTS["THUMB_ABD"]["port"]
+    THUMB_MCP = MOTOR_CONSTANTS["THUMB_MCP"]["port"]
+    THUMB_PIP = MOTOR_CONSTANTS["THUMB_PIP"]["port"]
 
-    INDEX_FRBL = 7
-    INDEX_FLBR = 8
+    MIDDLE_FRBL = MOTOR_CONSTANTS["MIDDLE_FRBL"]["port"]
+    MIDDLE_FLBR = MOTOR_CONSTANTS["MIDDLE_FLBR"]["port"]
+    MIDDLE_FMBM = MOTOR_CONSTANTS["MIDDLE_FMBM"]["port"]
 
-    THUMB_MCP = 9
-    WRIST = 10
-    THUMB_ABD = 11
-
-    MIDDLE_FRBL = 12
-    MIDDLE_FLBR = 13
-    MIDDLE_FMBM = 14
-
-    THUMB_PIP = 15
+    WRIST = MOTOR_CONSTANTS["WRIST"]["port"]
 
 class SUBSYSTEMS(Enum):
     """

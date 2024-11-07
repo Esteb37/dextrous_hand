@@ -4,6 +4,9 @@ from numpy import pi as PI
 from dextrous_hand.ids import JOINTS
 
 # in mm
+SPOOL_RADIUS = 8.5
+
+# in mm
 GEOMETRY_TYPES = {
     "P4_FINGER_ABD":{"centers_distance":18,
                      "T1":[-4,8,0],

@@ -128,8 +128,8 @@ class DynamixelClient:
         # Access all motors
         self.motor_objects = [Motor(id) for id in list(ids.MOTORS)]
         self.motor_ids = [motor.port for motor in self.motor_objects]
-        self.port_name = constants.DEVICE_NAME
-        self.baudrate = constants.BAUDRATE
+        self.port_name = constants.GLOBAL_CONSTANTS["DEVICE_NAME"]
+        self.baudrate = constants.GLOBAL_CONSTANTS["BAUDRATE"]
         self.lazy_connect = lazy_connect
 
         self.port_handler = self.dxl.PortHandler(self.port_name)

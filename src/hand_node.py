@@ -50,7 +50,7 @@ class HandNode(Node):
         self.arm_subscription = self.create_subscription(PoseStamped,'/franka/end_effector_pose',self.arm_config_callback,10)
         self.arm_publisher = self.create_publisher(PoseStamped, '/franka/end_effector_pose_cmd', 10)
 
-        self.get_logger().info('Hand node started')
+        self.get_logger().info('Hand node started, waiting for hand config...')
 
     def hand_config_callback(self, msg):
         HAND.set_config(HandConfig.from_msg(msg))
