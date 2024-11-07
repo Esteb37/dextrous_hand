@@ -1,103 +1,101 @@
 # YAML Constants
 PI: &pi 3.141592
 MPI: &mpi -3.141592
-FORWARD: &forward 1
-REVERSE: &reverse -1
 FULL_RANGE: &full_range [*mpi, *pi]
 
 
 THUMB_ABD:
   port: 0
-  zero: 3.409
-  direction: *forward
+  zero: 1.95937180519104
+  direction: 1
   range: *full_range
 
 THUMB_MCP:
   port: 1
   zero: 2.989
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 2
   zero: 1.654
-  direction: *forward
+  direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 3
   zero: 4.649
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 4
   zero: 4.623
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
   zero: 1.040
-  direction: *forward
+  direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 6
   zero: 3.759
-  direction: *forward
+  direction: 1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 2.487
-  direction: *reverse
+  zero: 4.325347900390625
+  direction: -1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 8
-  zero: 3.342
-  direction: *reverse
+  zero: 4.592325687408447
+  direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 9
   zero: 3.736
-  direction: *forward
+  direction: 1
   range: *full_range
 
 RING_FLBR:
   port: 10
   zero: 2.335
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 RING_FMBM:
   port: 11
   zero: 3.798
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 12
   zero: 3.725
-  direction: *forward
+  direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 13
   zero: 3.531
-  direction: *reverse
+  direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 14
   zero: 4.144
-  direction: *forward
+  direction: 1
   range: *full_range
 
 WRIST:
   port: 15
-  zero: 3.141
-  direction: *forward
+  zero: 5.232151985168457
+  direction: 1
   range: *full_range

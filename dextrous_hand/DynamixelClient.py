@@ -126,8 +126,8 @@ class DynamixelClient:
         self.dxl = dynamixel_sdk
 
         # Access all motors
-        self.motor_objects = [Motor(id) for id in list(ids.MOTORS)]
-        self.motor_ids = [motor.port for motor in self.motor_objects]
+        self.motors = [Motor(id) for id in list(ids.MOTORS)]
+        self.motor_ids = [motor.port for motor in self.motors]
         self.port_name = constants.GLOBAL_CONSTANTS["DEVICE_NAME"]
         self.baudrate = constants.GLOBAL_CONSTANTS["BAUDRATE"]
         self.lazy_connect = lazy_connect
@@ -193,7 +193,7 @@ class DynamixelClient:
 
         # Remove any motors that failed to enable torque.
         self.motor_ids = [motor_id for motor_id in self.motor_ids if motor_id not in remaining_ids]
-        self.motor_objects = [motor for motor in self.motor_objects if motor.port not in remaining_ids]
+        self.motors = [motor for motor in self.motors if motor.port not in remaining_ids]
 
         if not self.motor_ids:
             LOG_ERROR('Failed to enable torque for any motors.')
@@ -428,13 +428,13 @@ class DynamixelClient:
 
         # If we are in simulation, just set the angles to the target (infinite speed)
         if constants.IS_SIMULATION:
-            for motor in self.motor_objects:
+            for motor in self.motors:
                 motor.angle = motor.target
             return
 
         self.check_connected()
         self._pos_vel_cur_reader.read()
-        for i, motor in enumerate(self.motor_objects):
+        for i, motor in enumerate(self.motors):
             motor.dxl_angle = self._pos_vel_cur_reader._pos_data[i]
 
     def write_targets(self):
@@ -445,8 +445,36 @@ class DynamixelClient:
             return
 
         self.check_connected()
-        targets = np.array([motor.dxl_target for motor in self.motor_objects])
+        targets = np.array([motor.dxl_target for motor in self.motors])
         self.write_desired_pos(self.motor_ids, targets)
+
+    def read_zeros(self):
+
+        if not self.is_connected:
+            self.connect()
+
+        for motor in self.motors:
+            motor.zero = 0
+            motor.direction = 1
+
+        self.update_positions()
+
+        return self.motors
+
+    def read_directions(self):
+
+        if not self.is_connected:
+            self.connect()
+
+        self.update_positions()
+
+        for motor in self.motors:
+            if motor.angle > 0:
+                motor.direction = 1
+            elif motor.angle < 0:
+                motor.direction = -1
+
+        return self.motors
 
     def __enter__(self):
         """Enables use as a context manager."""
