@@ -3,7 +3,7 @@
 from numpy import pi as PI
 from dextrous_hand.ids import MOTORS, STARTUP, MOTOR_DIRECTION
 
-IS_SIMULATION = True # Set to True if the motor controller is not connected
+IS_SIMULATION = False # Set to True if the motor controller is not connected
 
 MANUAL_CONTROL = False # Set to True to disable the hand and control the motors manually but still be able to read the sensors
 
@@ -11,6 +11,8 @@ DEVICE_NAME = "/dev/ttyUSB0" # Change this if the motor controller is connected 
 BAUDRATE = 3000000
 
 NODE_FREQUENCY_HZ = 1000
+
+SPOOL_RADIUS = 8.5
 
 STARTUP_MODE = STARTUP.LAST
 """
@@ -20,7 +22,7 @@ Defines the startup mode for the hand. Options are:
 - CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
 """
 
-FULL_RANGE = [0.0, 2 *PI]
+FULL_RANGE = [-PI, PI]
 MOTOR_LIMITS = {
     MOTORS.THUMB_ABD: FULL_RANGE,
     MOTORS.THUMB_MCP: FULL_RANGE,
@@ -53,9 +55,9 @@ MOTOR_ZEROS = {
     MOTORS.THUMB_MCP: 2.989,
     MOTORS.THUMB_PIP: 1.654,
 
-    MOTORS.INDEX_FLBR: 3.465,
-    MOTORS.INDEX_FRBL: 2.877,
-    MOTORS.INDEX_FMBM: 3.570,
+    MOTORS.INDEX_FLBR: 4.623,
+    MOTORS.INDEX_FRBL: 4.649,
+    MOTORS.INDEX_FMBM: 1.040,
 
     MOTORS.MIDDLE_FLBR: 2.487,
     MOTORS.MIDDLE_FRBL: 3.759,
@@ -81,8 +83,8 @@ MOTOR_DIRECTIONS = {
     MOTORS.THUMB_PIP: MOTOR_DIRECTION.FORWARD,
 
     MOTORS.INDEX_FLBR: MOTOR_DIRECTION.REVERSED,
-    MOTORS.INDEX_FRBL: MOTOR_DIRECTION.FORWARD,
-    MOTORS.INDEX_FMBM: MOTOR_DIRECTION.REVERSED,
+    MOTORS.INDEX_FRBL: MOTOR_DIRECTION.REVERSED,
+    MOTORS.INDEX_FMBM: MOTOR_DIRECTION.FORWARD,
 
     MOTORS.MIDDLE_FLBR: MOTOR_DIRECTION.FORWARD,
     MOTORS.MIDDLE_FRBL: MOTOR_DIRECTION.REVERSED,
