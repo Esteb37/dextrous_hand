@@ -1,0 +1,1388 @@
+<?xml version="1.0" ?>
+<robot name="converted_robot">
+   <link name="hand_root">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="1.5706999999995865 9.26535893632785e-05 3.1415926446647697"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="palm">
+      <inertial>
+         <origin xyz="2.5416504812887298e-05 -0.08276365349137842 0.001169448382074098" rpy="-2.0013871051005374 -1.5403497142979492 -2.710528263074548"/>
+         <mass value="0.8544284533999974"/>
+         <inertia ixx="0.003996687193896739" iyy="0.0038631080483888095" izz="0.0003381452076901226" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="palm_tower">
+         <origin xyz="2.5416504812887298e-05 -0.08276365349137842 0.001169448382074098" rpy="-2.001387105100539 -1.5403497142979492 -2.710528263074546"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_palm_tower.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2palm_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="root2palm_fixed">
+      <parent link="hand_root"/>
+      <child link="root2palm_fixed_jointbody"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="root2palm_fixed_offset">
+      <parent link="root2palm_fixed_jointbody"/>
+      <child link="palm"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_base">
+      <inertial>
+         <origin xyz="0.001970173414393421 -0.005848359469028798 -0.0036223825060920853" rpy="-0.5508534899362458 -1.2305068745270804 -1.7115532269963385"/>
+         <mass value="0.004011533872474505"/>
+         <inertia ixx="2.1074086505129743e-07" iyy="1.648050934848108e-07" izz="1.4801558992505004e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="thumb_base">
+         <origin xyz="0.001970173414393421 -0.005848359469028798 -0.0036223825060920853" rpy="-0.5508534899362456 -1.2305068745270804 -1.7115532269963383"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_thumb_base.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2thumb_base_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2thumb_base">
+      <parent link="palm"/>
+      <child link="root2thumb_base_jointbody"/>
+      <origin xyz="0.0302924 0.0270814 0.0184038" rpy="3.116968966268021 -0.7070761587517901 -1.998218924284706"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="0.0" upper="2.27" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2thumb_base_offset">
+      <parent link="root2thumb_base_jointbody"/>
+      <child link="thumb_base"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_pp">
+      <inertial>
+         <origin xyz="0.003685797083943662 -0.009243840769062303 -0.019758529144502893" rpy="0.24159850312347242 -0.37675802997427077 -2.042850879998637"/>
+         <mass value="0.013134496742520606"/>
+         <inertia ixx="1.3422333588118766e-06" iyy="1.3414176561006083e-06" izz="4.220848677143001e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="thumb_pp">
+         <origin xyz="0.003685797083943662 -0.009243840769062303 -0.019758529144502893" rpy="0.24159850312347242 -0.376758029974271 -2.042850879998637"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_thumb_pp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="thumb_base2pp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="thumb_base2pp">
+      <parent link="thumb_base"/>
+      <child link="thumb_base2pp_jointbody"/>
+      <origin xyz="0.0 -0.010014 -0.011168" rpy="0.471787471114568 -0.7310080799806019 -1.5707964600490258"/>
+      <axis xyz="1.0 -0.0 -0.0"/>
+      <limit lower="-1.66" upper="1.05" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="thumb_base2pp_offset">
+      <parent link="thumb_base2pp_jointbody"/>
+      <child link="thumb_pp"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_mp_virt">
+      <inertial>
+         <origin xyz="0.009525 -0.041187 0.083647" rpy="-0.2229159847709277 -1.2682876286119866 0.3020329839181936"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="thumb_pp2mp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="thumb_pp2mp_virt">
+      <parent link="thumb_pp"/>
+      <child link="thumb_pp2mp_virt_jointbody"/>
+      <origin xyz="0.006036 -0.014416 -0.034587" rpy="0.5386217287519482 0.3555979399949092 2.3263406330107355"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="0.0" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="thumb_pp2mp_virt_offset">
+      <parent link="thumb_pp2mp_virt_jointbody"/>
+      <child link="thumb_mp_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_mp">
+      <inertial>
+         <origin xyz="5.4286458221817005e-05 -0.001509788527586431 -0.01238038691431663" rpy="0.0012037457432313436 0.24541958094551974 1.5927828887663114"/>
+         <mass value="0.00888020173902963"/>
+         <inertia ixx="6.734609177701431e-07" iyy="6.20129431691173e-07" izz="2.4105375135125176e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="thumb_mp">
+         <origin xyz="5.4286458221817005e-05 -0.001509788527586431 -0.01238038691431663" rpy="0.0012037457432314547 0.24541958094551974 1.5927828887663118"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_thumb_mp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="thumb_pp2mp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="thumb_pp2mp">
+      <parent link="thumb_mp_virt"/>
+      <child link="thumb_pp2mp_jointbody"/>
+      <origin xyz="3.8e-05 -0.002927 -0.011638" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="0.0" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="thumb_pp2mp_offset">
+      <parent link="thumb_pp2mp_jointbody"/>
+      <child link="thumb_mp"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_dp_virt">
+      <inertial>
+         <origin xyz="0.009403 -0.031797 0.120984" rpy="-0.2229159847709277 -1.2682876286119866 0.3020329839181936"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="thumb_mp2dp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="thumb_mp2dp_virt">
+      <parent link="thumb_mp"/>
+      <child link="thumb_mp2dp_virt_jointbody"/>
+      <origin xyz="8.4e-05 -0.006463 -0.025699" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="0.0" upper="0.68" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="thumb_mp2dp_virt_offset">
+      <parent link="thumb_mp2dp_virt_jointbody"/>
+      <child link="thumb_dp_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_dp">
+      <inertial>
+         <origin xyz="5.3696526934673625e-05 -0.002439206018631304 -0.011120898732089823" rpy="0.0031587549087034317 0.21291132811997304 1.604797502184634"/>
+         <mass value="0.006650607092807898"/>
+         <inertia ixx="3.45280430015512e-07" iyy="3.083919799294367e-07" izz="1.5906696275514546e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="thumb_dp">
+         <origin xyz="5.3696526934673625e-05 -0.002439206018631304 -0.011120898732089823" rpy="0.0031587549087035427 0.21291132811997304 1.604797502184634"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_thumb_dp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="thumb_mp2dp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="thumb_mp2dp">
+      <parent link="thumb_dp_virt"/>
+      <child link="thumb_mp2dp_jointbody"/>
+      <origin xyz="2.7e-05 -0.002196 -0.008728" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="0.0" upper="0.68" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="thumb_mp2dp_offset">
+      <parent link="thumb_mp2dp_jointbody"/>
+      <child link="thumb_dp"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="thumb_fingertip">
+      <inertial>
+         <origin xyz="0.000386 -0.000394 -0.012633" rpy="1.583092548356868 0.21851142430155246 -2.8889085939445414"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="thumb_dp2thumb_fingertip_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed">
+      <parent link="thumb_dp"/>
+      <child link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
+      <origin xyz="0.000386 -0.000394 -0.012633" rpy="1.583092548356868 0.21851142430155246 -2.8889085939445414"/>
+   </joint>
+   <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed_offset">
+      <parent link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
+      <child link="thumb_fingertip"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_um_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="index_abd_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_abd_virt">
+      <parent link="palm"/>
+      <child link="index_abd_virt_jointbody"/>
+      <origin xyz="0.0241405 0.0941245 -0.002264" rpy="-2.4660871361653434 1.4872443604478853 -0.9843704687461553"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_abd_virt_offset">
+      <parent link="index_abd_virt_jointbody"/>
+      <child link="index_um_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_um">
+      <inertial>
+         <origin xyz="0.00031580983659068584 -0.0002288251367361105 -0.0036213650800712184" rpy="3.11344184080733 -1.2906456283037744 -3.1026201209529307"/>
+         <mass value="0.0017045161564725117"/>
+         <inertia ixx="4.089294685057779e-08" iyy="3.323975063683227e-08" izz="2.9482536155708794e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="index_um">
+         <origin xyz="0.00031580983659068584 -0.0002288251367361105 -0.0036213650800712184" rpy="3.1134418408073303 -1.2906456283037744 -3.1026201209529303"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_index_um.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="index_abd_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_abd">
+      <parent link="index_um_virt"/>
+      <child link="index_abd_jointbody"/>
+      <origin xyz="0.0 0.0 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_abd_offset">
+      <parent link="index_abd_jointbody"/>
+      <child link="index_um"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_pp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="root2index_pp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2index_pp_virt">
+      <parent link="index_um"/>
+      <child link="root2index_pp_virt_jointbody"/>
+      <origin xyz="0.00270000102 5.9952065978308155e-19 -0.00743303472" rpy="0.0 0.0 -1.5707963267948963"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2index_pp_virt_offset">
+      <parent link="root2index_pp_virt_jointbody"/>
+      <child link="index_pp_virt"/>
+      <origin xyz="-0.0 -0.00270000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_pp">
+      <inertial>
+         <origin xyz="0.0001596722768568877 0.0010995555377848287 0.012881699665408173" rpy="-0.0005635952845526315 0.04346039496131349 1.5731856337079444"/>
+         <mass value="0.006934011983539235"/>
+         <inertia ixx="1.1618492936895645e-06" iyy="1.1338221765707372e-06" izz="1.5329642774536852e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="index_pp">
+         <origin xyz="0.0001596722768568877 0.0010995555377848287 0.012881699665408173" rpy="-0.0005635952845526315 0.04346039496131349 1.5731856337079444"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_index_pp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2index_pp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2index_pp">
+      <parent link="index_pp_virt"/>
+      <child link="root2index_pp_jointbody"/>
+      <origin xyz="0.0 0.00250000102 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2index_pp_offset">
+      <parent link="root2index_pp_jointbody"/>
+      <child link="index_pp"/>
+      <origin xyz="-0.0 -0.00250000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_pp_sens">
+      <inertial>
+         <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="index_pp2index_pp_sens_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="index_pp2index_pp_sens_fixed">
+      <parent link="index_pp"/>
+      <child link="index_pp2index_pp_sens_fixed_jointbody"/>
+      <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="index_pp2index_pp_sens_fixed_offset">
+      <parent link="index_pp2index_pp_sens_fixed_jointbody"/>
+      <child link="index_pp_sens"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_mp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="index_pp2mp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_pp2mp_virt">
+      <parent link="index_pp"/>
+      <child link="index_pp2mp_virt_jointbody"/>
+      <origin xyz="0.0 0.00370000102 0.03101612481" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_pp2mp_virt_offset">
+      <parent link="index_pp2mp_virt_jointbody"/>
+      <child link="index_mp_virt"/>
+      <origin xyz="-0.0 -0.00370000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_mp">
+      <inertial>
+         <origin xyz="0.00011615953600364534 0.002416765310794026 0.011095355077765302" rpy="0.005169069300036244 0.005498568931487036 1.5689027225439034"/>
+         <mass value="0.003917438749524729"/>
+         <inertia ixx="3.7106864302587183e-07" iyy="3.4007196897290696e-07" izz="7.116706670265419e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="index_mp">
+         <origin xyz="0.00011615953600364534 0.002416765310794026 0.011095355077765302" rpy="0.005169069300036355 0.005498568931486814 1.5689027225439032"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_index_mp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="index_pp2mp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_pp2mp">
+      <parent link="index_mp_virt"/>
+      <child link="index_pp2mp_jointbody"/>
+      <origin xyz="0.0 0.00350000102 0.012" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_pp2mp_offset">
+      <parent link="index_pp2mp_jointbody"/>
+      <child link="index_mp"/>
+      <origin xyz="-0.0 -0.00350000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_dp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="index_mp2dp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_mp2dp_virt">
+      <parent link="index_mp"/>
+      <child link="index_mp2dp_virt_jointbody"/>
+      <origin xyz="0.0 0.00370000102 0.0235" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_mp2dp_virt_offset">
+      <parent link="index_mp2dp_virt_jointbody"/>
+      <child link="index_dp_virt"/>
+      <origin xyz="-0.0 -0.00370000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_dp">
+      <inertial>
+         <origin xyz="0.00011951811090690767 0.0031206785576221962 0.00757311622812222" rpy="-0.0018937803814825793 0.05085216186052621 1.5852087154460959"/>
+         <mass value="0.002163927397260579"/>
+         <inertia ixx="1.074593159658436e-07" iyy="9.2226972746983e-08" izz="2.9490220632316423e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="index_dp">
+         <origin xyz="0.00011951811090690767 0.0031206785576221962 0.00757311622812222" rpy="-0.0018937803814825793 0.05085216186052599 1.5852087154460959"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_index_dp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="index_mp2dp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="index_mp2dp">
+      <parent link="index_dp_virt"/>
+      <child link="index_mp2dp_jointbody"/>
+      <origin xyz="0.0 0.00350000102 0.009" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="index_mp2dp_offset">
+      <parent link="index_mp2dp_jointbody"/>
+      <child link="index_dp"/>
+      <origin xyz="-0.0 -0.00350000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="index_fingertip">
+      <inertial>
+         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="index_dp2index_fingertip_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="index_dp2index_fingertip_fixed">
+      <parent link="index_dp"/>
+      <child link="index_dp2index_fingertip_fixed_jointbody"/>
+      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="index_dp2index_fingertip_fixed_offset">
+      <parent link="index_dp2index_fingertip_fixed_jointbody"/>
+      <child link="index_fingertip"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_um_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="middle_abd_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_abd_virt">
+      <parent link="palm"/>
+      <child link="middle_abd_virt_jointbody"/>
+      <origin xyz="0.00295 0.09 -0.003066" rpy="-1.5707963267948966 1.5707963267948966 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_abd_virt_offset">
+      <parent link="middle_abd_virt_jointbody"/>
+      <child link="middle_um_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_um">
+      <inertial>
+         <origin xyz="0.0003169177085226181 -4.3580464142454044e-05 -0.00358903262860973" rpy="3.1142767312188235 -1.290606635557864 -3.1011515813433226"/>
+         <mass value="0.0017047365062490875"/>
+         <inertia ixx="4.0897642285508256e-08" iyy="3.324524834153317e-08" izz="2.949862077721965e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="middle_um">
+         <origin xyz="0.0003169177085226181 -4.3580464142454044e-05 -0.00358903262860973" rpy="3.1142767312188235 -1.290606635557864 -3.1011515813433226"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_middle_um.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="middle_abd_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_abd">
+      <parent link="middle_um_virt"/>
+      <child link="middle_abd_jointbody"/>
+      <origin xyz="0.0 0.0 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_abd_offset">
+      <parent link="middle_abd_jointbody"/>
+      <child link="middle_um"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_pp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="root2middle_pp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2middle_pp_virt">
+      <parent link="middle_um"/>
+      <child link="root2middle_pp_virt_jointbody"/>
+      <origin xyz="0.002700001023199999 5.99520660493624e-19 -0.00743303472" rpy="0.0 0.0 -1.5707963267948963"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2middle_pp_virt_offset">
+      <parent link="root2middle_pp_virt_jointbody"/>
+      <child link="middle_pp_virt"/>
+      <origin xyz="-0.0 -0.002700001023199999 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_pp">
+      <inertial>
+         <origin xyz="-2.677702921494878e-05 0.0012083795875931697 0.014736324701324955" rpy="-0.0005735044307867421 0.04126377529945047 1.5748585531708672"/>
+         <mass value="0.007431440532107334"/>
+         <inertia ixx="1.4952082058349715e-06" iyy="1.4626277184822152e-06" izz="1.611455658132459e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="middle_pp">
+         <origin xyz="-2.677702921494878e-05 0.0012083795875931697 0.014736324701324955" rpy="-0.0005735044307867421 0.041263775299450245 1.5748585531708672"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_middle_pp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2middle_pp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2middle_pp">
+      <parent link="middle_pp_virt"/>
+      <child link="root2middle_pp_jointbody"/>
+      <origin xyz="0.0 0.002500001023199999 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2middle_pp_offset">
+      <parent link="root2middle_pp_jointbody"/>
+      <child link="middle_pp"/>
+      <origin xyz="-0.0 -0.002500001023199999 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_pp_sens">
+      <inertial>
+         <origin xyz="0.0 -0.004 0.022" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="middle_pp2middle_pp_sens_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="middle_pp2middle_pp_sens_fixed">
+      <parent link="middle_pp"/>
+      <child link="middle_pp2middle_pp_sens_fixed_jointbody"/>
+      <origin xyz="0.0 -0.004 0.022" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="middle_pp2middle_pp_sens_fixed_offset">
+      <parent link="middle_pp2middle_pp_sens_fixed_jointbody"/>
+      <child link="middle_pp_sens"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_mp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="middle_pp2mp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_pp2mp_virt">
+      <parent link="middle_pp"/>
+      <child link="middle_pp2mp_virt_jointbody"/>
+      <origin xyz="0.0 0.0037000000000999996 0.03501428277" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_pp2mp_virt_offset">
+      <parent link="middle_pp2mp_virt_jointbody"/>
+      <child link="middle_mp_virt"/>
+      <origin xyz="-0.0 -0.0037000000000999996 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_mp">
+      <inertial>
+         <origin xyz="-7.289560681130453e-05 0.002462634567765748 0.012171393620294756" rpy="0.004902959245888794 0.004923370581294995 1.5694778048729559"/>
+         <mass value="0.004122015435614137"/>
+         <inertia ixx="4.381415087418521e-07" iyy="4.0505258266556385e-07" izz="7.452990009535827e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="middle_mp">
+         <origin xyz="-7.289560681130453e-05 0.002462634567765748 0.012171393620294756" rpy="0.004902959245888794 0.004923370581294995 1.5694778048729559"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_middle_mp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="middle_pp2mp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_pp2mp">
+      <parent link="middle_mp_virt"/>
+      <child link="middle_pp2mp_jointbody"/>
+      <origin xyz="0.0 0.0035000000000999995 0.012" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_pp2mp_offset">
+      <parent link="middle_pp2mp_jointbody"/>
+      <child link="middle_mp"/>
+      <origin xyz="-0.0 -0.0035000000000999995 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_dp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="middle_mp2dp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_mp2dp_virt">
+      <parent link="middle_mp"/>
+      <child link="middle_mp2dp_virt_jointbody"/>
+      <origin xyz="0.0 0.0037000000000999996 0.0255" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_mp2dp_virt_offset">
+      <parent link="middle_mp2dp_virt_jointbody"/>
+      <child link="middle_dp_virt"/>
+      <origin xyz="-0.0 -0.0037000000000999996 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_dp">
+      <inertial>
+         <origin xyz="3.0280177180663714e-05 0.0031179204392796553 0.007681426284508561" rpy="0.008237866654386639 0.05067331063161795 1.5580538166000264"/>
+         <mass value="0.002165187096269976"/>
+         <inertia ixx="1.0756444686707563e-07" iyy="9.227105694252845e-08" izz="2.9564221198616795e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="middle_dp">
+         <origin xyz="3.0280177180663714e-05 0.0031179204392796553 0.007681426284508561" rpy="0.008237866654386639 0.05067331063161795 1.5580538166000264"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_middle_dp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="middle_mp2dp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="middle_mp2dp">
+      <parent link="middle_dp_virt"/>
+      <child link="middle_mp2dp_jointbody"/>
+      <origin xyz="0.0 0.0035000000000999995 0.009" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="middle_mp2dp_offset">
+      <parent link="middle_mp2dp_jointbody"/>
+      <child link="middle_dp"/>
+      <origin xyz="-0.0 -0.0035000000000999995 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="middle_fingertip">
+      <inertial>
+         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="middle_dp2middle_fingertip_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="middle_dp2middle_fingertip_fixed">
+      <parent link="middle_dp"/>
+      <child link="middle_dp2middle_fingertip_fixed_jointbody"/>
+      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="middle_dp2middle_fingertip_fixed_offset">
+      <parent link="middle_dp2middle_fingertip_fixed_jointbody"/>
+      <child link="middle_fingertip"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_um_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="ring_abd_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_abd_virt">
+      <parent link="palm"/>
+      <child link="ring_abd_virt_jointbody"/>
+      <origin xyz="-0.017217999999999997 0.08220650000000002 -0.002338" rpy="1.9348425242531078 1.4600381359930803 -2.6515701414690604"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_abd_virt_offset">
+      <parent link="ring_abd_virt_jointbody"/>
+      <child link="ring_um_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_um">
+      <inertial>
+         <origin xyz="0.0003152631565906845 -4.4835076736117474e-05 -0.0035895413100712134" rpy="3.1134418408073303 -1.2906456283037746 -3.102620120952931"/>
+         <mass value="0.0017045161564725117"/>
+         <inertia ixx="4.089294685057779e-08" iyy="3.323975063683227e-08" izz="2.9482536155708794e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="ring_um">
+         <origin xyz="0.0003152631565906845 -4.4835076736117474e-05 -0.0035895413100712134" rpy="3.1134418408073303 -1.2906456283037746 -3.102620120952931"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_ring_um.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="ring_abd_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_abd">
+      <parent link="ring_um_virt"/>
+      <child link="ring_abd_jointbody"/>
+      <origin xyz="0.0 0.0 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_abd_offset">
+      <parent link="ring_abd_jointbody"/>
+      <child link="ring_um"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_pp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="root2ring_pp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2ring_pp_virt">
+      <parent link="ring_um"/>
+      <child link="root2ring_pp_virt_jointbody"/>
+      <origin xyz="0.002700001023199999 5.99520660493624e-19 -0.00743303472" rpy="0.0 0.0 -1.5707963267948963"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2ring_pp_virt_offset">
+      <parent link="root2ring_pp_virt_jointbody"/>
+      <child link="ring_pp_virt"/>
+      <origin xyz="-0.0 -0.002700001023199999 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_pp">
+      <inertial>
+         <origin xyz="-2.4317783143112254e-05 0.0010990088577848287 0.012970488715408172" rpy="-0.0005635952845526315 0.04346039496131349 1.5731856337079444"/>
+         <mass value="0.006934011983539235"/>
+         <inertia ixx="1.1618492936895645e-06" iyy="1.1338221765707372e-06" izz="1.5329642774536852e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="ring_pp">
+         <origin xyz="-2.4317783143112254e-05 0.0010990088577848287 0.012970488715408172" rpy="-0.0005635952845526315 0.04346039496131349 1.5731856337079444"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_ring_pp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2ring_pp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2ring_pp">
+      <parent link="ring_pp_virt"/>
+      <child link="root2ring_pp_jointbody"/>
+      <origin xyz="0.0 0.002500001023199999 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2ring_pp_offset">
+      <parent link="root2ring_pp_jointbody"/>
+      <child link="ring_pp"/>
+      <origin xyz="-0.0 -0.002500001023199999 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_pp_sens">
+      <inertial>
+         <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="ring_pp2ring_pp_sens_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="ring_pp2ring_pp_sens_fixed">
+      <parent link="ring_pp"/>
+      <child link="ring_pp2ring_pp_sens_fixed_jointbody"/>
+      <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="ring_pp2ring_pp_sens_fixed_offset">
+      <parent link="ring_pp2ring_pp_sens_fixed_jointbody"/>
+      <child link="ring_pp_sens"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_mp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="ring_pp2mp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_pp2mp_virt">
+      <parent link="ring_pp"/>
+      <child link="ring_pp2mp_virt_jointbody"/>
+      <origin xyz="0.0 0.0037000000000999996 0.03101612481" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_pp2mp_virt_offset">
+      <parent link="ring_pp2mp_virt_jointbody"/>
+      <child link="ring_mp_virt"/>
+      <origin xyz="-0.0 -0.0037000000000999996 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_mp">
+      <inertial>
+         <origin xyz="-6.783052399635461e-05 0.002416218630794026 0.0111841441377653" rpy="0.005169069300036244 0.005498568931487036 1.5689027225439034"/>
+         <mass value="0.003917438749524729"/>
+         <inertia ixx="3.7106864302587183e-07" iyy="3.4007196897290696e-07" izz="7.116706670265419e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="ring_mp">
+         <origin xyz="-6.783052399635461e-05 0.002416218630794026 0.0111841441377653" rpy="0.005169069300036355 0.005498568931486814 1.5689027225439032"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_ring_mp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="ring_pp2mp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_pp2mp">
+      <parent link="ring_mp_virt"/>
+      <child link="ring_pp2mp_jointbody"/>
+      <origin xyz="0.0 0.0035000000000999995 0.012" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_pp2mp_offset">
+      <parent link="ring_pp2mp_jointbody"/>
+      <child link="ring_mp"/>
+      <origin xyz="-0.0 -0.0035000000000999995 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_dp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="ring_mp2dp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_mp2dp_virt">
+      <parent link="ring_mp"/>
+      <child link="ring_mp2dp_virt_jointbody"/>
+      <origin xyz="0.0 0.0037000000000999996 0.0235" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_mp2dp_virt_offset">
+      <parent link="ring_mp2dp_virt_jointbody"/>
+      <child link="ring_dp_virt"/>
+      <origin xyz="-0.0 -0.0037000000000999996 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_dp">
+      <inertial>
+         <origin xyz="-6.447194909309228e-05 0.003120131877622196 0.007661905288122231" rpy="-0.0018937803814825793 0.05085216186052621 1.5852087154460959"/>
+         <mass value="0.002163927397260579"/>
+         <inertia ixx="1.074593159658436e-07" iyy="9.2226972746983e-08" izz="2.9490220632316423e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="ring_dp">
+         <origin xyz="-6.447194909309228e-05 0.003120131877622196 0.007661905288122231" rpy="-0.0018937803814825793 0.05085216186052599 1.5852087154460959"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_ring_dp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="ring_mp2dp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="ring_mp2dp">
+      <parent link="ring_dp_virt"/>
+      <child link="ring_mp2dp_jointbody"/>
+      <origin xyz="0.0 0.0035000000000999995 0.009" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="ring_mp2dp_offset">
+      <parent link="ring_mp2dp_jointbody"/>
+      <child link="ring_dp"/>
+      <origin xyz="-0.0 -0.0035000000000999995 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="ring_fingertip">
+      <inertial>
+         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="ring_dp2ring_fingertip_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="ring_dp2ring_fingertip_fixed">
+      <parent link="ring_dp"/>
+      <child link="ring_dp2ring_fingertip_fixed_jointbody"/>
+      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="ring_dp2ring_fingertip_fixed_offset">
+      <parent link="ring_dp2ring_fingertip_fixed_jointbody"/>
+      <child link="ring_fingertip"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_um_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="pinky_abd_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_abd_virt">
+      <parent link="palm"/>
+      <child link="pinky_abd_virt_jointbody"/>
+      <origin xyz="-0.036139500000000005 0.073232 0.004020000000000001" rpy="1.603352442101327 1.4396301902286717 -2.756575401461154"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_abd_virt_offset">
+      <parent link="pinky_abd_virt_jointbody"/>
+      <child link="pinky_um_virt"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_um">
+      <inertial>
+         <origin xyz="0.0003137018308382924 -4.3327904489999514e-05 -0.0035887350773001533" rpy="3.1134956670973164 -1.2922565789121525 -3.0994832567569457"/>
+         <mass value="0.001706479287008203"/>
+         <inertia ixx="4.090623485686434e-08" iyy="3.326893498515239e-08" izz="2.9518955437121844e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="pinky_um">
+         <origin xyz="0.0003137018308382924 -4.3327904489999514e-05 -0.0035887350773001533" rpy="3.113495667097317 -1.2922565789121525 -3.0994832567569452"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_pinky_um.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="pinky_abd_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_abd">
+      <parent link="pinky_um_virt"/>
+      <child link="pinky_abd_jointbody"/>
+      <origin xyz="0.0 0.0 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_abd_offset">
+      <parent link="pinky_abd_jointbody"/>
+      <child link="pinky_um"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_pp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="root2pinky_pp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2pinky_pp_virt">
+      <parent link="pinky_um"/>
+      <child link="root2pinky_pp_virt_jointbody"/>
+      <origin xyz="0.00270000102 5.9952065978308155e-19 -0.00743303472" rpy="0.0 0.0 -1.5707963267948963"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2pinky_pp_virt_offset">
+      <parent link="root2pinky_pp_virt_jointbody"/>
+      <child link="pinky_pp_virt"/>
+      <origin xyz="-0.0 -0.00270000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_pp">
+      <inertial>
+         <origin xyz="-2.109461568381571e-05 0.0009961632744908669 0.011153640747459392" rpy="-0.0005633733584207157 0.04664075136203927 1.572810016403888"/>
+         <mass value="0.006411007113106174"/>
+         <inertia ixx="8.839796359146425e-07" iyy="8.605669106686734e-07" izz="1.443335651753572e-07" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="pinky_pp">
+         <origin xyz="-2.109461568381571e-05 0.0009961632744908669 0.011153640747459392" rpy="-0.0005633733584207157 0.04664075136203927 1.5728100164038883"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_pinky_pp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="root2pinky_pp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="root2pinky_pp">
+      <parent link="pinky_pp_virt"/>
+      <child link="root2pinky_pp_jointbody"/>
+      <origin xyz="0.0 0.00250000102 0.018" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.157" upper="0.829" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="root2pinky_pp_offset">
+      <parent link="root2pinky_pp_jointbody"/>
+      <child link="pinky_pp"/>
+      <origin xyz="-0.0 -0.00250000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_pp_sens">
+      <inertial>
+         <origin xyz="0.0 -0.004 0.015" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="pinky_pp2pinky_pp_sens_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="pinky_pp2pinky_pp_sens_fixed">
+      <parent link="pinky_pp"/>
+      <child link="pinky_pp2pinky_pp_sens_fixed_jointbody"/>
+      <origin xyz="0.0 -0.004 0.015" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="pinky_pp2pinky_pp_sens_fixed_offset">
+      <parent link="pinky_pp2pinky_pp_sens_fixed_jointbody"/>
+      <child link="pinky_pp_sens"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_mp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="pinky_pp2mp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_pp2mp_virt">
+      <parent link="pinky_pp"/>
+      <child link="pinky_pp2mp_virt_jointbody"/>
+      <origin xyz="0.0 0.00370000102 0.02701851213434598" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_pp2mp_virt_offset">
+      <parent link="pinky_pp2mp_virt_jointbody"/>
+      <child link="pinky_mp_virt"/>
+      <origin xyz="-0.0 -0.00370000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_mp">
+      <inertial>
+         <origin xyz="-5.650322932879148e-05 0.002277558983797515 0.009212500242364335" rpy="0.004881995156064356 0.005874181783556143 1.5691948092412342"/>
+         <mass value="0.0035266787657145257"/>
+         <inertia ixx="2.5911984697112315e-07" iyy="2.327720229455275e-07" izz="6.529283129145394e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="pinky_mp">
+         <origin xyz="-5.650322932879148e-05 0.002277558983797515 0.009212500242364335" rpy="0.004881995156064356 0.005874181783555921 1.5691948092412342"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_pinky_mp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="pinky_pp2mp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_pp2mp">
+      <parent link="pinky_mp_virt"/>
+      <child link="pinky_pp2mp_jointbody"/>
+      <origin xyz="0.0 0.00350000102 0.011999999999999999" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.131" upper="0.96" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_pp2mp_offset">
+      <parent link="pinky_pp2mp_jointbody"/>
+      <child link="pinky_mp"/>
+      <origin xyz="-0.0 -0.00350000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_dp_virt">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="4e-10" iyy="4e-10" izz="3e-10" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="pinky_mp2dp_virt_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_mp2dp_virt">
+      <parent link="pinky_mp"/>
+      <child link="pinky_mp2dp_virt_jointbody"/>
+      <origin xyz="0.0 0.00370000102 0.0195" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_mp2dp_virt_offset">
+      <parent link="pinky_mp2dp_virt_jointbody"/>
+      <child link="pinky_dp_virt"/>
+      <origin xyz="-0.0 -0.00370000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_dp">
+      <inertial>
+         <origin xyz="-7.350958926698181e-06 0.0032238257911780446 0.007640724715587521" rpy="0.0038160787218809444 0.05349515626750856 1.570568003522288"/>
+         <mass value="0.002076623300267396"/>
+         <inertia ixx="1.0632503972632225e-07" iyy="9.094510216857428e-08" izz="2.8708364524729455e-08" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual name="pinky_dp">
+         <origin xyz="-7.350958926698181e-06 0.0032238257911780446 0.007640724715587521" rpy="0.0038160787218808334 0.05349515626750856 1.570568003522288"/>
+         <geometry>
+            <mesh filename="package://viz/models/faive_hand_p4/urdf/converted_pinky_dp.stl"/>
+         </geometry>
+         <material name="white"/>
+      </visual>
+   </link>
+   <link name="pinky_mp2dp_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="revolute" name="pinky_mp2dp">
+      <parent link="pinky_dp_virt"/>
+      <child link="pinky_mp2dp_jointbody"/>
+      <origin xyz="0.0 0.00350000102 0.008999999999999998" rpy="0.0 0.0 0.0"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit lower="-0.093" upper="0.682" effort="100" velocity="100"/>
+   </joint>
+   <joint type="fixed" name="pinky_mp2dp_offset">
+      <parent link="pinky_mp2dp_jointbody"/>
+      <child link="pinky_dp"/>
+      <origin xyz="-0.0 -0.00350000102 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <link name="pinky_fingertip">
+      <inertial>
+         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <mass value="0.0"/>
+         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <link name="pinky_dp2pinky_fingertip_fixed_jointbody">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="pinky_dp2pinky_fingertip_fixed">
+      <parent link="pinky_dp"/>
+      <child link="pinky_dp2pinky_fingertip_fixed_jointbody"/>
+      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <joint type="fixed" name="pinky_dp2pinky_fingertip_fixed_offset">
+      <parent link="pinky_dp2pinky_fingertip_fixed_jointbody"/>
+      <child link="pinky_fingertip"/>
+      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
+   </joint>
+   <material name="white">
+      <color rgba="1 1 1 1"/>
+   </material>
+</robot>
