@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import dextrous_hand.Finger as Finger
-from dextrous_hand.Wrist import WRIST
-from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.Arm import ARM
+from dextrous_hand.subsystems.Arm import ARM
+import dextrous_hand.subsystems.Finger as Finger
+from dextrous_hand.subsystems.Wrist import WRIST
+from dextrous_hand.utils.HandConfig import HandConfig
 
 class Hand():
     _instance = None

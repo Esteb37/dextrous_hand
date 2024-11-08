@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import dextrous_hand.ids as ids
-from dextrous_hand.Motor import Motor
 from abc import ABC, abstractmethod
+
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.motors.Motor import Motor
 
 class Subsystem(ABC):
     """
@@ -34,7 +35,7 @@ class Subsystem(ABC):
         self.id = subsystem_id
 
 
-        from dextrous_hand.architecture import SUBSYSTEM_JOINTS, SUBSYSTEM_MOTORS
+        from dextrous_hand.utils.architecture import SUBSYSTEM_JOINTS, SUBSYSTEM_MOTORS
 
         # Check if the subsystem has joints in the architecture.py file
         if self.id not in SUBSYSTEM_JOINTS or len(SUBSYSTEM_JOINTS[self.id]) == 0:

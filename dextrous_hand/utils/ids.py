@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from enum import Enum, auto
-from dextrous_hand.constants import MOTOR_CONSTANTS
+from dextrous_hand.utils.constants import MOTOR_CONSTANTS
+
 class MOTORS(Enum):
     """
     Motor ports

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Joint import Joint
-import dextrous_hand.ids as ids
-
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.joints.Joint import Joint
 
 class ABD(Joint):
     """

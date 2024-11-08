@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from std_msgs.msg import Float32MultiArray
 import numpy as np
+from pathlib import Path
+from std_msgs.msg import Float32MultiArray
 from scipy.spatial.transform import Rotation as R
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
-from pathlib import Path
 
 def matrix_to_message(matrix):
     """

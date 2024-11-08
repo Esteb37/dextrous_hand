@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from numpy import pi as PI
-from dextrous_hand.ids import JOINTS
+from dextrous_hand.utils.ids import JOINTS
 
 # in mm
 SPOOL_RADIUS = 8.5

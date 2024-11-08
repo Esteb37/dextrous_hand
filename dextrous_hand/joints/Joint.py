@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import dextrous_hand.ids as ids
-from dextrous_hand.Motor import Motor
-from abc import ABC, abstractmethod
-from dextrous_hand.joints_geometry import SPOOL_RADIUS
-from dextrous_hand.constants import GLOBAL_CONSTANTS
-
 import math
 import numpy as np
+from abc import ABC, abstractmethod
+
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.motors.Motor import Motor
+from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
+from dextrous_hand.utils.constants import GLOBAL_CONSTANTS
 
 class Joint(ABC):
     """
@@ -40,7 +40,7 @@ class Joint(ABC):
 
         self.id = id
 
-        from dextrous_hand.architecture import JOINT_MOTORS
+        from dextrous_hand.utils.architecture import JOINT_MOTORS
 
         # Check if the joint has motors in the constants.py file
         if self.id not in JOINT_MOTORS or len(JOINT_MOTORS[self.id]) == 0:
@@ -48,7 +48,7 @@ class Joint(ABC):
 
         self.motors = [Motor(motor_id) for motor_id in JOINT_MOTORS[self.id]]
 
-        from dextrous_hand.joints_geometry import JOINTS_GEOMETRY
+        from dextrous_hand.joints.joints_geometry import JOINTS_GEOMETRY
 
          # Check if the joint has geometry in the joints_geometry.py file
         if self.id not in JOINTS_GEOMETRY or len(JOINTS_GEOMETRY[self.id]) == 0:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Subsystem import Subsystem
-import dextrous_hand.ids as ids
+from dextrous_hand.subsystems.Subsystem import Subsystem
+import dextrous_hand.utils.ids as ids
 
 class Wrist(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):

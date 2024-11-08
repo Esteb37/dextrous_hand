@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.ids import *
-from dextrous_hand.FingerJoints import PIP, DIP, MCP, ABD, THUMB_ABD, THUMB_MCP, THUMB_PIP, THUMB_DIP
-from dextrous_hand.WristJoint import WristJoint
-from dextrous_hand.Joint import VirtualJoint
+from dextrous_hand.utils.ids import *
+from dextrous_hand.joints.FingerJoints import *
+from dextrous_hand.joints.Joint import VirtualJoint
+from dextrous_hand.joints.WristJoint import WristJoint
 
 def find_parent_subsystem(id : JOINTS | MOTORS) -> SUBSYSTEMS | None:
     """
