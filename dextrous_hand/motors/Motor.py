@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import dextrous_hand.constants as constants
-import dextrous_hand.ids as ids
+import dextrous_hand.utils.ids as ids
+import dextrous_hand.utils.constants as constants
 
 class Motor():
     """
@@ -106,7 +106,7 @@ class Motor():
     def target(self, target):
         target = target * self.direction + self.zero
         # Limit to dynamixel's range
-        from dextrous_hand.DynamixelClient import DXL_MAXIMUM_ANGLE_VALUE
+        from dextrous_hand.motors.DynamixelClient import DXL_MAXIMUM_ANGLE_VALUE
         target = min(max(target, 0), DXL_MAXIMUM_ANGLE_VALUE)
         self.dxl_target = target
 

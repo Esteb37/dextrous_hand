@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
-import rclpy
-from rclpy.node import Node
-
-from std_msgs.msg import Float32MultiArray
-import numpy as np
-from pynput import keyboard # type: ignore
 import time
+import rclpy
+import numpy as np
+from rclpy.node import Node
+from pynput import keyboard # type: ignore
+from std_msgs.msg import Float32MultiArray
 
-import dextrous_hand.ids as ids
-from dextrous_hand.DynamixelClient import DynamixelClient
 from dextrous_hand.Hand import HAND
-from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand import constants
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.utils import constants
+from dextrous_hand.utils.HandConfig import HandConfig
+from dextrous_hand.motors.DynamixelClient import DynamixelClient
 
 class TeleopNode(Node):
     """
@@ -47,7 +46,7 @@ class TeleopNode(Node):
 
         self.all = False
 
-        if constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.LAST.value:
+        if constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.LAST.name:
 
             self.get_logger().info('Reading current angles...')
             self.motor_bridge = DynamixelClient()
@@ -69,7 +68,7 @@ class TeleopNode(Node):
             # Just the first three columns
             self.hand_config = HAND.get_config()
 
-        elif constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.CUSTOM.value:
+        elif constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.CUSTOM.name:
             self.hand_config = HandConfig("HOME")
 
         else:

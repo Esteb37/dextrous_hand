@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import yaml
-from dextrous_hand.utils import parent_dir
+
+from dextrous_hand.utils.utils import parent_dir
+
 constants_dir = parent_dir() + '/data/constants/'
 
 ARM_CONSTANTS = yaml.safe_load(open(constants_dir + 'arm.yaml'))

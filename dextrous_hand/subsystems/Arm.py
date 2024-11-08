@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.constants import ARM_CONSTANTS, GLOBAL_CONSTANTS
-from dextrous_hand.utils import pos_orient_to_pose, pose_to_pos_orient
 from scipy.spatial.transform import Rotation as R
+
+from dextrous_hand.utils.utils import pos_orient_to_pose, pose_to_pos_orient
+from dextrous_hand.utils.constants import ARM_CONSTANTS, GLOBAL_CONSTANTS
 
 class Arm:
 

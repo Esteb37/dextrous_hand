@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-import dextrous_hand.utils as utils
-from dextrous_hand import ids
 from std_msgs.msg import Float32MultiArray
-from dextrous_hand.constants import CONFIGS
+
+from dextrous_hand.utils import ids
+import dextrous_hand.utils.utils as utils
+from dextrous_hand.utils.constants import CONFIGS
 
 HandConfigIndex = int | str | ids.SUBSYSTEMS | ids.JOINTS
 @dataclass
@@ -51,7 +52,7 @@ class HandConfig:
         self.POSITION = [0.0, 0.0, 0.0]
         self.ORIENTATION = [0.0, 0.0, 0.0]
 
-        from dextrous_hand.architecture import SUBSYSTEM_JOINTS
+        from dextrous_hand.utils.architecture import SUBSYSTEM_JOINTS
         self.joint_map = {}
 
         for subsystem in ids.SUBSYSTEMS:
@@ -77,7 +78,7 @@ class HandConfig:
         self.restrict()
 
     def restrict(self):
-        from dextrous_hand.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
+        from dextrous_hand.subsystems.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
         self.PINKY = PINKY.restrict_joint_angles(self.PINKY)
         self.RING = RING.restrict_joint_angles(self.RING)
         self.MIDDLE = MIDDLE.restrict_joint_angles(self.MIDDLE)
@@ -178,9 +179,9 @@ class HandConfig:
         """
         Generates a hand configuration from the current joint values
         """
-        from dextrous_hand.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
-        from dextrous_hand.Wrist import WRIST
-        from dextrous_hand.Arm import ARM
+        from dextrous_hand.subsystems.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
+        from dextrous_hand.subsystems.Wrist import WRIST
+        from dextrous_hand.subsystems.Arm import ARM
         return HandConfig(PINKY = PINKY.read()[:3],
                           RING = RING.read()[:3],
                           MIDDLE = MIDDLE.read()[:3],
@@ -221,7 +222,7 @@ class HandConfig:
         """
         Returns the hand configuration as a ROS PoseStamped message
         """
-        from dextrous_hand.Arm import ARM
+        from dextrous_hand.subsystems.Arm import ARM
         return ARM.target_msg()
 
     @property

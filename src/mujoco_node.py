@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import rclpy
-from rclpy.node import Node
 import mujoco
 import mujoco.viewer
+from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
-from dextrous_hand.utils import parent_dir
-from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.ids import JOINTS
+
+from dextrous_hand.utils.ids import JOINTS
+from dextrous_hand.utils.utils import parent_dir
+from dextrous_hand.utils.HandConfig import HandConfig
 
 JOINT_MAP = {
     JOINTS.WRIST: "wrist_base2palm",

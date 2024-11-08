@@ -3,12 +3,12 @@
 import rclpy
 import time
 from ruamel.yaml import YAML
-
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
-from dextrous_hand.DynamixelClient import DynamixelClient
-from dextrous_hand.constants import GLOBAL_CONSTANTS
-from dextrous_hand.utils import parent_dir
+
+from dextrous_hand.utils.utils import parent_dir
+from dextrous_hand.utils.constants import GLOBAL_CONSTANTS
+from dextrous_hand.motors.DynamixelClient import DynamixelClient
 
 class CalibrateNode(Node):
 

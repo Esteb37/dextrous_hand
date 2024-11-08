@@ -14,14 +14,15 @@
 
 """Communication using the DynamixelSDK."""
 
-import atexit
 import time
-from typing import Optional, Sequence, Union, Tuple
+import atexit
 import numpy as np
-import dextrous_hand.ids as ids
-from dextrous_hand.Motor import Motor
 from rclpy import logging
-from dextrous_hand import constants
+from typing import Optional, Sequence, Union, Tuple
+
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.utils import constants
+from dextrous_hand.motors.Motor import Motor
 
 PROTOCOL_VERSION = 2.0
 
