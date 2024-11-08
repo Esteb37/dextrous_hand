@@ -1,6 +1,6 @@
+import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
-import os
 
 from dextrous_hand.utils.utils import parent_dir
 
@@ -31,8 +31,6 @@ def generate_launch_description():
                     {"retarget/hand_scheme": "p4"},
                 ]
             ),
-
-
 
             Node(
                 package='dextrous_hand',
