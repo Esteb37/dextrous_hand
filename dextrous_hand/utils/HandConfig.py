@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import numpy as np
 from dataclasses import dataclass
 from std_msgs.msg import Float32MultiArray
 
@@ -29,7 +32,7 @@ class HandConfig:
     POSITION : list[float]
     ORIENTATION : list[float]
 
-    def __init__(self, config_name = None, **kwargs):
+    def __init__(self, config_name = None, unrestricted = False, **kwargs):
         """
         Initialize the HandConfig object with the given values or zeros if not provided
 
@@ -51,6 +54,8 @@ class HandConfig:
         self.WRIST = [0.0]
         self.POSITION = [0.0, 0.0, 0.0]
         self.ORIENTATION = [0.0, 0.0, 0.0]
+
+        self.unrestricted = unrestricted
 
         from dextrous_hand.utils.architecture import SUBSYSTEM_JOINTS
         self.joint_map = {}
@@ -78,14 +83,14 @@ class HandConfig:
         self.restrict()
 
     def restrict(self):
+        if self.unrestricted:
+            return
         from dextrous_hand.subsystems.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
         self.PINKY = PINKY.restrict_joint_angles(self.PINKY)
         self.RING = RING.restrict_joint_angles(self.RING)
         self.MIDDLE = MIDDLE.restrict_joint_angles(self.MIDDLE)
         self.INDEX = INDEX.restrict_joint_angles(self.INDEX)
         self.THUMB = THUMB.restrict_joint_angles(self.THUMB)
-
-
 
     def __getitem__(self, key : HandConfigIndex):
         """
@@ -119,6 +124,11 @@ class HandConfig:
             config[ids.SUBSYSTEMS.PINKY] = [0, 0, 0]
             config[0] = [0, 0, 0]
         """
+        if type(value) is float:
+            value = [value]
+
+        if type(value) is np.ndarray:
+            value = value.tolist()
 
         if isinstance(key, str):
             key = key.upper()
@@ -148,6 +158,7 @@ class HandConfig:
         """
         d = self.__dict__.copy()
         d.pop("joint_map")
+        d.pop("unrestricted")
 
         return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in d.items()]) + ")"
 
@@ -159,11 +170,12 @@ class HandConfig:
         return HandConfig()
 
     @staticmethod
-    def from_matrix(matrix):
+    def from_matrix(matrix, unrestricted = False):
         """
         Generates a hand configuration from a float matrix
         """
         return HandConfig(
+            unrestricted = unrestricted,
             PINKY = matrix[ids.SUBSYSTEMS.PINKY.value][:3],
             RING = matrix[ids.SUBSYSTEMS.RING.value][:3],
             MIDDLE = matrix[ids.SUBSYSTEMS.MIDDLE.value][:3],
@@ -193,12 +205,15 @@ class HandConfig:
                           )
 
     @staticmethod
-    def from_msg(msg : Float32MultiArray):
+    def from_msg(msg : Float32MultiArray, unrestricted = False):
         """
         Generates a hand configuration from a ROS Float32MultiArray message
         """
-        config = HandConfig.from_matrix(utils.message_to_matrix(msg, len(ids.SUBSYSTEMS)))
-        config.restrict()
+        config = HandConfig.from_matrix(utils.message_to_matrix(msg, len(ids.SUBSYSTEMS)), unrestricted)
+
+        if not unrestricted:
+            config.restrict()
+
         return config
 
     def as_matrix(self):
@@ -224,6 +239,19 @@ class HandConfig:
         """
         from dextrous_hand.subsystems.Arm import ARM
         return ARM.target_msg()
+
+    def mujoco_angles(self):
+        """
+        Returns the hand configuration as a list of joint angles for Mujoco
+        """
+        arr = np.array(self.THUMB + \
+                self.INDEX + \
+                self.MIDDLE + \
+                self.RING + \
+                self.PINKY)
+
+        arr[1:] *= 0.5 # all joints except the first one are rolling contact joints
+        return arr
 
     @property
     def FINGERS(self):

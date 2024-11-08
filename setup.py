@@ -28,6 +28,9 @@ setup(
             'teleop_node = src.teleop_node:main',
             'mujoco_node = src.mujoco_node:main',
             'calibrate_node = src.calibrate_node:main',
+            'webcam_mano_node = src.webcam_mano_node:main',
+            'retargeter_node = src.retargeter_node:main',
+            'visualize_joints_node = src.visualize_joints_node:main',
         ],
     },
 )
