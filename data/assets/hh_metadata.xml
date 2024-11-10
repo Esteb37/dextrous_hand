@@ -15,33 +15,43 @@
     </default>
     <asset>
         <!-- IsaacGym somehow does not respect the default mesh scale so set each of them manually here... -->
-        <mesh name="base" file="mesh/base.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="palm" file="mesh/palm.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="index_meta" file="mesh/index_meta.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_meta" file="mesh/middle_meta.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_meta" file="mesh/ring_meta.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_meta" file="mesh/pinky_meta.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="tower" file="mesh/hh/wrist.stl" scale="0.001 0.001 0.001"/>
+        <!-- <mesh name="franka_interface" file="mesh/hh/tower/franka_interface.stl" scale="0.001 0.001 0.001"/> -->
+        <!-- <mesh name="hand_interface" file="mesh/hh/tower/hand_interface.stl" scale="0.001 0.001 0.001"/> -->
+        
+        <mesh name="palm" file="mesh/hh/palm_ajusted.stl" scale="0.001 0.001 0.001"/>
+        
+        <mesh name="index_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="ring_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="pinky_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="thumb_base" file="mesh/thumb_base.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="thumb_pp" file="mesh/thumb_pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="thumb_mp" file="mesh/thumb_mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="thumb_dp" file="mesh/thumb_dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="index_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="ring_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="pinky_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="index_pp" file="mesh/index_pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="index_mp" file="mesh/index_mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="index_dp" file="mesh/index_dp.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="middle_pp" file="mesh/middle_pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_mp" file="mesh/middle_mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_dp" file="mesh/middle_dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_base" file="mesh/hh/thumb/mc_flex.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_pp" file="mesh/hh/thumb/pp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_mp" file="mesh/hh/thumb/mc_abd.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_dp" file="mesh/hh/thumb/dp.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="ring_pp" file="mesh/ring_pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_mp" file="mesh/ring_mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_dp" file="mesh/ring_dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="index_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="index_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="index_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="pinky_pp" file="mesh/pinky_pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_mp" file="mesh/pinky_mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_dp" file="mesh/pinky_dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
+
+        <mesh name="ring_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="ring_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="ring_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
+
+        <mesh name="pinky_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="pinky_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="pinky_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
 
 
     </asset>
