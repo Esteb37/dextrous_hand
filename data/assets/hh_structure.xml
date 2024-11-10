@@ -2,45 +2,35 @@
 
     <body name="root">
         <!-- so that the base can be colored separately in IsaacGym, make it into its own body -->
-        <body name ="iframe">
-            <joint name="iframe2base_x" type="slide" axis="1 0 0" pos ="0.0 0.0 0.0 " range="0 100"/>
-            <joint name="iframe2base_y" type="slide" axis="0 1 0" pos ="0.0 0.0 0.0 " range="0 100"/>
-            <joint name="iframe2base_z" type="slide" axis="0 0 1" pos ="0.0 0.0 0.0 " range="0 100"/>
+        <geom mesh="tower" rgba="0.2 0.2 0.2 1"/>
+        <body name="palm">
+            <joint name="wrist_base2palm" axis="-1 0 0" pos="0.0  0.0  0.0" range="-1 1.52"/>
+            <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire palm structure, separate it into separate geoms -->
+            <geom mesh="palm"/>
+            <geom mesh="index_mc_flex"/>
+            <geom mesh="middle_mc_flex"/>
+            <geom mesh="ring_mc_flex"/>
+            <geom mesh="pinky_mc_flex"/>
 
-            <joint name="iframe2base_roll" axis="1 0 0" pos ="0.0 0.0 0.0 " range="-3.14 3.14"/>
-            <joint name="iframe2base_pitch" axis="0 1 0" pos ="0.0 0.0 0.0 " range="-3.14 3.14"/>
-            <joint name="iframe2base_yaw" axis="0 0 1" pos ="0.0 0.0 0.0 " range="-3.14 3.14"/>
-
-            <geom mesh="base" rgba="0.2 0.2 0.2 1"/>
-            <body name="palm">
-                <joint name="wrist_base2palm" axis="-1 0 0" pos="0.0  0.0  0.0" range="-1 1.52"/>
-                <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire palm structure, separate it into separate geoms -->
-                <geom mesh="palm"/>
-                <geom mesh="index_meta"/>
-                <geom mesh="middle_meta"/>
-                <geom mesh="ring_meta"/>
-                <geom mesh="pinky_meta"/>
-
-                <body name="thumb_base">
-                    <joint name="root2thumb_base" axis="0.297249628842018  -0.700414486434294  -0.648893061564281" pos="-0.029450000000000   0.061590000000000  -0.006270000000000" range="0 2.27"/>
-                    <geom mesh="thumb_base"/>
-                    <body name="thumb_pp">
-                        <joint name="thumb_base2pp" axis="-0.088245944430897  -0.696856079647288   0.711761376832230" pos="-0.043710695813146   0.059275370639474  -0.010304234233199" range="-1.66 1.05"/>
-                        <geom mesh="thumb_pp"/>
-                        <body name="thumb_mp_virt">
-                            <joint name="thumb_pp2mp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.078908   0.047288  -0.017923" range="0 0.96"/>
-                            <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                            <body name="thumb_mp">
-                                <joint name="thumb_pp2mp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.090266   0.045142  -0.021148" range="0 0.96"/>
-                                <geom mesh="thumb_mp"/>
-                                <body name="thumb_dp_virt">
-                                    <joint name="thumb_mp2dp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.115347   0.040404  -0.028269" range="0 0.68"/>
-                                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                    <body name="thumb_dp">
-                                        <joint name="thumb_mp2dp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.123866   0.038794  -0.030687" range="0 0.68"/>
-                                        <geom mesh="thumb_dp"/>
-                                        <body name="thumb_fingertip" pos="-0.13585	0.0392	-0.0347" euler="4.7 -0.25 2.92">
-                                        </body>
+            <body name="thumb_base">
+                <joint name="root2thumb_base" axis="0.297249628842018  -0.700414486434294  -0.648893061564281" pos="-0.029450000000000   0.061590000000000  -0.006270000000000" range="0 2.27"/>
+                <geom mesh="thumb_base"/>
+                <body name="thumb_pp">
+                    <joint name="thumb_base2pp" axis="-0.088245944430897  -0.696856079647288   0.711761376832230" pos="-0.043710695813146   0.059275370639474  -0.010304234233199" range="-1.66 1.05"/>
+                    <geom mesh="thumb_pp"/>
+                    <body name="thumb_mp_virt">
+                        <joint name="thumb_pp2mp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.078908   0.047288  -0.017923" range="0 0.96"/>
+                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                        <body name="thumb_mp">
+                            <joint name="thumb_pp2mp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.090266   0.045142  -0.021148" range="0 0.96"/>
+                            <geom mesh="thumb_mp"/>
+                            <body name="thumb_dp_virt">
+                                <joint name="thumb_mp2dp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.115347   0.040404  -0.028269" range="0 0.68"/>
+                                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                <body name="thumb_dp">
+                                    <joint name="thumb_mp2dp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.123866   0.038794  -0.030687" range="0 0.68"/>
+                                    <geom mesh="thumb_dp"/>
+                                    <body name="thumb_fingertip" pos="-0.13585	0.0392	-0.0347" euler="4.7 -0.25 2.92">
                                     </body>
                                 </body>
                             </body>
