@@ -2,15 +2,15 @@
 
     <body name="root">
         <!-- so that the base can be colored separately in IsaacGym, make it into its own body -->
-        <geom mesh="base" rgba="0.2 0.2 0.2 1"/>
+        <geom mesh="tower" rgba="0.2 0.2 0.2 1"/>
         <body name="palm">
             <joint name="wrist_base2palm" axis="-1 0 0" pos="0.0  0.0  0.0" range="-1 1.52"/>
             <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire palm structure, separate it into separate geoms -->
             <geom mesh="palm"/>
-            <geom mesh="index_meta"/>
-            <geom mesh="middle_meta"/>
-            <geom mesh="ring_meta"/>
-            <geom mesh="pinky_meta"/>
+            <geom mesh="index_mc_flex"/>
+            <geom mesh="middle_mc_flex"/>
+            <geom mesh="ring_mc_flex"/>
+            <geom mesh="pinky_mc_flex"/>
             
             <body name="thumb_base">
                 <joint name="root2thumb_base" axis="0.297249628842018  -0.700414486434294  -0.648893061564281" pos="-0.029450000000000   0.061590000000000  -0.006270000000000" range="0 2.27"/>
