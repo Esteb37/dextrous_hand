@@ -12,6 +12,7 @@
             <geom mesh="ring_mc_flex"/>
             <geom mesh="pinky_mc_flex"/>
 
+            
             <body name="thumb_base">
                 <joint name="root2thumb_base" axis="0.297249628842018  -0.700414486434294  -0.648893061564281" pos="-0.029450000000000   0.061590000000000  -0.006270000000000" range="0 2.27"/>
                 <geom mesh="thumb_base"/>
