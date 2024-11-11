@@ -62,6 +62,15 @@ class Hand():
         """
         return self.target
 
+    def update_arm_pose(self, current_pose):
+        """
+        Update the arm's current position and orientation
+
+        params
+            msg: the message containing the target position and orientation
+        """
+        ARM.update(current_pose)
+
     def __str__(self):
         string = "--------Hand--------\n\nTarget:\n"
         string += str(self.get_target()) + "\n\nCurrent:\n"
