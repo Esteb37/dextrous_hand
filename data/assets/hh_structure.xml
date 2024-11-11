@@ -1,65 +1,82 @@
-<mujoco model="right_hh">
+<mujoco model="right_faive">
 
-    <body name="root">
+    <!-- match the initial pose of P0, with the palm facing downwards (-z) and the fingers point +y -->
+    <body name="root" euler="-1.5707 0 -1.5707" >
         <!-- so that the base can be colored separately in IsaacGym, make it into its own body -->
-        <geom mesh="tower" rgba="0.2 0.2 0.2 1"/>
-        <body name="palm">
-            <joint name="wrist_base2palm" axis="-1 0 0" pos="0.0  0.0  0.0" range="-1 1.52"/>
-            <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire palm structure, separate it into separate geoms -->
+        <!-- <geom mesh="base" rgba="0.2 0.2 0.2 1"/> -->
+        <geom mesh="tower"/>
+        <geom mesh="wrist" pos="0.105 -0.02 0.04" euler="0 1.57 0"/>
+        <body name="palm" pos="0.175 0.0 0" euler="1.57 0 -1.57">
+            <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire fixed base, separate it into separate geoms -->
             <geom mesh="palm"/>
-            <geom mesh="index_mc_flex"/>
-            <geom mesh="middle_mc_flex"/>
-            <geom mesh="ring_mc_flex"/>
-            <geom mesh="pinky_mc_flex"/>
+            <!--index components spawn at ring finger with ring finger orientation: quat (index_base_rot*ring_base_rot.inverse) brings it to index finger orientation, and pos to index position (position vector is hardcoded, but approx -MCPA1_ring + MCPA1_index)-->
+            <geom mesh="index_mc_add" pos = "0.026  0.0342 0.001" euler="-1.57 0.03 0.0"/>
+            <geom mesh="middle_mc_add" pos = "0.00175  0.0345 0.001" euler="-1.57 0 0"/>
+            <geom mesh="pinky_mc_add" pos = "-0.04  0.022 0.001" euler="-1.57 -0.25 0"/>
+            <geom mesh="ring_mc_add" pos = "-0.02  0.03 0.001" euler="-1.57 -0.1 0"/>
+            <!-- <site name="p01" pos="0.026435 0.018613 0.026355 " size="0.001" rgba="1 0.1 0.1 1"/> -->
+            <!-- <site name="p02" pos="0.032864 0.032727 0.013103 " size="0.001" rgba="0.1 1 0.1 1"/> -->
+            <body name="thumb_base" pos="0.0302924 0.0270814 0.0184038" quat="0.29739387 0.50396621 -0.79122378  0.1775947 ">
+                <joint name="root2thumb_base" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 2.27" />
+                <geom mesh="thumb_base" pos="0.047824 -0.019868 0.044923" quat="-0.805372 0.000000 0.402853 -0.434839" />
+                <body name="thumb_pp" pos="0.000000 -0.010014 -0.011168" quat="0.701176 -0.091392 -0.400078 -0.583042">
+                    <joint name="thumb_base2pp" axis="1.000000 -0.000000 -0.000000" pos="0.000000 0.000000 0.000000" range="-1.66 1.05" />
+                    <geom mesh="thumb_pp" pos="0.044783 0.058589 0.009603" quat="0.472351 0.482454 -0.000000 0.737647" />
+                    <body name="thumb_mp_virt" pos="0.006036 -0.014416 -0.034587" quat="0.419319 -0.052705 0.308003 0.852366">
+                        <joint name="thumb_pp2mp_virt" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
+                        <inertial pos="0.009525 -0.041187 0.083647" mass="0.001" diaginertia="4E-10 4E-10 3E-10" quat="-0.801383 0.000000 0.595590 -0.055291" />
+                        <body name="thumb_mp" pos="0.000038 -0.002927 -0.011638" quat="-1.000000 0.000000 -0.000000 -0.000000">
+                            <joint name="thumb_pp2mp" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
+                            <geom mesh="thumb_mp" pos="0.009487 -0.038260 0.095285" quat="-0.801383 0.000000 0.595590 -0.055291" />
+                            <body name="thumb_dp_virt" pos="0.000084 -0.006463 -0.025699" quat="-1.000000 0.000000 -0.000000 -0.000000">
+                                <joint name="thumb_mp2dp_virt" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.68" />
+                                <inertial pos="0.009403 -0.031797 0.120984" mass="0.001" diaginertia="4E-10 4E-10 3E-10" quat="-0.801383 0.000000 0.595590 -0.055291" />
+                                <body name="thumb_dp" pos="0.000027 -0.002196 -0.008728" quat="-1.000000 0.000000 -0.000000 -0.000000">
+                                    <joint name="thumb_mp2dp" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.68" />
+                                    <geom mesh="thumb_dp" pos="0.009375 -0.029601 0.129712" quat="-0.801383 0.000000 0.595590 -0.055291" />
+                                    <body name="thumb_fingertip" pos="0.000386 -0.000394 -0.012633" euler="4.7 -0.25 2.92">
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
 
-            
-            <body name="thumb_base">
-                <joint name="root2thumb_base" axis="0.297249628842018  -0.700414486434294  -0.648893061564281" pos="-0.029450000000000   0.061590000000000  -0.006270000000000" range="0 2.27"/>
-                <geom mesh="thumb_base"/>
-                <body name="thumb_pp">
-                    <joint name="thumb_base2pp" axis="-0.088245944430897  -0.696856079647288   0.711761376832230" pos="-0.043710695813146   0.059275370639474  -0.010304234233199" range="-1.66 1.05"/>
-                    <geom mesh="thumb_pp"/>
-                    <body name="thumb_mp_virt">
-                        <joint name="thumb_pp2mp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.078908   0.047288  -0.017923" range="0 0.96"/>
+            <!--currently the meshes for index_um and index_pp are hardcoded thorugh mujoco (see yaml_conversion.py)-->
+            <!-- <site name="p11" pos="0.029883 0.085608 -0.001404 " size="0.001" rgba="1 0.1 0.1 1"/> -->
+            <!-- <site name="p12" pos="0.016650 0.087193 0.004395 " size="0.001" rgba="0.1 1 0.1 1"/> -->
+            <!-- <site name="p13" pos="0.016950 0.086741 -0.002082 " size="0.001" rgba="0.1 0.1 0.1 1"/> -->
+            <!-- <site name="p14" pos="0.017674 0.094691 -0.002603 " size="0.001" rgba="0.1 0.1 1 1"/> -->
+            <body name="index_um_virt" quat ="0.5167689347304412 -0.506005226896599 0.5258539639535457 0.44764515751343686" pos = "0.0241405 0.0941245 -0.002264">
+                <joint name="index_abd_virt" axis = "1 0 0" range="-0.264 0.264"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                <body name="index_um" pos="0 0 0.018">
+                    <joint name="index_abd" axis = "1 0 0" range="-0.264 0.264"/>
+                    <geom mesh="index_um" quat="0.6747394337578665 0.059955532672107535 0.039660080772529006 -0.7345468729953414" pos = "-0.00167  -0.02403002404 0.00664"/>
+                    <body name="index_pp_virt" quat="0.7071067811865476 0.0 -1.0408340855860843e-17 -0.7071067811865475" pos="0 0 -0.00743303472">
+                        <joint name="root2index_pp_virt" axis="1 0 0" pos = "0.         0.00270000102 0." range="-0.157 0.829"/>
                         <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                        <body name="thumb_mp">
-                            <joint name="thumb_pp2mp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.090266   0.045142  -0.021148" range="0 0.96"/>
-                            <geom mesh="thumb_mp"/>
-                            <body name="thumb_dp_virt">
-                                <joint name="thumb_mp2dp_virt" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.115347   0.040404  -0.028269" range="0 0.68"/>
+                        <body name="index_pp" pos="0 0 0.018">
+                            <joint name="root2index_pp" axis="1 0 0" pos = "0.         0.00250000102 0." range="-0.157 0.829"/>
+                            <geom mesh="index_pp" quat="0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos = "0.02403002404 -0.00167 -0.0040"/>
+                            <body name="index_pp_sens" pos="0 -0.004 0.018">
+                            </body>
+                            <body name="index_mp_virt" pos="0.          0.         0.03101612481">
+                                <joint name="index_pp2mp_virt" axis="1 0 0" pos = "0.         0.00370000102 0." range="-0.131 0.960"/>
                                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                <body name="thumb_dp">
-                                    <joint name="thumb_mp2dp" axis="0.284429826078874  -0.088618171481011  -0.954592318070968" pos="-0.123866   0.038794  -0.030687" range="0 0.68"/>
-                                    <geom mesh="thumb_dp"/>
-                                    <body name="thumb_fingertip" pos="-0.13585	0.0392	-0.0347" euler="4.7 -0.25 2.92">
-                                    </body>
-                                </body>
-                            </body>
-                        </body>
-                    </body>
-                </body>
-
-                <body name="index_pp_virt">
-                    <joint name="root2index_pp_virt" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.029320000000000   0.115440000000000   0.017930000000000" range="0 0.83"/>
-                    <joint name="root2index_pp_virt_abd" axis="0.0  -0.104241812967506  -0.990498583905110" pos="-0.029320000000000   0.115440000000000   0.017930000000000" range="-0.3 0.3"/>
-                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                    <body name="index_pp">
-                        <joint name="root2index_pp" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.031385146447244   0.133190847457549   0.020084665795489" range="0 0.83"/>
-                        <joint name="root2index_pp_abd" axis="0.0  -0.104241812967506  -0.990498583905110" pos="-0.031385146447244   0.133190847457549   0.020084665795489" range="-0.3 0.3"/>
-                        <geom mesh="index_pp"/>
-                        <body name="index_mp_virt">
-                            <joint name="index_pp2mp_virt" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.034941787550830   0.163761751412218   0.023795479109943" range="0 0.96"/>
-                            <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                            <body name="index_mp">
-                                <joint name="index_pp2mp" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.036318551848992   0.175595649717251   0.025231922973603" range="0 0.96"/>
-                                <geom mesh="index_mp"/>
-                                <body name="index_dp_virt">
-                                    <joint name="index_mp2dp_virt" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.039014715266226   0.198770367231273   0.028044958873269" range="0 0.68"/>
-                                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                    <body name="index_dp">
-                                        <joint name="index_mp2dp" axis="-0.990425994580321  -0.104241812967506  -0.090498583905110" pos="-0.040047288489848   0.207645790960048   0.029122291771014" range="0 0.68"/>
-                                        <geom mesh="index_dp"/>
-                                        <body name="index_fingertip" pos="-0.0402	0.2175	0.0261" euler="-2.9 0.11 -1.66">
+                                <body name="index_mp" pos=" 0.  0. 0.012">
+                                    <joint name="index_pp2mp" axis="1 0 0" pos = "0.         0.00350000102 0." range="-0.131 0.960"/>
+                                    <geom mesh="index_mp" quat = "0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos = "0.02403002404  -0.00167       -0.04701612481"/>
+                                    <body name="index_dp_virt" pos="0.   0.  0.0235">
+                                        <joint name="index_mp2dp_virt" axis="1 0 0" pos = "0.         0.00370000102 0." range="-0.093 0.682"/>
+                                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                        <body name="index_dp" pos="0. 0. 0.009">
+                                            <joint name="index_mp2dp" axis="1 0 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
+                                            <geom mesh="index_dp" quat="0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos = "0.02403002404  -0.00167      -0.07951612481"/>
+                                            <body name="index_fingertip" pos="0 0 0.01">
+                        
+                                            </body>
                                         </body>
                                     </body>
                                 </body>
@@ -67,57 +84,41 @@
                         </body>
                     </body>
                 </body>
+            </body>
 
-                <body name="middle_pp_virt">
-                    <joint name="root2middle_pp_virt" axis="-1     0     0" pos="-0.005500000000000   0.117620000000000   0.019690000000000" range="0 0.83"/>
-                    <joint name="root2middle_pp_virt_abd" axis="0     0     -1" pos="-0.005500000000000   0.117620000000000   0.019690000000000" range="-0.3 0.3"/>
-                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                    <body name="middle_pp">
-                        <joint name="root2middle_pp" axis="-1     0     0" pos="-0.005500000000000   0.135485830729544   0.021883648181293" range="0 0.83"/>
-                        <joint name="root2middle_pp_abd" axis="0     0     -1" pos="-0.005500000000000   0.135485830729544   0.021883648181293" range="-0.3 0.3"/>
-                        <geom mesh="middle_pp"/>
-                        <body name="middle_mp_virt">
-                            <joint name="middle_pp2mp_virt" axis="-1     0     0" pos="-0.005500000000000   0.170224946036990   0.026149075200473" range="0 0.96"/>
-                            <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                            <body name="middle_mp">
-                                <joint name="middle_pp2mp" axis="-1     0     0" pos="-0.005500000000000   0.182135499856686   0.027611507321335" range="0 0.96"/>
-                                <geom mesh="middle_mp"/>
-                                <body name="middle_dp_virt">
-                                    <joint name="middle_mp2dp_virt" axis="-1     0     0" pos="-0.005500000000000   0.207445426723540   0.030719175578166" range="0 0.68"/>
-                                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                    <body name="middle_dp">
-                                        <joint name="middle_mp2dp" axis="-1     0     0" pos="-0.005500000000000   0.216378342088312   0.031815999668812" range="0 0.68"/>
-                                        <geom mesh="middle_dp"/>
-                                        <body name="middle_fingertip" pos="-0.0055	0.2251	0.0272" euler="-2.92 0.0 -1.565">
-                                        </body>
-                                    </body>
-                                </body>
+
+            <!-- <site name="p21" pos="0.009450 0.082000 -0.003066 " size="0.001" rgba="1 0.1 0.1 1"/> -->
+            <!-- <site name="p22" pos="-0.003550 0.082000 0.003434 " size="0.001" rgba="0.1 1 0.1 1"/> -->
+            <!-- <site name="p23" pos="-0.003550 0.082000 -0.003066 " size="0.001" rgba="0.1 0.1 0.1 1"/> -->
+            <!-- <site name="p24" pos="-0.003550 0.090000 -0.003066 " size="0.001" rgba="0.1 0.1 1 1"/> -->
+            <body name="middle_um_virt" quat ="-0.5 0.5 -0.5 -0.5" pos = "0.00295 0.09 -0.003066">
+                <joint name="middle_abd_virt" axis = "1 0 0" range="-0.264 0.264"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                <body name="middle_um" pos="0 0 0.018">
+                    <joint name="middle_abd" axis = "1 0 0" range="-0.264 0.264"/>
+                    <geom mesh="middle_um" quat=" 0.7071067811865476 -0.0 -0.0 -0.7071067811865475" pos="-0. -0.  0.002"/>
+                    <body name="middle_pp_virt" quat="0.7071067811865476 0.0 0.0 -0.7071067811865475" pos="0 0 -0.00743303472">
+                        <joint name="root2middle_pp_virt" axis="1 0 0" pos = "0 0.002700001023199999 0" range="-0.157 0.829"/>
+                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                        <body name="middle_pp" pos="0 0 0.018">
+                            <joint name="root2middle_pp" axis="1 0 0" pos = "0 0.002500001023199999 0" range="-0.157 0.829"/>
+                            <geom mesh="middle_pp" quat="1.0 -0.0 -0.0 -0.0" pos="0.          0.        -0.00858303472"/>
+                            <body name="middle_pp_sens" pos="0 -0.004 0.022">
                             </body>
-                        </body>index
-                    </body>
-                </body>
-
-                <body name="ring_pp_virt">
-                    <joint name="root2ring_pp_virt" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.018090000000000   0.112480000000000   0.018220000000000" range="0 0.83"/>
-                    <joint name="root2ring_pp_virt_abd" axis="-0.090425994580321   0.104241812967506   0.990498583905110" pos="0.018090000000000   0.112480000000000   0.018220000000000" range="-0.3 0.3"/>
-                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                    <body name="ring_pp">
-                        <joint name="root2ring_pp" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.020155146447243   0.130230847457549   0.020374665795489" range="0 0.83"/>
-                        <joint name="root2ring_pp_abd" axis="-0.00425994580321   0.104241812967506   0.990498583905110" pos="0.020155146447243   0.130230847457549   0.020374665795489" range="-0.3 0.3"/>
-                        <geom mesh="ring_pp"/>
-                        <body name="ring_mp_virt">
-                            <joint name="ring_pp2mp_virt" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.023711787550830   0.160801751412218   0.024085479109943" range="0 0.96"/>
-                            <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                            <body name="ring_mp">
-                                <joint name="ring_pp2mp" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.025088551848992   0.172635649717251   0.025521922973603" range="0 0.96"/>
-                                <geom mesh="ring_mp"/>
-                                <body name="ring_dp_virt">
-                                    <joint name="ring_mp2dp_virt" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.027784715266226   0.195810367231273   0.028334958873269" range="0 0.68"/>
-                                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                    <body name="ring_dp">
-                                        <joint name="ring_mp2dp" axis="-0.990425994580321   0.104241812967506   0.090498583905110" pos="0.028817288489848   0.204685790960048   0.029412291771014" range="0 0.68"/>
-                                        <geom mesh="ring_dp"/>
-                                        <body name="ring_fingertip" pos="0.02695	0.216	0.0244" euler="-2.92 -0.125 -1.425">
+                            <body name="middle_mp_virt" pos="0.          0.         0.03501428277">
+                                <joint name="middle_pp2mp_virt" axis="1 0 0"  pos = "0 0.0037000000000999996 0" range="-0.131 0.960"/>
+                                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                <body name="middle_mp" pos=" 0.  0. 0.012">
+                                    <joint name="middle_pp2mp" axis="1 0 0" pos = "0 0.0035000000000999996 0" range="-0.131 0.960"/>
+                                    <geom mesh="middle_mp" quat="1.0 -0.0 -0.0 -0.0" pos=" 0.           0.        -0.05559731749"/>
+                                    <body name="middle_dp_virt" pos="0.   0.  0.0255">
+                                        <joint name="middle_mp2dp_virt" axis="1 0 0" pos = "0 0.0037000000000999996 0" range="-0.093 0.682"/>
+                                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                        <body name="middle_dp" pos="0. 0. 0.009">
+                                            <joint name="middle_mp2dp" axis="1 0 0" pos = "0 0.0035000000000999996 0" range="-0.093 0.682"/>
+                                            <geom mesh="middle_dp" quat="1.0 -0.0 -0.0 -0.0" pos="0.           0.         -0.09009731749"/>
+                                            <body name="middle_fingertip" pos="0 0 0.01">
+                                            </body>
                                         </body>
                                     </body>
                                 </body>
@@ -125,28 +126,81 @@
                         </body>
                     </body>
                 </body>
+            </body>
 
-                <body name="pinky_pp_virt">
-                    <joint name="root2pinky_pp_virt" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.041170000000000   0.101870000000000   0.013200000000000" range="0 0.83"/>
-                    <joint name="root2pinky_pp_virt_abd" axis="-0.210980299137689   0.223061123902897   0.954196651829969" pos="0.041170000000000   0.101870000000000   0.013200000000000" range="-0.3 0.3"/>
-                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                    <body name="pinky_pp">
-                        <joint name="root2pinky_pp" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.045651869374116   0.119205095457698   0.015045890675491" range="0 0.83"/>
-                        <joint name="root2pinky_pp_abd" axis="0.210980299137689   0.223061123902897   -0.954196651829969" pos="0.045651869374116   0.119205095457698   0.015045890675491" range="-0.3 0.83"/>
-                        <geom mesh="pinky_pp"/>
-                        <body name="pinky_mp_virt">
-                            <joint name="pinky_pp2mp_virt" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.052374673435289   0.145207738644245   0.017814726688728" range="0 0.96"/>
-                            <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                            <body name="pinky_mp">
-                                <joint name="pinky_pp2mp" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.055362586351366   0.156764468949377   0.019045320472388" range="0 0.96"/>
-                                <geom mesh="pinky_mp"/>
-                                <body name="pinky_dp_virt">
-                                    <joint name="pinky_mp2dp_virt" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.060217944839991   0.175544155695216   0.021045035370837" range="0 0.68"/>
-                                    <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
-                                    <body name="pinky_dp">
-                                        <joint name="pinky_mp2dp" axis="-0.950980299137689   0.223061123902897   0.214196651829969" pos="0.062458879527049   0.184211703424065   0.021967980708582" range="0 0.68"/>
-                                        <geom mesh="pinky_dp"/>
-                                        <body name="pinky_fingertip" pos="0.06295	0.1938	0.0186" euler="-2.92 -0.25 -1.3">
+            <!-- <site name="p31" pos="-0.009673 0.075194 -0.002943 " size="0.001" rgba="1 0.1 0.1 1"/> -->
+            <!-- <site name="p32" pos="-0.021963 0.073609 0.005103 " size="0.001" rgba="0.1 1 0.1 1"/> -->
+            <!-- <site name="p33" pos="-0.022497 0.073385 -0.001371 " size="0.001" rgba="0.1 0.1 0.1 1"/> -->
+            <!-- <site name="p34" pos="-0.023630 0.081302 -0.001552 " size="0.001" rgba="0.1 0.1 1 1"/> -->
+            <body name="ring_um_virt" quat ="0.4301659457827641 -0.5159407823331047 0.503470950251851 0.5433961450606932" pos = "-0.017217999999999997 0.08220650000000002 -0.002338">
+                <joint name="ring_abd_virt" axis = "1 0 0" range="-0.264 0.264"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                <body name="ring_um" pos="0 0 0.018">
+                    <joint name="ring_abd" axis = "1 0 0" range="-0.264 0.264"/>
+                    <geom mesh="ring_um" quat="0.6747394337578664 0.05995553267210752 0.039660080772529006 -0.7345468729953413" pos="-0.00167054668 -0.02384603398   0.00667182377"/>
+                    <body name="ring_pp_virt" quat="0.7071067811865476 -8.673617379884035e-18 3.469446951953614e-18 -0.7071067811865475" pos="0 0 -0.00743303472">
+                        <joint name="root2ring_pp_virt" axis="1 0 0" pos = "0 0.002700001023199999 0" range="-0.157 0.829"/>
+                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                        <body name="ring_pp" pos="0 0 0.018">
+                            <joint name="root2ring_pp" axis="1 0 0" pos = "0 0.002500001023199999 0" range="-0.157 0.829"/>
+                            <geom mesh="ring_pp" quat="0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos="0.02384603398 -0.00167054668  -0.00391121095"/>
+                            <body name="ring_pp_sens" pos="0 -0.004 0.018">
+                            </body>
+                            <body name="ring_mp_virt" pos="0.          0.         0.03101612481">
+                                <joint name="ring_pp2mp_virt" axis="1 0 0" pos = "0 0.0037000000000999996 0" range="-0.131 0.960"/>
+                                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                <body name="ring_mp" pos=" 0.  0. 0.012">
+                                    <joint name="ring_pp2mp" axis="1 0 0" pos="0 0.0035000000000999996 0" range="-0.131 0.960"/>
+                                    <geom mesh="ring_mp" quat="0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos="0.02384603398  -0.00167054668 -0.04692733575"/> 
+                                    <body name="ring_dp_virt" pos="0.   0.  0.0235">
+                                        <joint name="ring_mp2dp_virt" axis="1 0 0" pos = "0 0.0037000000000999996 0" range="-0.093 0.682"/>
+                                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                        <body name="ring_dp" pos="0. 0. 0.009">
+                                            <joint name="ring_mp2dp" axis="1 0 0" pos = "0 0.0035000000000999996 0" range="-0.093 0.682"/>
+                                            <geom mesh="ring_dp" quat="0.9965159041385382 0.014351051665437375 0.07043887577876032 -0.042290245850220926" pos="0.02384603398  -0.00167054668 -0.07942733575"/>
+                                            <body name="ring_fingertip" pos="0 0 0.01">
+                                            </body>
+                                        </body>
+                                    </body>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+
+            <!-- <site name="p41" pos="-0.027327 0.067948 0.003204 " size="0.001" rgba="1 0.1 0.1 1"/> -->
+            <!-- <site name="p42" pos="-0.038636 0.063821 0.011348 " size="0.001" rgba="0.1 1 0.1 1"/> -->
+            <!-- <site name="p43" pos="-0.039424 0.063502 0.004904 " size="0.001" rgba="0.1 0.1 0.1 1"/> -->
+            <!-- <site name="p44" pos="-0.042188 0.071009 0.004870 " size="0.001" rgba="0.1 0.1 1 1"/> -->
+            <body name="pinky_um_virt" quat ="0.36487773736255025 -0.5534044763378659 0.44257442579699546 0.6039334400220425" pos = "-0.036139500000000005 0.073232 0.004020000000000001">
+                <joint name="pinky_abd_virt" axis = "1 0 0" range="-0.264 0.264"/>
+                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                <body name="pinky_um" pos="0 0 0.018">
+                    <joint name="pinky_abd" axis = "1 0 0" range="-0.264 0.264"/>
+                    <geom mesh="pinky_um" quat="0.6493012108840017 0.13334027183711064 0.11409631699812431 -0.7400069863848843" pos="0.00047677564 -0.04987701158   0.00302781341"/>
+                    <body name="pinky_pp_virt" quat="0.7071067811865477 0 0 -0.7071067811865476" pos="0 0 -0.00743303472">
+                        <joint name="root2pinky_pp_virt" axis="1 0 0" pos = "0.         0.00270000102 0." range="-0.157 0.829"/>
+                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                        <body name="pinky_pp" pos="0 0 0.018">
+                            <joint name="root2pinky_pp" axis="1 0 0" pos = "0.         0.00250000102 0." range="-0.157 0.829"/>
+                            <geom mesh="pinky_pp" quat="0.9823892474468868 0.01360753096349492 0.17496408987906217 -0.06413866894945879" pos="0.04987701158  0.00047677564 -0.00755522131"/>
+                            <body name="pinky_pp_sens" pos="0 -0.004 0.015">
+                            </body>
+                            <body name="pinky_mp_virt" pos="0 0 0.02701851213434598">
+                                <joint name="pinky_pp2mp_virt" axis="1 0 0" pos = "0.         0.00370000102 0." range="-0.131 0.960"/>
+                                <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                <body name="pinky_mp" pos="0 0 0.011999999999999998">
+                                    <joint name="pinky_pp2mp" axis="1 0 0" pos = "0.         0.00350000102 0." range="-0.131 0.960"/>
+                                    <geom mesh="pinky_mp" quat="0.9823892474468868 0.01360753096349492 0.17496408987906217 -0.06413866894945879" pos="0.04987701158   0.00047677564 -0.04657373345"/> <!--pos pp + shift from mpvirt and mp-->
+                                    <body name="pinky_dp_virt" pos="0 0 0.0195">
+                                        <joint name="pinky_mp2dp_virt" axis="1 0 0" pos = "0.         0.00370000102 0." range="-0.093 0.682"/>
+                                        <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
+                                        <body name="pinky_dp" pos="0 0 0.008999999999999998">
+                                            <joint name="pinky_mp2dp" axis="1 0 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
+                                            <geom mesh="pinky_dp" quat="0.9823892474468868 0.01360753096349492 0.17496408987906217 -0.06413866894945879" pos="0.04987701158   0.00047677564  -0.07507373345"/>
+                                            <body name="pinky_fingertip" pos="0 0 0.01" >
+                                            </body>
                                         </body>
                                     </body>
                                 </body>
