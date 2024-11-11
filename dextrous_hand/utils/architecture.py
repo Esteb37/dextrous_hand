@@ -2,7 +2,7 @@
 
 from dextrous_hand.utils.ids import *
 from dextrous_hand.joints.FingerJoints import *
-from dextrous_hand.joints.Joint import VirtualJoint
+from dextrous_hand.joints.Joint import ArmJoint
 from dextrous_hand.joints.WristJoint import WristJoint
 
 def find_parent_subsystem(id : JOINTS | MOTORS) -> SUBSYSTEMS | None:
@@ -146,13 +146,13 @@ SUBSYSTEM_JOINTS = {
 
     SUBSYSTEMS.WRIST: [WristJoint(JOINTS.WRIST)],
 
-    SUBSYSTEMS.POSITION: [VirtualJoint(JOINTS.POSE_X),
-                          VirtualJoint(JOINTS.POSE_Y),
-                          VirtualJoint(JOINTS.POSE_Z)],
+    SUBSYSTEMS.POSITION: [ArmJoint(JOINTS.POSE_X),
+                          ArmJoint(JOINTS.POSE_Y),
+                          ArmJoint(JOINTS.POSE_Z)],
 
-    SUBSYSTEMS.ORIENTATION: [VirtualJoint(JOINTS.POSE_ROLL),
-                          VirtualJoint(JOINTS.POSE_PITCH),
-                          VirtualJoint(JOINTS.POSE_YAW)],
+    SUBSYSTEMS.ORIENTATION: [ArmJoint(JOINTS.POSE_ROLL),
+                             ArmJoint(JOINTS.POSE_PITCH),
+                             ArmJoint(JOINTS.POSE_YAW)],
 
 
 }

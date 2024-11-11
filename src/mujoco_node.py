@@ -22,6 +22,7 @@ class MujocoNode(Node):
         self.model = mujoco.MjModel.from_xml_path(xml_path) # type: ignore
         self.data = mujoco.MjData(self.model) # type: ignore
 
+        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         self.config = HandConfig(unrestricted=True)
 
         # Launch the viewer in a non-blocking way
@@ -44,6 +45,7 @@ class MujocoNode(Node):
 
     def joint_command_callback(self, msg):
         # Mapping function to be removed
+        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         self.config = HandConfig.from_msg(msg, unrestricted=True)
         print(self.config)
 

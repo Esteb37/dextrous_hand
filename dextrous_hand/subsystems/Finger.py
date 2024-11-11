@@ -60,11 +60,14 @@ class Finger(Subsystem):
           return abd_angle,flex_angle
 
     def restrict_joint_angles(self, joint_angles):
-          joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
+        """
+        Enforces the "triangle" restriction on the joint angles.
+        """
+        joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
-          joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
+        joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
 
-          return joint_angles
+        return joint_angles
 
     def joints2motors(self, joint_angles) -> list[float]:
         """
@@ -92,6 +95,9 @@ class Finger(Subsystem):
 
         return motor_angles
 
+    """
+    Getters for the joints and motors of the finger
+    """
     @property
     def ABD(self):
         return self.get_joint("ABD")

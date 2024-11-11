@@ -25,9 +25,9 @@ class Hand():
 
         self.target = HandConfig.default()
 
-    def set_config(self, config : HandConfig):
+    def write_config(self, config : HandConfig):
         """
-        Set all fingers and wrist to the positions specified in the config
+        Set all fingers, wrist and arm to the positions specified in the config
 
         params
             config: the configuration to set the hand to
@@ -50,16 +50,22 @@ class Hand():
 
         return all_at_target
 
-    def get_config(self):
-        return HandConfig.current()
+    def read_current_config(self):
+        """
+        Read the current configuration of the hand and arm
+        """
+        return HandConfig.read_current()
 
     def get_target(self):
+        """
+        Get the target configuration of the hand and arm
+        """
         return self.target
 
     def __str__(self):
         string = "--------Hand--------\n\nTarget:\n"
         string += str(self.get_target()) + "\n\nCurrent:\n"
-        string += str(self.get_config()) + "\n"
+        string += str(self.read_current_config()) + "\n"
         for subsystem in Finger.FINGERS + [WRIST]:
             string += str(subsystem) + "\n"
             for joint in subsystem.joints:
@@ -69,30 +75,6 @@ class Hand():
 
         string += str(ARM) + "\n"
         return string
-
-    @property
-    def PINKY(self):
-        return Finger.PINKY
-
-    @property
-    def RING(self):
-        return Finger.RING
-
-    @property
-    def MIDDLE(self):
-        return Finger.MIDDLE
-
-    @property
-    def INDEX(self):
-        return Finger.INDEX
-
-    @property
-    def THUMB(self):
-        return Finger.THUMB
-
-    @property
-    def WRIST(self):
-        return WRIST
 
 # Singleton instance
 HAND = Hand()

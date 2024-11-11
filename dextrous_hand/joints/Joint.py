@@ -154,9 +154,10 @@ class Joint(ABC):
         return self.motors[motor_index]
 
 
-class VirtualJoint():
+class ArmJoint():
     """
-    A virtual joint is a joint that is not self-actuated
+    These joints represent the XYZ and Roll/Pitch/Yaw of the Arm
+    They have no motors because they are only virtual, unactuated joints
     """
     # For the singleton pattern
     _instances = {}
@@ -167,16 +168,13 @@ class VirtualJoint():
         If a joint with the same name has already been created, return that instance.
         """
         if name not in cls._instances:
-            cls._instances[name] = super(VirtualJoint, cls).__new__(cls)
+            cls._instances[name] = super(ArmJoint, cls).__new__(cls)
         return cls._instances[name]
 
     def __init__(self, id : ids.JOINTS):
         """
         params
             id [JOINTS]: the joint's id
-
-        raises
-            Exception: if the joint has no motors
         """
         # Avoid reinitialization if already initialized
         if hasattr(self, 'initialized') and self.initialized:
@@ -189,7 +187,7 @@ class VirtualJoint():
     def read(self):
         """
         returns:
-            The joint's current angle in radians
+            The joint's current state
         """
         return self.value
 

@@ -64,11 +64,11 @@ class Arm:
         return pose_to_pos_orient(self.offset_pose(self._pose, positive = False))
 
     @property
-    def position(self):
+    def POSITION(self):
         return self.pose[0]
 
     @property
-    def orientation(self):
+    def ORIENTATION(self):
         return self.pose[1]
 
     @property
@@ -92,17 +92,17 @@ class Arm:
         return self._at_target_position() and self._at_target_orientation()
 
     def _at_target_position(self):
-        return self._distance(self.position, self.target_position) < self.AT_TARGET_THRESHOLD
+        return self._distance(self.POSITION, self.target_position) < self.AT_TARGET_THRESHOLD
 
     def _at_target_orientation(self):
-        return self._distance(self.orientation, self.target_orientation) < self.AT_TARGET_THRESHOLD
+        return self._distance(self.ORIENTATION, self.target_orientation) < self.AT_TARGET_THRESHOLD
 
     def _distance(self, a, b):
         return sum((a_i - b_i) ** 2 for a_i, b_i in zip(a, b)) ** 0.5
 
     def __str__(self):
-        formatted_pos = [f"{value:.3f}" for value in self.position]
-        formatted_or = [f"{value:.3f}" for value in self.orientation]
+        formatted_pos = [f"{value:.3f}" for value in self.POSITION]
+        formatted_or = [f"{value:.3f}" for value in self.ORIENTATION]
         return "ARM:\t" + str(formatted_pos) + "\n\t" + str(formatted_or)
 
 
