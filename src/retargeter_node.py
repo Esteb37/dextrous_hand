@@ -72,6 +72,7 @@ class RetargeterNode(Node):
 
         joint_rads = np.deg2rad(joint_angles)
 
+        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         hand_config = HandConfig(unrestricted=True,
                                  PINKY = joint_rads[12:15],
                                  RING = joint_rads[9:12],

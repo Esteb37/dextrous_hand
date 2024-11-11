@@ -5,7 +5,7 @@ from dextrous_hand.utils.constants import MOTOR_CONSTANTS
 
 class MOTORS(Enum):
     """
-    Motor ports
+    Motor ports. Obtained from the motors.yaml file
     """
     PINKY_FMBM = MOTOR_CONSTANTS["PINKY_FMBM"]["port"]
     PINKY_FRBL = MOTOR_CONSTANTS["PINKY_FRBL"]["port"]

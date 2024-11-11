@@ -31,9 +31,14 @@ class TeleopNode(Node):
     l: decrease joint angle
     """
 
-
     def __init__(self):
         super().__init__('teleop_node')
+
+        # These HAVE to be set before everything else so that all subsystems and the dynamixel client understand if they are in simulation mode
+        self.declare_parameter("is_simulation", False)
+
+        constants.GLOBAL_CONSTANTS["IS_SIMULATION"] = self.get_parameter("is_simulation").value
+
         self.config_publisher = self.create_publisher(Float32MultiArray, 'hand_config', 10)
 
         self.get_logger().info('teleop node started')
@@ -45,10 +50,6 @@ class TeleopNode(Node):
         self.listener.start()
 
         self.all = False
-
-        self.declare_parameter("is_simulation", False)
-
-        constants.GLOBAL_CONSTANTS["IS_SIMULATION"] = self.get_parameter("is_simulation").value
 
         if constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.LAST.name:
 
@@ -69,8 +70,7 @@ class TeleopNode(Node):
 
             self.get_logger().info('Disconnected')
 
-            # Just the first three columns
-            self.hand_config = HAND.get_config()
+            self.hand_config = HAND.read_current_config()
 
         elif constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.CUSTOM.name:
             self.hand_config = HandConfig("HOME")

@@ -43,8 +43,8 @@ class HandConfig:
             INDEX = [float, float, float]
             THUMB = [float, float, float]
             WRIST = [float]
-            POSITION = [float, float, float]
-            ORIENTATION = [float, float, float]
+            POSITION = [float, float, float] # x, y, z
+            ORIENTATION = [float, float, float] # roll, pitch, yaw
         """
         self.PINKY = [0.0, 0.0, 0.0]
         self.RING = [0.0, 0.0, 0.0]
@@ -55,8 +55,10 @@ class HandConfig:
         self.POSITION = [0.0, 0.0, 0.0]
         self.ORIENTATION = [0.0, 0.0, 0.0]
 
+        # For debug purposes, we sometimes want to remove the "triangle" restriction
         self.unrestricted = unrestricted
 
+        # Create a map to easily access the joint values by joint ID
         from dextrous_hand.utils.architecture import SUBSYSTEM_JOINTS
         self.joint_map = {}
 
@@ -66,6 +68,7 @@ class HandConfig:
                 index = joint_ids.index(joint.id)
                 self.joint_map[joint.id] = (subsystem, index)
 
+        # If a config name is provided, load the values from the config
         if config_name is not None:
             if config_name not in CONFIGS:
                 raise ValueError(f"Config {config_name} not found in CONFIGS")
@@ -75,6 +78,7 @@ class HandConfig:
                     value = [value]
                 self[key] = value
 
+        # Set the values provided in the kwargs
         for key, value in kwargs.items():
             if type(value) is float:
                 value = [value]
@@ -83,9 +87,15 @@ class HandConfig:
         self.restrict()
 
     def restrict(self):
+        """
+        Implements the "triangle" restriction on the joint angles
+        """
         if self.unrestricted:
             return
+
+        # The include is here to avoid circular imports
         from dextrous_hand.subsystems.Finger import PINKY, RING, MIDDLE, INDEX, THUMB
+
         self.PINKY = PINKY.restrict_joint_angles(self.PINKY)
         self.RING = RING.restrict_joint_angles(self.RING)
         self.MIDDLE = MIDDLE.restrict_joint_angles(self.MIDDLE)
@@ -100,6 +110,7 @@ class HandConfig:
             pinky_config = config["PINKY"]
             pinky_config = config[ids.SUBSYSTEMS.PINKY]
             pinky_config = config[0]
+            pinky_abd = config[ids.JOINTS.PINKY_ABD]
         """
         if isinstance(key, str):
             key = key.upper()
@@ -112,17 +123,29 @@ class HandConfig:
             subsystem, index = self.joint_map[key]
             return self[subsystem][index]
         else:
-            raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
+            raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS or ids.JOINTS, not {type(key)}")
 
 
     def __setitem__(self, key : HandConfigIndex, value):
         """
         Set the value of the given key, with one of the following options:
 
+            For all joints
+
             config.PINKY = [0, 0, 0]
             config["PINKY"] = [0, 0, 0]
             config[ids.SUBSYSTEMS.PINKY] = [0, 0, 0]
             config[0] = [0, 0, 0]
+
+            For a single joint
+
+            config[ids.JOINTS.PINKY_ABD] = 0
+
+            NOTE: Assigning a value to a joint by doing configs[ids.SUBSYSTEMS.PINKY][0] = 0
+                  Will NOT enforce the "triangle" restriction because __setitem__ is not called
+                  I don't know how to fix this without creating an Observable List class
+                  and overengineering, so please don't do that. Use a JOINT id instead to
+                  modify a specific joint.
         """
         if type(value) is float:
             value = [value]
@@ -143,7 +166,8 @@ class HandConfig:
             subsystem, index = self.joint_map[key]
             self[subsystem][index] = value
         else:
-            raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or Subsystem.Subsystem, not {type(key)}")
+            raise TypeError(f"key must be of type str, int, ids.SUBSYSTEMS, or ids.JOINTS, not {type(key)}")
+
         self.restrict()
 
     def __iter__(self):
@@ -173,6 +197,7 @@ class HandConfig:
     def from_matrix(matrix, unrestricted = False):
         """
         Generates a hand configuration from a float matrix
+        Only the n first elements of each row are used, where n is the number of joints in the subsystem
         """
         return HandConfig(
             unrestricted = unrestricted,
@@ -187,7 +212,7 @@ class HandConfig:
         )
 
     @staticmethod
-    def current():
+    def read_current():
         """
         Generates a hand configuration from the current joint values
         """
@@ -200,8 +225,8 @@ class HandConfig:
                           INDEX = INDEX.read()[:3],
                           THUMB = THUMB.read()[:3],
                           WRIST = WRIST.read()[:1],
-                          POSITION = ARM.position[:3],
-                          ORIENTATION = ARM.orientation[:3]
+                          POSITION = ARM.POSITION[:3],
+                          ORIENTATION = ARM.ORIENTATION[:3]
                           )
 
     @staticmethod

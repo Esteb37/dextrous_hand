@@ -52,7 +52,10 @@ def pose_to_pos_orient(pose : PoseStamped) -> tuple[list[float], list[float]]:
 
 
 def parent_dir():
-    # Go back until you find the "install" folder
+    """
+    Gets the directory where the node is running from
+    """
+
     current_dir = Path(__file__).resolve().parent
 
     # Traverse upward until "install" directory is found
@@ -62,6 +65,7 @@ def parent_dir():
             install_dir = parent
             break
 
+    # If "install" directory is not found, traverse upward until "src" directory is found
     if install_dir is None:
         for parent in current_dir.parents:
             if parent.name == "src":
