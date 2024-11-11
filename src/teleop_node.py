@@ -46,6 +46,10 @@ class TeleopNode(Node):
 
         self.all = False
 
+        self.declare_parameter("is_simulation", False)
+
+        constants.GLOBAL_CONSTANTS["IS_SIMULATION"] = self.get_parameter("is_simulation").value
+
         if constants.GLOBAL_CONSTANTS["STARTUP_MODE"] == ids.STARTUP.LAST.name:
 
             self.get_logger().info('Reading current angles...')
