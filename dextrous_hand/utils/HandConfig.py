@@ -20,7 +20,10 @@ class HandConfig:
                     MIDDLE = [0, 0, 0],
                     INDEX = [0, 0, 0],
                     THUMB = [0, 0, 0],
-                    WRIST = [0])
+                    WRIST = [0],
+                    POSITION = [0, 0, 0],
+                    ORIENTATION = [0, 0, 0])
+                    )
     """
 
     PINKY : list[float]

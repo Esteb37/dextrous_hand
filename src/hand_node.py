@@ -8,7 +8,6 @@ from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Float32MultiArray
 
 from dextrous_hand.Hand import HAND
-from dextrous_hand.subsystems.Arm import ARM
 from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.motors.DynamixelClient import DynamixelClient
 from dextrous_hand.utils.constants import NODE_FREQUENCY_HZ, GLOBAL_CONSTANTS
@@ -85,7 +84,7 @@ class HandNode(Node):
         if self.initialized:
             # This needs to be called before calling read_config
             self.motor_bridge.update_positions()
-            ARM.update(self.arm_msg)
+            HAND.update_arm_pose(self.arm_msg)
 
     def print(self):
         if self.initialized:
