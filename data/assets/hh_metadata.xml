@@ -1,13 +1,10 @@
 <mujoco>
     <compiler angle="radian"/>
-    <!-- <option collision="all"/> -->
     <default>
         <!-- use same geom params as the Shadow Hand model in IsaacGymEnv for now -->
-        <!-- the density is adjusted so that the total weight of the hand part (not including the base) is the same as the real hand (106g) (therefore the base will have a wrong mass, which shouldn't matter for now) -->
-        <geom rgba="1 1 1 1" type="mesh" density="662" friction="1 0.005 0.001" condim="3" margin="0.0005" contype="1" conaffinity="1"/>
+        <geom rgba="1 1 1 1" type="mesh" friction="1 0.005 0.001" condim="3" margin="0.0005" contype="1" conaffinity="1"/>
         <!-- use same joint params as IsaacGymEnv for now -->
-        <!-- TODO: joint damping and position control kp should eventually be set to sysID'ed values -->
-        <joint type="hinge" limited="true" damping="0.05" armature="0.001" margin="0.01" frictionloss="0.001"/>
+        <joint type="hinge" limited="true" damping="0.1" armature="0.001" margin="0.01" frictionloss="0.001"/>
         <!-- actuator configuration -->
         <position ctrllimited="true" forcelimited="true" forcerange="-1 1" kp="2."/>
         <!-- the tendon which limits the two joints creating the rolling joint should be very limited in its length range -->
@@ -15,45 +12,40 @@
     </default>
     <asset>
         <!-- IsaacGym somehow does not respect the default mesh scale so set each of them manually here... -->
-        <mesh name="tower" file="mesh/hh/wrist.stl" scale="0.001 0.001 0.001"/>
-        <!-- <mesh name="franka_interface" file="mesh/hh/tower/franka_interface.stl" scale="0.001 0.001 0.001"/> -->
-        <!-- <mesh name="hand_interface" file="mesh/hh/tower/hand_interface.stl" scale="0.001 0.001 0.001"/> -->
-        
-        <mesh name="palm" file="mesh/hh/palm_ajusted.stl" scale="0.001 0.001 0.001"/>
-        
-        <mesh name="index_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_mc_flex" file="mesh/hh/finger/mc_flex.stl" scale="0.001 0.001 0.001"/>
-
-        <mesh name="index_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_mc_add" file="mesh/hh/finger/mc_add.stl" scale="0.001 0.001 0.001"/>
-
+        <!-- <mesh name="palm" file="mesh_p4/palm.stl" scale = "0.001 0.001 0.001"/> -->
+        <!-- <mesh name="base" file="mesh_p4/base.stl" scale = "0.001 0.001 0.001"/> -->
+        <mesh name="tower" file="mesh/hh/tower.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="wrist" file="mesh/hh/wrist.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="palm" file="mesh/hh/palm.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="index_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="middle_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001" />
+        <mesh name="ring_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="pinky_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001"/>
 
         <mesh name="thumb_base" file="mesh/hh/thumb/mc_flex.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="thumb_pp" file="mesh/hh/thumb/pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="thumb_mp" file="mesh/hh/thumb/mc_abd.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_pp" file="mesh/hh/thumb/mc_abd.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thumb_mp" file="mesh/hh/thumb/pp.stl" scale="0.001 0.001 0.001"/>
         <mesh name="thumb_dp" file="mesh/hh/thumb/dp.stl" scale="0.001 0.001 0.001"/>
 
-        <mesh name="index_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="index_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="index_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="index_um" file="mesh/hh/finger/mc_flex.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="index_pp" file="mesh/hh/finger/pp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="index_mp" file="mesh/hh/finger/mp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="index_dp" file="mesh/hh/finger/dp.stl" scale = "0.001 0.001 0.001"/>
 
-        <mesh name="middle_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="middle_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="middle_um" file="mesh/hh/finger/mc_flex.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="middle_pp" file="mesh/hh/finger/pp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="middle_mp" file="mesh/hh/finger/mp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="middle_dp" file="mesh/hh/finger/dp.stl" scale = "0.001 0.001 0.001"/>
 
-        <mesh name="ring_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="ring_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="ring_um" file="mesh/hh/finger/mc_flex.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="ring_pp" file="mesh/hh/finger/pp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="ring_mp" file="mesh/hh/finger/mp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="ring_dp" file="mesh/hh/finger/dp.stl" scale = "0.001 0.001 0.001"/>
 
-        <mesh name="pinky_pp" file="mesh/hh/finger/pp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_mp" file="mesh/hh/finger/mp.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="pinky_dp" file="mesh/hh/finger/dp.stl" scale="0.001 0.001 0.001"/>
-
-
+        <mesh name="pinky_um" file="mesh/hh/finger/mc_flex.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="pinky_pp" file="mesh/hh/finger/pp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="pinky_mp" file="mesh/hh/finger/mp.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="pinky_dp" file="mesh/hh/finger/dp.stl" scale = "0.001 0.001 0.001"/>
     </asset>
     <contact>
         <!-- neighboring bodies are excluded from contact calculation -->
@@ -62,25 +54,26 @@
         <exclude body1="palm" body2="thumb_pp"/>  <!-- there seems to be somehow unintended collision here -->
         <exclude body1="thumb_pp" body2="thumb_mp"/>
         <exclude body1="thumb_mp" body2="thumb_dp"/>
-
-        <exclude body1="palm" body2="index_pp"/>
+        
+        <exclude body1="palm" body2="index_um"/>
+        <exclude body1="index_um" body2="index_pp"/>
         <exclude body1="index_pp" body2="index_mp"/>
         <exclude body1="index_mp" body2="index_dp"/>
         
-        
-        <exclude body1="palm" body2="middle_pp"/>
+        <exclude body1="palm" body2="middle_um"/>
+        <exclude body1="middle_um" body2="middle_pp"/>
         <exclude body1="middle_pp" body2="middle_mp"/>
         <exclude body1="middle_mp" body2="middle_dp"/>
 
-        <exclude body1="palm" body2="ring_pp"/>
+        <exclude body1="palm" body2="ring_um"/>
+        <exclude body1="ring_um" body2="ring_pp"/>
         <exclude body1="ring_pp" body2="ring_mp"/>
         <exclude body1="ring_mp" body2="ring_dp"/>
-
-        <exclude body1="palm" body2="pinky_pp"/>
+        
+        <exclude body1="palm" body2="pinky_um"/>
+        <exclude body1="pinky_um" body2="pinky_pp"/>
         <exclude body1="pinky_pp" body2="pinky_mp"/>
         <exclude body1="pinky_mp" body2="pinky_dp"/>
-
-        <exclude body1="root" body2="palm"/> <!-- modeling wrist -->
     </contact>
 
     <sensor>
@@ -88,19 +81,23 @@
         <jointpos name="thumb_base2pp" joint="thumb_base2pp"/>
         <jointpos name="thumb_pp2mp" joint="thumb_pp2mp"/>
         <jointpos name="thumb_mp2dp" joint="thumb_mp2dp"/>
-
+        
+        <jointpos name="index_abd" joint="index_abd"/>
         <jointpos name="root2index_pp" joint="root2index_pp"/>
         <jointpos name="index_pp2mp" joint="index_pp2mp"/>
         <jointpos name="index_mp2dp" joint="index_mp2dp"/>
 
+        <jointpos name="middle_abd" joint="middle_abd"/>
         <jointpos name="root2middle_pp" joint="root2middle_pp"/>
         <jointpos name="middle_pp2mp" joint="middle_pp2mp"/>
         <jointpos name="middle_mp2dp" joint="middle_mp2dp"/>
 
+        <jointpos name="ring_abd" joint="ring_abd"/>
         <jointpos name="root2ring_pp" joint="root2ring_pp"/>
         <jointpos name="ring_pp2mp" joint="ring_pp2mp"/>
         <jointpos name="ring_mp2dp" joint="ring_mp2dp"/>
 
+        <jointpos name="pinky_abd" joint="pinky_abd"/>
         <jointpos name="root2pinky_pp" joint="root2pinky_pp"/>
         <jointpos name="pinky_pp2mp" joint="pinky_pp2mp"/>
         <jointpos name="pinky_mp2dp" joint="pinky_mp2dp"/>
@@ -108,37 +105,28 @@
     
     <actuator>
         <!-- 
-        For this version of the Faive Hand, the first two joints aren't rolling contact joints.
-        This means those fingers move 0.5x as much as the rolling contact joints with the same joint angle goal.
-        Thus, set kp for these joints to be half the default value of 2, to effectively achieve the same joint stiffness.
-        The actuators for the distal joints are set to have a kp twice the default value, since they must move two joints.
-        
-        The joints with rolling contacts bend twice as much as the commanded joint angle. This is different from the implementation in GripperController, which receive the total joint angle as input.
-        i.e. if 0.1 is sent to a rolling contact joint in mujoco, the joint bends 0.2 in total, achieving the same result as sending 0.2 in GripperController.
-        
-        note: the "gear" attribute allows a scaling to be applied from the actuator dimensions to the joint dimensions, but it seems not to be completely supported in IsaacGym so don't use it.
+        The actuators for the distal joints are set to have a kp twice the default value (kp_def = 2), since they must move two joints.
+        the control ranges are set to match the values in hand_defs.yaml (due to how we simulate rolling contact joints, their ranges are reduced to half)
         -->
         <position name="root2thumb_base" joint="root2thumb_base" ctrlrange="0 2.27" kp="1"/>
         <position name="thumb_base2pp" joint="thumb_base2pp" ctrlrange="-1.66 1.05" kp="1"/>
         <position name="thumb_pp2mp" joint="thumb_pp2mp" ctrlrange="0 0.96" kp="4"/>
+        
+        <position name="index_abd" joint="index_abd" ctrlrange="-0.264 0.264"/>
+        <position name="root2index_pp" joint="root2index_pp" ctrlrange="-0.157 0.829"/>
+        <position name="index_pp2mp" joint="index_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
+        
+        <position name="middle_abd" joint="middle_abd" ctrlrange="-0.264 0.264"/>
+        <position name="root2middle_pp" joint="root2middle_pp" ctrlrange="-0.157 0.829"/>
+        <position name="middle_pp2mp" joint="middle_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
 
-        <position name="root2index_pp" joint="root2index_pp" ctrlrange="0 0.83"/>
-        <position name="root2index_pp_abd" joint="root2index_pp_abd" ctrlrange="-0.3 0.3"/>
-        <position name="index_pp2mp" joint="index_pp2mp" ctrlrange="0 0.96" kp="4"/>
+        <position name="ring_abd" joint="ring_abd" ctrlrange="-0.264 0.264"/>
+        <position name="root2ring_pp" joint="root2ring_pp" ctrlrange="-0.157 0.829" />
+        <position name="ring_pp2mp" joint="ring_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
 
-        <position name="root2middle_pp" joint="root2middle_pp" ctrlrange="0 0.83"/>
-        <position name="root2middle_pp_abd" joint="root2middle_pp_abd" ctrlrange="-0.3 0.3"/>
-        <position name="middle_pp2mp" joint="middle_pp2mp" ctrlrange="0 0.96" kp="4"/>
-
-        <position name="root2ring_pp" joint="root2ring_pp" ctrlrange="0 0.83"/>
-        <position name="root2ring_pp_abd" joint="root2ring_pp_abd" ctrlrange="-0.3 0.3"/>
-        <position name="ring_pp2mp" joint="ring_pp2mp" ctrlrange="0 0.96" kp="4"/>
-
-        <position name="root2pinky_pp" joint="root2pinky_pp" ctrlrange="0 0.83"/>
-        <position name="root2pinky_pp_abd" joint="root2pinky_pp_abd" ctrlrange="-0.3 0.3"/>
-        <position name="pinky_pp2mp" joint="pinky_pp2mp" ctrlrange="0 0.96" kp="4"/>
-
-        <position name="wrist_base2palm" joint="wrist_base2palm" ctrlrange="-0.52 1.57" kp="4"/>
+        <position name="pinky_abd" joint="pinky_abd" ctrlrange="-0.264 0.264"/>
+        <position name="root2pinky_pp" joint="root2pinky_pp" ctrlrange="-0.157 0.829"/>
+        <position name="pinky_pp2mp" joint="pinky_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
     </actuator>
 
     <!-- the rolling contact joints are modeled by two virtual joints, which have a constraint set here to constrain them to move together -->
@@ -150,8 +138,8 @@
         - the two joints are not always coupled in reality- for example, the DIP joint can be moved somewhat freely when the PIP joint is fixed (, at least on the older version of the hand).
           This model does not capture such relations. It may be possible to replicate it by setting an appropriate tendon range.
         - in IsaacGym, if there are multiple joints being connected through tendons, they must follow a tree structure and be ordered as such,
-          e.g. tendon 1: [pp2mp_virt ->  pp2mp], tendon 2: [pp2mp -> mp2dp_virt], tendon 3: [mp2dp_virt -> mp2dp]
-    -->
+          e.g. tendon 1: [pp2mp_virt ->  pp2mp], tendon 2: [pp2mp -> mp2dp_virt], tendon 3: [mp2dp_virt -> mp2dp]-->
+    
     <tendon>
         <!-- Thumb -->
         <fixed name="thumb_pp2mp">
@@ -168,13 +156,13 @@
         </fixed>
 
         <!-- Index finger -->
+        <fixed name="index_abd">
+            <joint joint="index_abd_virt" coef="1"/>
+            <joint joint="index_abd" coef="-1"/>
+        </fixed>
         <fixed name="root2index_pp">
             <joint joint="root2index_pp_virt" coef="1"/>
             <joint joint="root2index_pp" coef="-1"/>
-        </fixed>
-        <fixed name="root2index_pp_abd">
-            <joint joint="root2index_pp_virt_abd" coef="1"/>
-            <joint joint="root2index_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="index_pp2mp">
             <joint joint="index_pp2mp_virt" coef="1"/>
@@ -189,8 +177,11 @@
             <joint joint="index_mp2dp" coef="-1"/>
         </fixed>
 
-
         <!-- Middle finger -->
+        <fixed name="middle_abd">
+            <joint joint="middle_abd_virt" coef="1"/>
+            <joint joint="middle_abd" coef="-1"/>
+        </fixed>
         <fixed name="root2middle_pp">
             <joint joint="root2middle_pp_virt" coef="1"/>
             <joint joint="root2middle_pp" coef="-1"/>
@@ -198,10 +189,6 @@
         <fixed name="middle_pp2mp">
             <joint joint="middle_pp2mp_virt" coef="1"/>
             <joint joint="middle_pp2mp" coef="-1"/>
-        </fixed>
-        <fixed name="root2middle_pp_abd">
-            <joint joint="root2middle_pp_virt_abd" coef="1"/>
-            <joint joint="root2middle_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="middle_jointlink">
             <joint joint="middle_pp2mp" coef="0.71"/>
@@ -213,6 +200,10 @@
         </fixed>
 
         <!-- Ring finger -->
+        <fixed name="ring_abd">
+            <joint joint="ring_abd_virt" coef="1"/>
+            <joint joint="ring_abd" coef="-1"/>
+        </fixed>
         <fixed name="root2ring_pp">
             <joint joint="root2ring_pp_virt" coef="1"/>
             <joint joint="root2ring_pp" coef="-1"/>
@@ -220,10 +211,6 @@
         <fixed name="ring_pp2mp">
             <joint joint="ring_pp2mp_virt" coef="1"/>
             <joint joint="ring_pp2mp" coef="-1"/>
-        </fixed>
-        <fixed name="root2ring_pp_abd">
-            <joint joint="root2ring_pp_virt_abd" coef="1"/>
-            <joint joint="root2ring_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="ring_jointlink">
             <joint joint="ring_pp2mp" coef="0.71"/>
@@ -235,6 +222,10 @@
         </fixed>
 
         <!-- Pinky -->
+        <fixed name="pinky_abd">
+            <joint joint="pinky_abd_virt" coef="1"/>
+            <joint joint="pinky_abd" coef="-1"/>
+        </fixed>
         <fixed name="root2pinky_pp">
             <joint joint="root2pinky_pp_virt" coef="1"/>
             <joint joint="root2pinky_pp" coef="-1"/>
@@ -242,10 +233,6 @@
         <fixed name="pinky_pp2mp">
             <joint joint="pinky_pp2mp_virt" coef="1"/>
             <joint joint="pinky_pp2mp" coef="-1"/>
-        </fixed>
-        <fixed name="root2pinky_pp_abd">
-            <joint joint="root2pinky_pp_virt_abd" coef="1"/>
-            <joint joint="root2pinky_pp_abd" coef="-1"/>
         </fixed>
         <fixed name="pinky_jointlink">
             <joint joint="pinky_pp2mp" coef="0.71"/>
@@ -255,5 +242,6 @@
             <joint joint="pinky_mp2dp_virt" coef="1"/>
             <joint joint="pinky_mp2dp" coef="-1"/>
         </fixed>
+        
     </tendon>
 </mujoco>
