@@ -16,6 +16,8 @@
         <!-- <mesh name="base" file="mesh_p4/base.stl" scale = "0.001 0.001 0.001"/> -->
         <mesh name="tower" file="mesh/hh/tower.stl" scale = "0.001 0.001 0.001"/>
         <mesh name="wrist" file="mesh/hh/wrist.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="to_tower" file="mesh/hh/wrist/to_tower.stl" scale = "0.001 0.001 0.001"/>
+        <mesh name="to_hand" file="mesh/hh/wrist/to_hand.stl" scale = "0.001 0.001 0.001"/>
         <mesh name="palm" file="mesh/hh/palm.stl" scale = "0.001 0.001 0.001"/>
         <mesh name="index_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001"/>
         <mesh name="middle_mc_add" file="mesh/hh/finger/mc_add.stl" scale = "0.001 0.001 0.001" />
@@ -49,6 +51,7 @@
     </asset>
     <contact>
         <!-- neighboring bodies are excluded from contact calculation -->
+        <exclude body1="palm" body2="root"/>
         <exclude body1="palm" body2="thumb_base"/>
         <exclude body1="thumb_base" body2="thumb_pp"/>
         <exclude body1="palm" body2="thumb_pp"/>  <!-- there seems to be somehow unintended collision here -->
@@ -77,6 +80,7 @@
     </contact>
 
     <sensor>
+        <jointpos name="wrist2palm" joint="wrist2palm"/>
         <jointpos name="root2thumb_base" joint="root2thumb_base"/>
         <jointpos name="thumb_base2pp" joint="thumb_base2pp"/>
         <jointpos name="thumb_pp2mp" joint="thumb_pp2mp"/>
@@ -108,6 +112,7 @@
         The actuators for the distal joints are set to have a kp twice the default value (kp_def = 2), since they must move two joints.
         the control ranges are set to match the values in hand_defs.yaml (due to how we simulate rolling contact joints, their ranges are reduced to half)
         -->
+        <position name="wrist2palm" joint="wrist2palm" ctrlrange="-1.57 1.57" kp="1"/>
         <position name="root2thumb_base" joint="root2thumb_base" ctrlrange="0 2.27" kp="1"/>
         <position name="thumb_base2pp" joint="thumb_base2pp" ctrlrange="-1.66 1.05" kp="1"/>
         <position name="thumb_pp2mp" joint="thumb_pp2mp" ctrlrange="0 0.96" kp="4"/>
