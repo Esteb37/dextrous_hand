@@ -272,11 +272,12 @@ class HandConfig:
         """
         Returns the hand configuration as a list of joint angles for Mujoco
         """
-        arr = np.array(self.THUMB + \
-                self.INDEX + \
-                self.MIDDLE + \
-                self.RING + \
-                self.PINKY)
+        arr = np.array(
+                    self.THUMB + \
+                    self.INDEX + \
+                    self.MIDDLE + \
+                    self.RING + \
+                    self.PINKY)
 
         arr[1:] *= 0.5 # all joints except the first one are rolling contact joints
         return arr
