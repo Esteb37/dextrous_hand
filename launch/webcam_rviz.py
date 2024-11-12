@@ -17,7 +17,7 @@ def generate_launch_description():
                         "data",
                         "assets",
                         "urdf",
-                        "p4.urdf",
+                        "hh_hand.urdf",
                         )
 
     with open(urdf, 'r') as infp:
