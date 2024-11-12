@@ -29,15 +29,37 @@ def message_to_matrix(message : Float32MultiArray, num_rows):
     shape = (num_rows, num_cols)
     return np.array(message.data).reshape(shape).tolist()
 
+def as_point(list):
+    """
+    Takes a list and converts it to a Point message
+    """
+    return Point(x = list[0], y = list[1], z = list[2])
+
+def as_quaternion(list):
+    """
+    Takes a list and converts it to a Quaternion message
+    """
+    return Quaternion(x = list[0], y = list[1], z = list[2], w = list[3])
+
+def from_point(point):
+    """
+    Takes a Point message and converts it to a list
+    """
+    return [point.x, point.y, point.z]
+
+def from_quaternion(quaternion):
+    """
+    Takes a Quaternion message and converts it to a list
+    """
+    return [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+
 def pos_orient_to_pose(pos : list[float], orient : list[float]):
     """
     Takes a position and orientation and converts it to a Pose message
     """
     pose = PoseStamped()
-    pose.pose.position = Point(x = pos[0], y = pos[1], z = pos[2])
-    orientation = R.from_euler('xyz', orient, degrees = True).as_quat()
-
-    pose.pose.orientation = Quaternion(x = orientation[0], y = orientation[1], z = orientation[2], w = orientation[3])
+    pose.pose.position = as_point(pos)
+    pose.pose.orientation = as_quaternion(orient)
 
     return pose
 
@@ -45,10 +67,9 @@ def pose_to_pos_orient(pose : PoseStamped) -> tuple[list[float], list[float]]:
     """
     Takes a Pose message and converts it to a position and orientation
     """
-    pos = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
-    orientation = R.from_quat([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w]).as_euler('xyz', degrees = True).tolist()
-
-    return pos, orientation
+    pos = from_point(pose.pose.position)
+    orient = from_quaternion(pose.pose.orientation)
+    return pos, orient
 
 
 def parent_dir():

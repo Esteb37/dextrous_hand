@@ -146,13 +146,15 @@ SUBSYSTEM_JOINTS = {
 
     SUBSYSTEMS.WRIST: [WristJoint(JOINTS.WRIST)],
 
-    SUBSYSTEMS.POSITION: [ArmJoint(JOINTS.POSE_X),
-                          ArmJoint(JOINTS.POSE_Y),
-                          ArmJoint(JOINTS.POSE_Z)],
+    SUBSYSTEMS.POSITION: [ArmJoint(JOINTS.POS_X),
+                          ArmJoint(JOINTS.POS_Y),
+                          ArmJoint(JOINTS.POS_Z)],
 
-    SUBSYSTEMS.ORIENTATION: [ArmJoint(JOINTS.POSE_ROLL),
-                             ArmJoint(JOINTS.POSE_PITCH),
-                             ArmJoint(JOINTS.POSE_YAW)],
+    SUBSYSTEMS.ORIENTATION: [ArmJoint(JOINTS.ORIENT_X),
+                             ArmJoint(JOINTS.ORIENT_Y),
+                             ArmJoint(JOINTS.ORIENT_Z),
+                             ArmJoint(JOINTS.ORIENT_W)
+                             ],
 
 
 }

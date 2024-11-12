@@ -135,6 +135,10 @@ class TeleopNode(Node):
                     else:
                         if self.subsystem_id == "POSITION":
                             self.hand_config[self.subsystem_id][self.joint_id] += 0.01
+                        elif self.subsystem_id == "ORIENTATION":
+                            euler_rot = [0.0, 0.0, 0.0]
+                            euler_rot[self.joint_id] = 0.1
+                            self.hand_config.rotate_by_euler(euler_rot)
                         else:
                             self.hand_config[self.subsystem_id][self.joint_id] += 0.1
 
@@ -145,6 +149,10 @@ class TeleopNode(Node):
                     else:
                         if self.subsystem_id == "POSITION":
                             self.hand_config[self.subsystem_id][self.joint_id] -= 0.01
+                        elif self.subsystem_id == "ORIENTATION":
+                            euler_rot = [0.0, 0.0, 0.0]
+                            euler_rot[self.joint_id] = -0.1
+                            self.hand_config.rotate_by_euler(euler_rot)
                         else:
                             self.hand_config[self.subsystem_id][self.joint_id] -= 0.1
 
@@ -189,7 +197,7 @@ class TeleopNode(Node):
         except AttributeError:
             pass  # Handle special keys or other exceptions
 
-        print(self.hand_config)
+        # print(self.hand_config)
 
     def run(self):
         while rclpy.ok():
