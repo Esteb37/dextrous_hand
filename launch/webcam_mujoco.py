@@ -25,7 +25,7 @@ def generate_launch_description():
                             parent_dir(),
                             "data",
                             "assets",
-                            "hand_p4.xml",
+                            "hh_hand.xml",
                         )
                     },
                     {"retarget/hand_scheme": "p4"},

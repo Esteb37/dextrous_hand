@@ -57,12 +57,12 @@
         <exclude body1="palm" body2="thumb_pp"/>  <!-- there seems to be somehow unintended collision here -->
         <exclude body1="thumb_pp" body2="thumb_mp"/>
         <exclude body1="thumb_mp" body2="thumb_dp"/>
-        
+
         <exclude body1="palm" body2="index_um"/>
         <exclude body1="index_um" body2="index_pp"/>
         <exclude body1="index_pp" body2="index_mp"/>
         <exclude body1="index_mp" body2="index_dp"/>
-        
+
         <exclude body1="palm" body2="middle_um"/>
         <exclude body1="middle_um" body2="middle_pp"/>
         <exclude body1="middle_pp" body2="middle_mp"/>
@@ -72,7 +72,7 @@
         <exclude body1="ring_um" body2="ring_pp"/>
         <exclude body1="ring_pp" body2="ring_mp"/>
         <exclude body1="ring_mp" body2="ring_dp"/>
-        
+
         <exclude body1="palm" body2="pinky_um"/>
         <exclude body1="pinky_um" body2="pinky_pp"/>
         <exclude body1="pinky_pp" body2="pinky_mp"/>
@@ -80,12 +80,11 @@
     </contact>
 
     <sensor>
-        <jointpos name="wrist2palm" joint="wrist2palm"/>
         <jointpos name="root2thumb_base" joint="root2thumb_base"/>
         <jointpos name="thumb_base2pp" joint="thumb_base2pp"/>
         <jointpos name="thumb_pp2mp" joint="thumb_pp2mp"/>
         <jointpos name="thumb_mp2dp" joint="thumb_mp2dp"/>
-        
+
         <jointpos name="index_abd" joint="index_abd"/>
         <jointpos name="root2index_pp" joint="root2index_pp"/>
         <jointpos name="index_pp2mp" joint="index_pp2mp"/>
@@ -106,21 +105,20 @@
         <jointpos name="pinky_pp2mp" joint="pinky_pp2mp"/>
         <jointpos name="pinky_mp2dp" joint="pinky_mp2dp"/>
     </sensor>
-    
+
     <actuator>
-        <!-- 
+        <!--
         The actuators for the distal joints are set to have a kp twice the default value (kp_def = 2), since they must move two joints.
         the control ranges are set to match the values in hand_defs.yaml (due to how we simulate rolling contact joints, their ranges are reduced to half)
         -->
-        <position name="wrist2palm" joint="wrist2palm" ctrlrange="-1.57 1.57" kp="1"/>
         <position name="root2thumb_base" joint="root2thumb_base" ctrlrange="-0.349 2.094" kp="1"/>
         <position name="thumb_base2pp" joint="thumb_base2pp" ctrlrange="-0.785 0.785" kp="1"/>
         <position name="thumb_pp2mp" joint="thumb_pp2mp" ctrlrange="0 0.96" kp="4"/>
-        
+
         <position name="index_abd" joint="index_abd" ctrlrange="-0.264 0.264"/>
         <position name="root2index_pp" joint="root2index_pp" ctrlrange="-0.157 0.829"/>
         <position name="index_pp2mp" joint="index_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
-        
+
         <position name="middle_abd" joint="middle_abd" ctrlrange="-0.264 0.264"/>
         <position name="root2middle_pp" joint="root2middle_pp" ctrlrange="-0.157 0.829"/>
         <position name="middle_pp2mp" joint="middle_pp2mp" ctrlrange="-0.131 0.960" kp="4"/>
@@ -144,7 +142,7 @@
           This model does not capture such relations. It may be possible to replicate it by setting an appropriate tendon range.
         - in IsaacGym, if there are multiple joints being connected through tendons, they must follow a tree structure and be ordered as such,
           e.g. tendon 1: [pp2mp_virt ->  pp2mp], tendon 2: [pp2mp -> mp2dp_virt], tendon 3: [mp2dp_virt -> mp2dp]-->
-    
+
     <tendon>
         <!-- Thumb -->
         <fixed name="thumb_pp2mp">
@@ -247,6 +245,6 @@
             <joint joint="pinky_mp2dp_virt" coef="1"/>
             <joint joint="pinky_mp2dp" coef="-1"/>
         </fixed>
-        
+
     </tendon>
 </mujoco>

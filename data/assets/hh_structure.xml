@@ -7,7 +7,6 @@
         <geom mesh="tower"/>
         <geom mesh="to_tower" pos="0.105 0.021 -0.04" euler="0 1.57 3.14"/>
         <body name="palm" pos="0.176 -0.0003 0.0019" euler="-1.57 0 -1.57">
-            <joint name="wrist2palm" axis="1.000000 0 0.000000" pos="0.005 -0.0496 -0.0005" range="-1.57 1.57"/>
             <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire fixed base, separate it into separate geoms -->
             <geom mesh="palm"/>
             <geom mesh="to_hand" pos="0.0295 -0.0576 -0.0075" euler="-1.57 0 3.14"/>
@@ -77,7 +76,7 @@
                                             <joint name="index_mp2dp" axis="0 -1 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
                                             <geom mesh="index_dp" pos = "-0.0045 0 0"/>
                                             <body name="index_fingertip" pos="0 0 0.01">
-                        
+
                                             </body>
                                         </body>
                                     </body>

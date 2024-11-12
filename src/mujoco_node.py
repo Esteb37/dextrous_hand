@@ -17,7 +17,7 @@ class MujocoNode(Node):
         self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'hand_config', self.joint_command_callback, 10)
 
 
-        xml_path = parent_dir() + "/data/assets/hand_p4_arm.xml"
+        xml_path = parent_dir() + "/data/assets/hh_hand_arm.xml"
 
         self.model = mujoco.MjModel.from_xml_path(xml_path) # type: ignore
         self.data = mujoco.MjData(self.model) # type: ignore
