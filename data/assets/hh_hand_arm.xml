@@ -1,6 +1,6 @@
 <mujoco model="right_hh_modular">
     <compiler angle="radian"/>
-    <include file="hh_metadata.xml"/>
+    <include file="hh_metadata_arm.xml"/>
     <worldbody>
         <include file="hh_structure_arm.xml"/>
     </worldbody>
