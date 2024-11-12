@@ -8,9 +8,9 @@
             <joint name="franka2palm_x" type="slide" axis="1 0 0" pos="0 0 0" range="-5 5"/>
             <joint name="franka2palm_y" type="slide" axis="0 1 0" pos="0 0 0" range="-5 5"/>
             <joint name="franka2palm_z" type="slide" axis="0 0 1" pos="0 0 0" range="-5 5"/>
-            <joint name="franka2palm_roll" type="hinge" axis="1 0 0" pos="0 0 0" range="-3.1415 3.1415"/>
-            <joint name="franka2palm_pitch" type="hinge" axis="0 1 0" pos="0 0 0" range="-3.1415 3.1415"/>
-            <joint name="franka2palm_yaw" type="hinge" axis="0 0 1" pos="0 0 0" range="-3.1415 3.1415"/>
+            <joint name="franka2palm_roll" axis="1 0 0" pos="0 0 0" range="-3.1415 3.1415"/>
+            <joint name="franka2palm_pitch" axis="0 1 0" pos="0 0 0" range="-3.1415 3.1415"/>
+            <joint name="franka2palm_yaw" axis="0 0 1" pos="0 0 0" range="-3.1415 3.1415"/>
             <body name="palm" >
                 <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire fixed base, separate it into separate geoms -->
                 <geom mesh="palm_tower"/>
