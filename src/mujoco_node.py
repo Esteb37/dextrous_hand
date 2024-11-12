@@ -38,7 +38,7 @@ class MujocoNode(Node):
             self.data.ctrl[:] = self.config.mujoco_angles()
 
             self.data.qpos[:3] = self.config.POSITION
-            self.data.qpos[3:6] = self.config.ORIENTATION
+            self.data.qpos[3:6] = self.config.ORIENTATION_XYZ
 
             mujoco.mj_step(self.model, self.data) # type: ignore
             self.viewer.sync()  # Sync the viewer with the new simulation state

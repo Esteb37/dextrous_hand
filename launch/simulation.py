@@ -10,7 +10,7 @@ def generate_launch_description():
             parameters=[
                 {"is_simulation": True}
             ],
-            output='screen',
+            # output='screen',
             emulate_tty=True
         ),
         Node(
@@ -21,6 +21,7 @@ def generate_launch_description():
             parameters=[
                 {"is_simulation": True}
             ],
+            output='screen'
         ),
         Node(
             package='dextrous_hand',

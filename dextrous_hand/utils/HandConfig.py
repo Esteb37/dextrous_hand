@@ -3,6 +3,7 @@
 import numpy as np
 from dataclasses import dataclass
 from std_msgs.msg import Float32MultiArray
+from scipy.spatial.transform import Rotation as R
 
 from dextrous_hand.utils import ids
 import dextrous_hand.utils.utils as utils
@@ -22,7 +23,7 @@ class HandConfig:
                     THUMB = [0, 0, 0],
                     WRIST = [0],
                     POSITION = [0, 0, 0],
-                    ORIENTATION = [0, 0, 0])
+                    ORIENTATION = [0, 0, 0, 1])
                     )
     """
 
@@ -47,7 +48,7 @@ class HandConfig:
             THUMB = [float, float, float]
             WRIST = [float]
             POSITION = [float, float, float] # x, y, z
-            ORIENTATION = [float, float, float] # roll, pitch, yaw
+            ORIENTATION = [float, float, float, float] # x, y, z, w
         """
         self.PINKY = [0.0, 0.0, 0.0]
         self.RING = [0.0, 0.0, 0.0]
@@ -56,7 +57,7 @@ class HandConfig:
         self.THUMB = [0.0, 0.0, 0.0]
         self.WRIST = [0.0]
         self.POSITION = [0.0, 0.0, 0.0]
-        self.ORIENTATION = [0.0, 0.0, 0.0]
+        self.ORIENTATION = [0.0, 0.0, 0.0, 1.0]
 
         # For debug purposes, we sometimes want to remove the "triangle" restriction
         self.unrestricted = unrestricted
@@ -179,15 +180,20 @@ class HandConfig:
         """
         return iter([self.__getitem__(i) for i in range(len(ids.SUBSYSTEMS))])
 
-    def __str__(self):
+    @property
+    def ORIENTATION_XYZ(self):
         """
-        The string representation of the HandConfig object
+        Read-only property to get the orientation in euler angles
         """
-        d = self.__dict__.copy()
-        d.pop("joint_map")
-        d.pop("unrestricted")
+        return R.from_quat(self.ORIENTATION).as_euler("xyz")
 
-        return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in d.items()]) + ")"
+    def rotate_by_euler(self, euler):
+        """
+        Rotate quaternion by euler angles
+        """
+        rot = R.from_euler("xyz", euler)
+        self.ORIENTATION = (rot * R.from_quat(self.ORIENTATION)).as_quat().tolist()
+
 
     @staticmethod
     def default():
@@ -211,7 +217,7 @@ class HandConfig:
             THUMB = matrix[ids.SUBSYSTEMS.THUMB.value][:3],
             WRIST = matrix[ids.SUBSYSTEMS.WRIST.value][:1],
             POSITION = matrix[ids.SUBSYSTEMS.POSITION.value][:3],
-            ORIENTATION = matrix[ids.SUBSYSTEMS.ORIENTATION.value][:3]
+            ORIENTATION = matrix[ids.SUBSYSTEMS.ORIENTATION.value][:4]
         )
 
     @staticmethod
@@ -229,7 +235,7 @@ class HandConfig:
                           THUMB = THUMB.read()[:3],
                           WRIST = WRIST.read()[:1],
                           POSITION = ARM.POSITION[:3],
-                          ORIENTATION = ARM.ORIENTATION[:3]
+                          ORIENTATION = ARM.ORIENTATION[:4]
                           )
 
     @staticmethod
@@ -289,3 +295,15 @@ class HandConfig:
         Returns only the finger configurations
         """
         return [self[id] for id in ids.SUBSYSTEMS if id.value < ids.SUBSYSTEMS.WRIST.value]
+
+    def __str__(self):
+        """
+        The string representation of the HandConfig object
+        """
+        d = self.__dict__.copy()
+        d.pop("joint_map")
+        d.pop("unrestricted")
+
+        d["ORIENTATION_XYZ"] = self.ORIENTATION_XYZ
+
+        return f"HandConfig(\n\t" + "\t".join([f"{key}=["+", ".join(f"{num:.3f}" for num in value)+"],\n" for key, value in d.items()]) + ")"
