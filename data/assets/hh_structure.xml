@@ -5,10 +5,12 @@
         <!-- so that the base can be colored separately in IsaacGym, make it into its own body -->
         <!-- <geom mesh="base" rgba="0.2 0.2 0.2 1"/> -->
         <geom mesh="tower"/>
-        <geom mesh="wrist" pos="0.105 -0.02 0.04" euler="0 1.57 0"/>
+        <geom mesh="to_tower" pos="0.105 -0.02 0.04" euler="0 1.57 0"/>
         <body name="palm" pos="0.175 0.0 0" euler="1.57 0 -1.57">
+            <joint name="wrist2palm" axis="1.000000 0 0.000000" pos="0.0295 -0.0576 -0.0075" range="-1.57 1.57"/>
             <!-- So that the contact convex hull can be calculated for each distinct component rather than for the entire fixed base, separate it into separate geoms -->
             <geom mesh="palm"/>
+            <geom mesh="to_hand" pos="0.0295 -0.0576 -0.0075" euler="-1.57 0 3.14"/>
             <!--index components spawn at ring finger with ring finger orientation: quat (index_base_rot*ring_base_rot.inverse) brings it to index finger orientation, and pos to index position (position vector is hardcoded, but approx -MCPA1_ring + MCPA1_index)-->
             <geom mesh="index_mc_add" pos = "0.026  0.0342 0.001" euler="-1.57 0.03 0.0"/>
             <geom mesh="middle_mc_add" pos = "0.00138  0.03559 0.001" euler="-1.57 -0.03 0"/>
@@ -19,21 +21,21 @@
             <body name="thumb_base" pos="0.0358 -0.008 0.0" euler="0  0 -0.1718">
                 <joint name="root2thumb_base" axis="0.000000 -1.000000 0.000000" pos="0.00000 0.000000 0.000000" range="0 2.27" />
                 <geom mesh="thumb_base"/>
-                <body name="thumb_pp" pos="0.0375 0.0148 -0.0015" euler="-1.57 0.78 0.78">
+                <body name="thumb_pp" pos="0.0375 0.0148 -0.0015" quat="0.71 -0.48 0.52 -0.03">
                     <joint name="thumb_base2pp" axis="-0.707 -0.707 0" pos="-0.013 -0 -0.0325" range="-1.66 1.05" />
                     <geom mesh="thumb_pp"/>
-                    <body name="thumb_mp_virt" pos="0.006036 -0.014416 -0.034587" quat="0.419319 -0.052705 0.308003 0.852366">
-                        <joint name="thumb_pp2mp_virt" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
+                    <body name="thumb_mp_virt" pos="0 -0.0065 0" euler="0 -1.57 0">
+                        <joint name="thumb_pp2mp_virt" axis="0.000000 -1.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
                         <inertial pos="0.009525 -0.041187 0.083647" mass="0.001" diaginertia="4E-10 4E-10 3E-10" quat="-0.801383 0.000000 0.595590 -0.055291" />
-                        <body name="thumb_mp" pos="0.000038 -0.002927 -0.011638" quat="-1.000000 0.000000 -0.000000 -0.000000">
-                            <joint name="thumb_pp2mp" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
-                            <geom mesh="thumb_mp" pos="0.009487 -0.038260 0.095285" quat="-0.801383 0.000000 0.595590 -0.055291" />
-                            <body name="thumb_dp_virt" pos="0.000084 -0.006463 -0.025699" quat="-1.000000 0.000000 -0.000000 -0.000000">
-                                <joint name="thumb_mp2dp_virt" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.68" />
+                        <body name="thumb_mp" pos="0.018 0 0">
+                            <joint name="thumb_pp2mp" axis="0.000000 -1.00000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.96" />
+                            <geom mesh="thumb_mp" pos="-0.009 0.0065 0"/>
+                            <body name="thumb_dp_virt" pos="0.026 0 0" euler="0 0 0">
+                                <joint name="thumb_mp2dp_virt" axis="0 -1 0" pos="0.000000 0.000000 0.000000" range="0 0.68" />
                                 <inertial pos="0.009403 -0.031797 0.120984" mass="0.001" diaginertia="4E-10 4E-10 3E-10" quat="-0.801383 0.000000 0.595590 -0.055291" />
-                                <body name="thumb_dp" pos="0.000027 -0.002196 -0.008728" quat="-1.000000 0.000000 -0.000000 -0.000000">
-                                    <joint name="thumb_mp2dp" axis="1.000000 0.000000 0.000000" pos="0.000000 0.000000 0.000000" range="0 0.68" />
-                                    <geom mesh="thumb_dp" pos="0.009375 -0.029601 0.129712" quat="-0.801383 0.000000 0.595590 -0.055291" />
+                                <body name="thumb_dp" pos="0.012 0 0">
+                                    <joint name="thumb_mp2dp" axis="0 -1 0" pos="0.000000 0.000000 0.000000" range="0 0.68" />
+                                    <geom mesh="thumb_dp" pos="-0.006 0.0065 0"/>
                                     <body name="thumb_fingertip" pos="0.000386 -0.000394 -0.012633" euler="4.7 -0.25 2.92">
                                     </body>
                                 </body>
