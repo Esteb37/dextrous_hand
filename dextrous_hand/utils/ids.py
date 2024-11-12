@@ -80,12 +80,14 @@ class JOINTS(Enum):
 
     WRIST = auto()
 
-    POSE_X = auto()
-    POSE_Y = auto()
-    POSE_Z = auto()
-    POSE_ROLL = auto()
-    POSE_PITCH = auto()
-    POSE_YAW = auto()
+    POS_X = auto()
+    POS_Y = auto()
+    POS_Z = auto()
+
+    ORIENT_X = auto()
+    ORIENT_Y = auto()
+    ORIENT_Z = auto()
+    ORIENT_W = auto()
 
 class STARTUP(Enum):
     HOME = 0 # all joints set to 0
