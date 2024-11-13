@@ -197,7 +197,7 @@ class TeleopNode(Node):
         except AttributeError:
             pass  # Handle special keys or other exceptions
 
-        # print(self.hand_config)
+        print(self.hand_config)
 
     def run(self):
         while rclpy.ok():

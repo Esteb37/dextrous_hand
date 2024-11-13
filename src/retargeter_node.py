@@ -47,6 +47,7 @@ class RetargeterNode(Node):
             self.rviz_pub = self.create_publisher(MarkerArray, 'retarget/normalized_mano_points', 10)
             self.mano_hand_visualizer = ManoHandVisualizer(self.rviz_pub)
 
+        self.keypoint_positions = None
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
 
@@ -54,6 +55,9 @@ class RetargeterNode(Node):
         self.keypoint_positions = np.array(msg.data).reshape(-1, 3)
 
     def timer_publish_cb(self):
+        if self.keypoint_positions is None:
+            return
+
         if self.debug:
             self.mano_hand_visualizer.reset_markers()
 
