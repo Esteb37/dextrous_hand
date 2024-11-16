@@ -13,9 +13,8 @@ from dextrous_hand.utils.HandConfig import HandConfig
 class MujocoNode(Node):
     def __init__(self):
         super().__init__('mujoco_node')
-        self.get_logger().info('mujoco_node started.')
-        self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'hand_config', self.joint_command_callback, 10)
 
+        self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'hand_config', self.joint_command_callback, 10)
 
         xml_path = parent_dir() + "/data/assets/hh_hand_arm.xml"
 
@@ -31,6 +30,8 @@ class MujocoNode(Node):
         self.joint_names = [mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(self.model.njnt)] # type: ignore
 
         self.create_timer(0.01, self.update_simulation)  # 100 Hz update rate
+
+        self.get_logger().warn("Mujoco Node started")
 
     def update_simulation(self):
         if self.viewer.is_running():

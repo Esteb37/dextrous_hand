@@ -42,6 +42,8 @@ class VisualizeJointsNode(Node):
         self.js_msg = JointState()
         self.js_msg.name = self.joint_names
 
+        self.get_logger().warn("Joint Visualizer Node started")
+
     def policy_output_callback(self, msg):
 
         self.js_msg.header.stamp = self.get_clock().now().to_msg()

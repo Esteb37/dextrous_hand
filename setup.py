@@ -25,13 +25,14 @@ setup(
         'console_scripts': [
             'hand_node = src.hand_node:main',
             'basic_node = src.basic_node:main',
-            'teleop_node = src.teleop_node:main',
+            'keyboard_node = src.keyboard_node:main',
             'mujoco_node = src.mujoco_node:main',
             'calibrate_node = src.calibrate_node:main',
             'webcam_mano_node = src.webcam_mano_node:main',
             'retargeter_node = src.retargeter_node:main',
             'visualize_joints_node = src.visualize_joints_node:main',
             'rokoko_node = src.rokoko_node:main',
+            'arm_node = src.arm_node:main',
         ],
     },
 )

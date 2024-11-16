@@ -51,6 +51,8 @@ class RetargeterNode(Node):
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
 
+        self.get_logger().warn("Retargeter Node started")
+
     def ingress_mano_cb(self, msg):
         self.keypoint_positions = np.array(msg.data).reshape(-1, 3)
 

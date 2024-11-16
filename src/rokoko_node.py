@@ -44,13 +44,16 @@ class RokokoNode(Node):
         )
         self.debug = debug
 
+        self.get_logger().warn("Rokoko Node started")
+
     def timer_publish_cb(self):
 
         key_points = self.tracker.get_keypoint_positions()
         wait_cnt = 1
         while (key_points is None):
-            if (wait_cnt % 10):
-                print("waiting for hand tracker")
+            if (wait_cnt == 10000000):
+                self.get_logger().error("Waiting for hand tracker...")
+                wait_cnt = 0
             wait_cnt+=1
             key_points = self.tracker.get_keypoint_positions()
         keypoint_positions, timestamp = key_points

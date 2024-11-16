@@ -13,7 +13,7 @@ from dextrous_hand.utils import constants
 from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.motors.DynamixelClient import DynamixelClient
 
-class TeleopNode(Node):
+class KeyboardNode(Node):
     """
     Node to send commands to the hand
     Controls:
@@ -32,7 +32,7 @@ class TeleopNode(Node):
     """
 
     def __init__(self):
-        super().__init__('teleop_node')
+        super().__init__('keyboard_node')
 
         # These HAVE to be set before everything else so that all subsystems and the dynamixel client understand if they are in simulation mode
         self.declare_parameter("is_simulation", False)
@@ -41,7 +41,6 @@ class TeleopNode(Node):
 
         self.config_publisher = self.create_publisher(Float32MultiArray, 'hand_config', 10)
 
-        self.get_logger().info('teleop node started')
         self.subsystem_id = ids.SUBSYSTEMS.PINKY
         self.joint_id = 0
 
@@ -77,6 +76,8 @@ class TeleopNode(Node):
 
         else:
             self.hand_config = HandConfig.default()
+
+        self.get_logger().warn('Keyboard Node started')
 
         # Run the publishing loop
         self.run()
@@ -207,7 +208,7 @@ class TeleopNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = TeleopNode()
+    node = KeyboardNode()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
