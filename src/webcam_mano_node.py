@@ -20,6 +20,8 @@ class MediapipeNode(Node):
             Float32MultiArray, "/ingress/mano", 10
         )
 
+        self.get_logger().warn("Webcam Node started")
+
     def timer_publish_cb(self):
 
         keypoint_positions = self.tracker.get_keypoint_positions()

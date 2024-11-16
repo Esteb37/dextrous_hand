@@ -13,9 +13,9 @@ from pydrake.math import RigidTransform as DrakeRigidTransform
 from pydrake.math import RollPitchYaw as DrakeRollPitchYaw
 from pydrake.common.eigen_geometry import Quaternion as DrakeQuaternion # type: ignore
 
-class RokokoCoilDemo(Node):
+class ArmNode(Node):
     def __init__(self):
-        super().__init__("rokoko_coil_demo")
+        super().__init__("arm_node")
 
         self.X_bCP_G = None  # DrakeRigidTransform from coil pro to glove wrist
         self.X_bCP_G_init = (
@@ -46,6 +46,8 @@ class RokokoCoilDemo(Node):
         self.arm_subscriber = self.create_subscription(
             PoseStamped, "/franka/end_effector_pose", self.arm_pose_callback, 10
         )
+
+        self.get_logger().warn("Arm Node started")
 
     def arm_pose_callback(self, msg: PoseStamped):
         orientation = msg.pose.orientation
@@ -174,26 +176,26 @@ class RokokoCoilDemo(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    rokoko_coil_demo = RokokoCoilDemo()
+    arm_node = ArmNode()
 
     import threading
 
-    spin_thread = threading.Thread(target=rclpy.spin, args=(rokoko_coil_demo,))
+    spin_thread = threading.Thread(target=rclpy.spin, args=(arm_node,))
     spin_thread.start()
 
-    rokoko_coil_demo.calibrate()
+    arm_node.calibrate()
 
-    r = rokoko_coil_demo.create_rate(50)
+    r = arm_node.create_rate(50)
     while rclpy.ok():
         try:
-            X_W_fEE_d = rokoko_coil_demo.compute_robot_target()
+            X_W_fEE_d = arm_node.compute_robot_target()
             if X_W_fEE_d is not None:
-                rokoko_coil_demo.publish_target_pose(X_W_fEE_d)
+                arm_node.publish_target_pose(X_W_fEE_d)
             r.sleep()
         except KeyboardInterrupt:
             break
 
-    print("rokoko_coil_demo Done")
+    print("Arm Node Done")
     spin_thread.join()
     rclpy.shutdown()
 
