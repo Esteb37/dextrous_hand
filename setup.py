@@ -31,6 +31,7 @@ setup(
             'webcam_mano_node = src.webcam_mano_node:main',
             'retargeter_node = src.retargeter_node:main',
             'visualize_joints_node = src.visualize_joints_node:main',
+            'rokoko_node = src.rokoko_node:main',
         ],
     },
 )
