@@ -2,7 +2,10 @@
 
 from dextrous_hand.Joint import Joint
 import dextrous_hand.ids as ids
+from dextrous_hand.joints_geometry import SPOOL_RADIUS
+from dextrous_hand.constants import GLOBAL_CONSTANTS
 
+import numpy as np
 
 class ABD(Joint):
     """
@@ -15,7 +18,19 @@ class ABD(Joint):
         """
         super().__init__(joint_id)
 
+    def read(self):
+        """
+        returns:
+            The joint's current angle in radians
+        """
+        if GLOBAL_CONSTANTS["IS_SIMULATION"]:
+            return self.target
+
+        motor_angles = [motor.read() for motor in self.motors]
+        return motor_angles
+    
     def motors2joint(self, motor_angles):
+
         """
         Map the angles of the motor(s) to the angle of the joint
         TODO: Implement this method
@@ -35,6 +50,17 @@ class MCP(Joint):
         """
         super().__init__(joint_id)
 
+    def read(self):
+        """
+        returns:
+            The joint's current angle in radians
+        """
+        if GLOBAL_CONSTANTS["IS_SIMULATION"]:
+            return self.target
+
+        motor_angles = [motor.read() for motor in self.motors]
+        return motor_angles
+    
     def motors2joint(self, motor_angles):
         """
         Map the angles of the motor(s) to the angle of the joint
@@ -63,7 +89,8 @@ class PIP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return self.get_motor("FMBM").read()
+        inverse_input = self.motor2joint_interpol(motor_angles)
+        return inverse_input
 
 class DIP(Joint):
     """
