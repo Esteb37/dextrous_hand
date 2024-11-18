@@ -18,4 +18,3 @@ mujoco
 cv_bridge
 drake
 cvxopt
-tkinter
