@@ -17,11 +17,12 @@ class MujocoNode(Node):
         self.joint_command_subscriber = self.create_subscription(Float32MultiArray, 'hand_config', self.joint_command_callback, 10)
 
 
-        xml_path = parent_dir() + "/data/assets/hand_p4.xml"
+        xml_path = parent_dir() + "/data/assets/hh_hand_arm.xml"
 
         self.model = mujoco.MjModel.from_xml_path(xml_path) # type: ignore
         self.data = mujoco.MjData(self.model) # type: ignore
 
+        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         self.config = HandConfig(unrestricted=True)
 
         # Launch the viewer in a non-blocking way
@@ -36,11 +37,15 @@ class MujocoNode(Node):
 
             self.data.ctrl[:] = self.config.mujoco_angles()
 
+            self.data.qpos[:3] = self.config.POSITION
+            self.data.qpos[3:6] = self.config.ORIENTATION_XYZ
+
             mujoco.mj_step(self.model, self.data) # type: ignore
             self.viewer.sync()  # Sync the viewer with the new simulation state
 
     def joint_command_callback(self, msg):
         # Mapping function to be removed
+        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         self.config = HandConfig.from_msg(msg, unrestricted=True)
         print(self.config)
 

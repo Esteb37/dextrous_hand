@@ -10,14 +10,18 @@ def generate_launch_description():
             parameters=[
                 {"is_simulation": True}
             ],
-            output='screen',
+            # output='screen',
             emulate_tty=True
         ),
         Node(
             package='dextrous_hand',
             executable='teleop_node',
             name='teleop_node',
-            emulate_tty=True
+            emulate_tty=True,
+            parameters=[
+                {"is_simulation": True}
+            ],
+            output='screen'
         ),
         Node(
             package='dextrous_hand',

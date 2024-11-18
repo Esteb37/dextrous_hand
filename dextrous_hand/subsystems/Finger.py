@@ -92,11 +92,14 @@ class Finger(Subsystem):
           return abd_angle,flex_angle
 
     def restrict_joint_angles(self, joint_angles):
-          joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
+        """
+        Enforces the "triangle" restriction on the joint angles.
+        """
+        joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
-          joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
+        joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
 
-          return joint_angles
+        return joint_angles
 
     def coupled_motors(self, virtual_tendon_abd, virtual_tendon_flex):
 
@@ -213,47 +216,9 @@ class Finger(Subsystem):
         
         return motor_angles
 
-    def motors2joints(self, plane_intersect_1, plane_intersect_2):
-
-        (x1, y1) = plane_intersect_1
-        (x2, y2) = plane_intersect_2
-
-        # Define a tolerance to consider points as intersecting
-        tolerance = 0.02
-
-        # Find intersections by comparing x1, y1 with x2, y2
-        intersection_x = []
-        intersection_y = []
-
-        for (xi1, yi1) in zip(x1, y1):
-            for (xi2, yi2) in zip(x2, y2):
-                if np.abs(xi1 - xi2) < tolerance and np.abs(yi1 - yi2) < tolerance:
-                    intersection_x.append((xi1 + xi2) / 2)  # Average the coordinates
-                    intersection_y.append((yi1 + yi2) / 2)
-
-        return intersection_x[0], intersection_y[0]
-
-    def read(self):
-        """
-        returns
-            The positions of all joints in the subsystem
-        """
-        motor_angles_abd, motor_angles_mcp = self.motors2joints(self.joints[0].read(), self.joints[1].read())
-        motor_angles = [0.5*(motor_angles_abd[0]+motor_angles_mcp[0]), 0.5*(motor_angles_abd[1]+motor_angles_mcp[1])]
-
-        tolerance = 0.001
-
-        # Filter points where Z is close to the target height
-        contour_x_1 = self.X_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
-        contour_y_1 = self.Y_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
-
-        contour_x_2 = self.X_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
-        contour_y_2 = self.Y_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
-        
-        abd, flex_mcp = self.motors2joints((contour_x_1,contour_y_1), (contour_x_2,contour_y_2))
-
-        return [abd, flex_mcp, self.joints[2].read()]
-    
+    """
+    Getters for the joints and motors of the finger
+    """
     @property
     def ABD(self):
         return self.get_joint("ABD")

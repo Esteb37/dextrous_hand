@@ -8,7 +8,6 @@ from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Float32MultiArray
 
 from dextrous_hand.Hand import HAND
-from dextrous_hand.subsystems.Arm import ARM
 from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.motors.DynamixelClient import DynamixelClient
 from dextrous_hand.utils.constants import NODE_FREQUENCY_HZ, GLOBAL_CONSTANTS
@@ -23,13 +22,14 @@ class HandNode(Node):
     def __init__(self):
         super().__init__('hand_node')
 
-        self.motor_bridge = DynamixelClient()
-
         self.declare_parameter("is_simulation", False)
         self.declare_parameter("manual_control", False)
 
+        # These HAVE to be set before everything else so that all subsystems and the dynamixel client understand if they are in simulation mode
         GLOBAL_CONSTANTS["IS_SIMULATION"] = self.get_parameter("is_simulation").value
         GLOBAL_CONSTANTS["MANUAL_CONTROL"] = self.get_parameter("manual_control").value
+
+        self.motor_bridge = DynamixelClient()
 
         if GLOBAL_CONSTANTS["MANUAL_CONTROL"]:
             self.motor_bridge.connect()
@@ -54,14 +54,14 @@ class HandNode(Node):
         self.read_thread.daemon = True
         self.read_thread.start()
 
-        self.arm_msg = HAND.get_config().pose_msg()
+        self.arm_msg = HAND.read_current_config().pose_msg()
         self.arm_subscription = self.create_subscription(PoseStamped,'/franka/end_effector_pose',self.arm_config_callback,10)
         self.arm_publisher = self.create_publisher(PoseStamped, '/franka/end_effector_pose_cmd', 10)
 
         self.get_logger().info('Hand node started, waiting for hand config...')
 
     def hand_config_callback(self, msg):
-        HAND.set_config(HandConfig.from_msg(msg))
+        HAND.write_config(HandConfig.from_msg(msg))
 
         if not self.initialized:
             self.motor_bridge.connect()
@@ -82,8 +82,9 @@ class HandNode(Node):
 
     def read(self):
         if self.initialized:
+            # This needs to be called before calling read_config
             self.motor_bridge.update_positions()
-            ARM.update(self.arm_msg)
+            HAND.update_arm_pose(self.arm_msg)
 
     def print(self):
         if self.initialized:

@@ -5,7 +5,7 @@ from dextrous_hand.utils.constants import MOTOR_CONSTANTS
 
 class MOTORS(Enum):
     """
-    Motor ports
+    Motor ports. Obtained from the motors.yaml file
     """
     PINKY_FMBM = MOTOR_CONSTANTS["PINKY_FMBM"]["port"]
     PINKY_FRBL = MOTOR_CONSTANTS["PINKY_FRBL"]["port"]
@@ -80,12 +80,14 @@ class JOINTS(Enum):
 
     WRIST = auto()
 
-    POSE_X = auto()
-    POSE_Y = auto()
-    POSE_Z = auto()
-    POSE_ROLL = auto()
-    POSE_PITCH = auto()
-    POSE_YAW = auto()
+    POS_X = auto()
+    POS_Y = auto()
+    POS_Z = auto()
+
+    ORIENT_X = auto()
+    ORIENT_Y = auto()
+    ORIENT_Z = auto()
+    ORIENT_W = auto()
 
 class STARTUP(Enum):
     HOME = 0 # all joints set to 0
