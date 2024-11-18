@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
-from dextrous_hand.Hand import HAND
-from dextrous_hand.Arm import ARM
-from dextrous_hand.HandConfig import HandConfig
-from dextrous_hand.constants import NODE_FREQUENCY_HZ, GLOBAL_CONSTANTS
-from dextrous_hand.DynamixelClient import DynamixelClient
 import time
 import threading
+import rclpy
+from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float32MultiArray
+
+from dextrous_hand.Hand import HAND
+from dextrous_hand.subsystems.Arm import ARM
+from dextrous_hand.utils.HandConfig import HandConfig
+from dextrous_hand.motors.DynamixelClient import DynamixelClient
+from dextrous_hand.utils.constants import NODE_FREQUENCY_HZ, GLOBAL_CONSTANTS
 
 class HandNode(Node):
     """
