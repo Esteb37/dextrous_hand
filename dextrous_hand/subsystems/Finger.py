@@ -304,7 +304,7 @@ class Thumb(Finger):
         Note that the number of angles that can be set is 3 and not 4 because
         DIP is not settable.
 
-        TODO: Implement this method
+        TODO: Check if the fourth joint is read correctly
         """
         assert len(joint_angles) == 4
 
@@ -323,22 +323,10 @@ class Thumb(Finger):
         """
         returns
             The positions of all joints in the subsystem
+
+            TODO: Do this properly
         """
-        motor_angles_abd, motor_angles_mcp = self.motors2joints(self.joints[0].read(), self.joints[1].read())
-        motor_angles = [0.5*(motor_angles_abd[0]+motor_angles_mcp[0]), 0.5*(motor_angles_abd[1]+motor_angles_mcp[1])]
-
-        tolerance = 0.001
-
-        # Filter points where Z is close to the target height
-        contour_x_1 = self.X_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
-        contour_y_1 = self.Y_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
-
-        contour_x_2 = self.X_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
-        contour_y_2 = self.Y_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
-
-        abd, flex_mcp = self.motors2joints((contour_x_1,contour_y_1), (contour_x_2,contour_y_2))
-
-        return [abd, flex_mcp, self.joints[2].read(), self.joints[3].read()]
+        return [self.joints[0].read(), self.joints[1].read(), self.joints[2].read(), self.joints[3].read()]
 
 # Singleton instances
 PINKY = Finger(ids.SUBSYSTEMS.PINKY)
