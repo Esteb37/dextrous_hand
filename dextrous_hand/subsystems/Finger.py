@@ -42,8 +42,6 @@ class Finger(Subsystem):
         self.Z_vals_1 = np.array(Z_vals_1)
         self.Z_vals_2 = np.array(Z_vals_2)
 
-        super().__init__(id)
-
 
     def find_closest_in_space(self, range_abd, range_flex, abd_angle, flex_angle):
         theta_flex_max=range_flex[1]
@@ -308,7 +306,7 @@ class Thumb(Finger):
 
         TODO: Implement this method
         """
-        assert len(joint_angles) == 3
+        assert len(joint_angles) == 4
 
         motors_angles=[]
         pin_joints = [joint_angles[0],joint_angles[1]]
@@ -317,7 +315,30 @@ class Thumb(Finger):
 
         motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
 
+        motors_angles.append(self.joints[3].joint2length(joint_angles[3])[0]/SPOOL_RADIUS)
+
         return motors_angles
+
+    def read(self):
+        """
+        returns
+            The positions of all joints in the subsystem
+        """
+        motor_angles_abd, motor_angles_mcp = self.motors2joints(self.joints[0].read(), self.joints[1].read())
+        motor_angles = [0.5*(motor_angles_abd[0]+motor_angles_mcp[0]), 0.5*(motor_angles_abd[1]+motor_angles_mcp[1])]
+
+        tolerance = 0.001
+
+        # Filter points where Z is close to the target height
+        contour_x_1 = self.X_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+        contour_y_1 = self.Y_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+
+        contour_x_2 = self.X_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+        contour_y_2 = self.Y_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+
+        abd, flex_mcp = self.motors2joints((contour_x_1,contour_y_1), (contour_x_2,contour_y_2))
+
+        return [abd, flex_mcp, self.joints[2].read(), self.joints[3].read()]
 
 # Singleton instances
 PINKY = Finger(ids.SUBSYSTEMS.PINKY)

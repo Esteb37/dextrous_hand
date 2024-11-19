@@ -121,7 +121,7 @@ class KeyboardNode(Node):
                     self.all = False
 
                 # Map keys to joint ids
-                elif key.char in '123':
+                elif key.char in '1234':
                     self.joint_id = int(key.char) - 1
 
                 elif key.char == 'u':
