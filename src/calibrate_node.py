@@ -16,7 +16,7 @@ class CalibrateNode(Node):
         super().__init__('calibrate_node')
         self.config_publisher = self.create_publisher(Float32MultiArray, 'hand_config', 10)
 
-        self.get_logger().info('Calibration node started')
+        self.get_logger().warn('Calibration Node started')
 
         if GLOBAL_CONSTANTS["IS_SIMULATION"]:
             self.get_logger().error("IS_SIMULATION must be set to False for calibration.")
