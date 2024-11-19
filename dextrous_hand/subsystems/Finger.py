@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Subsystem import Subsystem
-import dextrous_hand.ids as ids
-
-from dextrous_hand.joints_geometry import SPOOL_RADIUS
 import numpy as np
+
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.subsystems.Subsystem import Subsystem
+from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
 
 class Finger(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):
@@ -12,7 +12,7 @@ class Finger(Subsystem):
         params
             id [SUBSYSTEMS]: the finger's id
         """
-        super().__init__()
+        super().__init__(id)
 
         geo_abd = self.joints[0].geometry
         geo_flex = self.joints[1].geometry
@@ -210,7 +210,7 @@ class Finger(Subsystem):
         for i, joint_angle in enumerate(joint_angles):
             virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
 
-        motor_angles=[0,0,0]
+        motor_angles=[0.0,0.0,0.0]
         motor_angles[0], motor_angles[1] = self.coupled_motors(virtual_tendons_diff[0], virtual_tendons_diff[1])
         motor_angles[2] = self.single_motor(virtual_tendons_diff[2])
 
