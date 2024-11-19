@@ -6,96 +6,96 @@ FULL_RANGE: &full_range [*mpi, *pi]
 
 THUMB_ABD:
   port: 3
-  zero: 2.7019999027252197
+  zero: 3.039557933807373
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 0
-  zero: 3.8865222930908203
+  zero: 3.855835199356079
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 1
-  zero: 3.054901599884033
+  zero: 3.1438941955566406
   direction: -1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 3.493727207183838
+  zero: 3.2911922931671143
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 3.1515660285949707
+  zero: 2.680518865585327
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.2420928478240967
+  zero: 3.1807186603546143
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 3.3172762393951416
+  zero: 3.2973296642303467
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 2.6866562366485596
+  zero: 2.6406257152557373
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 2.8216795921325684
+  zero: 2.7848551273345947
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 4.328416347503662
+  zero: 4.286988735198975
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 2.910672187805176
+  zero: 2.9520998001098633
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 3.386322259902954
+  zero: 3.229818105697632
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 14
-  zero: 3.142359733581543
+  zero: 3.169978141784668
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 15
-  zero: 3.75303316116333
+  zero: 3.694727659225464
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 13
-  zero: 3.5458953380584717
+  zero: 3.6640405654907227
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 5.034220218658447
-  direction: -1
+  zero: 6.379849910736084
+  direction: 1
   range: *full_range
