@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Subsystem import Subsystem
-import dextrous_hand.ids as ids
-
-from dextrous_hand.joints_geometry import SPOOL_RADIUS
 import numpy as np
+
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.subsystems.Subsystem import Subsystem
+from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
 
 class Finger(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):
@@ -12,7 +12,7 @@ class Finger(Subsystem):
         params
             id [SUBSYSTEMS]: the finger's id
         """
-        super().__init__()
+        super().__init__(id)
 
         geo_abd = self.joints[0].geometry
         geo_flex = self.joints[1].geometry
@@ -41,8 +41,6 @@ class Finger(Subsystem):
         self.Y_vals = np.array(Y_vals)
         self.Z_vals_1 = np.array(Z_vals_1)
         self.Z_vals_2 = np.array(Z_vals_2)
-
-        super().__init__(id)
 
 
     def find_closest_in_space(self, range_abd, range_flex, abd_angle, flex_angle):
@@ -116,7 +114,7 @@ class Finger(Subsystem):
         dl_m2 = 0
         s_m1 = 0
         s_m2 = 0
-        
+
         # compute real tendons length
         if abd_l1 > abd_l2 and flex_l1 == flex_l2:
             # case 1
@@ -205,16 +203,57 @@ class Finger(Subsystem):
         DIP is not settable.
         """
         assert len(joint_angles) == 3
- 
+
         virtual_tendons_diff=[]
         for i, joint_angle in enumerate(joint_angles):
             virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
-        
-        motor_angles=[0,0,0]
+
+        motor_angles=[0.0,0.0,0.0]
         motor_angles[0], motor_angles[1] = self.coupled_motors(virtual_tendons_diff[0], virtual_tendons_diff[1])
         motor_angles[2] = self.single_motor(virtual_tendons_diff[2])
-        
+
         return motor_angles
+
+    def motors2joints(self, plane_intersect_1, plane_intersect_2):
+
+        (x1, y1) = plane_intersect_1
+        (x2, y2) = plane_intersect_2
+
+        # Define a tolerance to consider points as intersecting
+        tolerance = 0.02
+
+        # Find intersections by comparing x1, y1 with x2, y2
+        intersection_x = []
+        intersection_y = []
+
+        for (xi1, yi1) in zip(x1, y1):
+            for (xi2, yi2) in zip(x2, y2):
+                if np.abs(xi1 - xi2) < tolerance and np.abs(yi1 - yi2) < tolerance:
+                    intersection_x.append((xi1 + xi2) / 2)  # Average the coordinates
+                    intersection_y.append((yi1 + yi2) / 2)
+
+        return intersection_x[0], intersection_y[0]
+
+    def read(self):
+        """
+        returns
+            The positions of all joints in the subsystem
+        """
+        motor_angles_abd, motor_angles_mcp = self.motors2joints(self.joints[0].read(), self.joints[1].read())
+        motor_angles = [0.5*(motor_angles_abd[0]+motor_angles_mcp[0]), 0.5*(motor_angles_abd[1]+motor_angles_mcp[1])]
+
+        tolerance = 0.001
+
+        # Filter points where Z is close to the target height
+        contour_x_1 = self.X_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+        contour_y_1 = self.Y_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+
+        contour_x_2 = self.X_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+        contour_y_2 = self.Y_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+
+        abd, flex_mcp = self.motors2joints((contour_x_1,contour_y_1), (contour_x_2,contour_y_2))
+
+        return [abd, flex_mcp, self.joints[2].read()]
 
     """
     Getters for the joints and motors of the finger
@@ -265,9 +304,9 @@ class Thumb(Finger):
         Note that the number of angles that can be set is 3 and not 4 because
         DIP is not settable.
 
-        TODO: Implement this method
+        TODO: Check if the fourth joint is read correctly
         """
-        assert len(joint_angles) == 3
+        assert len(joint_angles) == 4
 
         motors_angles=[]
         pin_joints = [joint_angles[0],joint_angles[1]]
@@ -276,7 +315,18 @@ class Thumb(Finger):
 
         motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
 
+        motors_angles.append(self.joints[3].joint2length(joint_angles[3])[0]/SPOOL_RADIUS)
+
         return motors_angles
+
+    def read(self):
+        """
+        returns
+            The positions of all joints in the subsystem
+
+            TODO: Do this properly
+        """
+        return [self.joints[0].read(), self.joints[1].read(), self.joints[2].read(), self.joints[3].read()]
 
 # Singleton instances
 PINKY = Finger(ids.SUBSYSTEMS.PINKY)

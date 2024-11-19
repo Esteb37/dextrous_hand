@@ -22,6 +22,12 @@ THUMB_PIP:
   direction: 1
   range: *full_range
 
+THUMB_DIP:
+  port: 16
+  zero: 1.654
+  direction: 1
+  range: *full_range
+
 INDEX_FRBL:
   port: 3
   zero: 4.649

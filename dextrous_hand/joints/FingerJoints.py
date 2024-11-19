@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-from dextrous_hand.Joint import Joint
-import dextrous_hand.ids as ids
-from dextrous_hand.joints_geometry import SPOOL_RADIUS
+import dextrous_hand.utils.ids as ids
+from dextrous_hand.joints.Joint import Joint
 from dextrous_hand.constants import GLOBAL_CONSTANTS
 
 import numpy as np
@@ -28,7 +27,7 @@ class ABD(Joint):
 
         motor_angles = [motor.read() for motor in self.motors]
         return motor_angles
-    
+
     def motors2joint(self, motor_angles):
 
         """
@@ -60,7 +59,7 @@ class MCP(Joint):
 
         motor_angles = [motor.read() for motor in self.motors]
         return motor_angles
-    
+
     def motors2joint(self, motor_angles):
         """
         Map the angles of the motor(s) to the angle of the joint
@@ -191,4 +190,4 @@ class THUMB_DIP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return self.get_motor("PIP").read()
+        return self.get_motor("DIP").read()
