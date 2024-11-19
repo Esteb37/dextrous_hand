@@ -3,8 +3,8 @@
 import numpy as np
 from pathlib import Path
 from std_msgs.msg import Float32MultiArray
-from scipy.spatial.transform import Rotation as R
 from geometry_msgs.msg import PoseStamped, Quaternion, Point
+from launch_ros.actions import Node as RosNode
 
 def matrix_to_message(matrix):
     """
@@ -98,3 +98,21 @@ def parent_dir():
 
     parent_dir = install_dir.parent
     return (parent_dir / "src" / "dextrous_hand").as_posix()
+
+class DexNode(RosNode):
+    def __init__(self, name, **kwargs):
+        super().__init__(
+            package="dextrous_hand",
+            executable=name,
+            name=name,
+            emulate_tty=True,
+            **kwargs)
+
+class SimNode(DexNode):
+    def __init__(self, name, **kwargs):
+        try:
+            params = kwargs["parameters"]
+        except:
+            params = []
+        params.append({"is_simulation" : True})
+        super().__init__(name, parameters = params, **kwargs)

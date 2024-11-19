@@ -3,6 +3,7 @@ import rclpy
 import numpy as np
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import MarkerArray
 
 from dextrous_hand.mano.retargeter import Retargeter
@@ -32,6 +33,10 @@ class RetargeterNode(Node):
             Float32MultiArray, "/ingress/mano", self.ingress_mano_cb, 10
         )
 
+        self.ingress_wrist = self.create_subscription(
+            PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
+        )
+
         self.retargeter = Retargeter(
             device="cuda", mjcf_filepath=mjcf_filepath, hand_scheme=hand_scheme
         )
@@ -47,13 +52,24 @@ class RetargeterNode(Node):
             self.rviz_pub = self.create_publisher(MarkerArray, 'retarget/normalized_mano_points', 10)
             self.mano_hand_visualizer = ManoHandVisualizer(self.rviz_pub)
 
+        self.keypoint_positions = None
+        self.wrist_position = None
+        self.wrist_orientation = None
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
+
+        self.get_logger().warn("Retargeter Node started")
 
     def ingress_mano_cb(self, msg):
         self.keypoint_positions = np.array(msg.data).reshape(-1, 3)
 
+    def ingress_wrist_cb(self, msg):
+        self.wrist_orientation = np.array([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
+
     def timer_publish_cb(self):
+        if self.keypoint_positions is None:
+            return
+
         if self.debug:
             self.mano_hand_visualizer.reset_markers()
 
@@ -71,9 +87,14 @@ class RetargeterNode(Node):
         )
 
         joint_rads = np.deg2rad(joint_angles)
+        if self.wrist_orientation is not None:
+            wrist_joint = self.wrist_orientation
+        else :
+            wrist_joint = [0, 0, 0, 1]
 
         # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
         hand_config = HandConfig(unrestricted=True,
+                                 WRIST = wrist_joint[0:3],
                                  PINKY = joint_rads[12:15],
                                  RING = joint_rads[9:12],
                                  MIDDLE = joint_rads[6:9],
