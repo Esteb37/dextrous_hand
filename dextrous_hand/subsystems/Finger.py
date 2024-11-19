@@ -249,6 +249,16 @@ class Thumb(Finger):
 
         return motors_angles
 
+    def restrict_joint_angles(self, joint_angles):
+        """
+        Enforces the "triangle" restriction on the joint angles.
+        """
+        # joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
+        joint_angles[0] = max(self.joints[0].geometry["range"][0], min(joint_angles[0], self.joints[0].geometry["range"][1]))
+        joint_angles[1] = max(self.joints[1].geometry["range"][0], min(joint_angles[1], self.joints[1].geometry["range"][1]))
+        joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
+        return joint_angles
+
 # Singleton instances
 PINKY = Finger(ids.SUBSYSTEMS.PINKY)
 RING = Finger(ids.SUBSYSTEMS.RING)
