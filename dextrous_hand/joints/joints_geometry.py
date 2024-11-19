@@ -8,73 +8,14 @@ SPOOL_RADIUS = 8.5
 
 # in mm
 GEOMETRY_TYPES = {
-    "P4_FINGER_ABD":{"centers_distance":18,
-                     "T1":[-4,8,0],
-                     "T2":[-4,-8,0],
-                     "T3":[4,8,0],
-                     "T4":[4,-8,0],
-                     "length_12_0":1.325,
-                     "length_34_0":1.325,
-                     "range":[-PI/2,PI/2]
-                     },
-
-    "P4_FINGER_MCP":{"centers_distance":18,
-                     "T1":[-9,4.336,0],
-                     "T2":[-8.813,-1.827,0],
-                     "T3":[2.4,9.157,0],
-                     "T4":[2.563,-8.627,0],
-                     "length_12_0":10.906,
-                     "length_34_0":0,
-                     "range":[0,PI/2]
-                     },
-
-    "P4_FINGER_PIP":{"centers_distance":12,
-                     "T1":[-2.46,-6.42,0],
-                     "T2":[-6,0,0],
-                     "T3":[1.44,5.66,0],
-                     "T4":[1.44,-5.66,0],
-                     "length_12_0":14.095,
-                     "length_34_0":0.325,
-                     "range":[0,PI/2]
-                     },
-
-    "P4_FINGER_DIP":{"centers_distance":9,
-                     "T1":[-4.5,0,0],
-                     "T2":[-4.348,-1.16,0],
-                     "T3":[1.75,4.146,0],
-                     "T4":[1.75,-4.146,0],
-                     "length_12_0":6.828,
-                     "length_34_0":0.309,
-                     "range":[0,PI/2]
-                     },
-
-    "THUMB_ABD":{"radius":1,
-                 "range":[-PI/2,PI/2]
-                 },
-
-    "THUMB_MCP":{"radius":1,
-                 "range":[0,PI/2]
-                 },
-
-    "THUMB_PIP":{"centers_distance":1,
-                 "T1":[0,0,1],
-                  "T2":[0,0,1],
-                 "T3":[0,0,1],
-                 "T4":[0,0,1],
-                 "length_12_0":1,
-                 "length_34_0":1,
-                 "range":[0,PI/2]},
-
-    "THUMB_DIP":{"centers_distance":1,
-                 "T1":[0,0,1],
-                 "T2":[0,0,1],
-                 "T3":[0,0,1],
-                 "T4":[0,0,1],
-                 "length_12_0":1,
-                 "length_34_0":1,
-                 "range":[0,PI/2]
-                 },
-
+    "P4_FINGER_ABD":{"centers_distance":18, "T1":[-4.042,8.041,0], "T2":[-3.982,-8.071,0], "T3":[4.042,8.041,0], "T4":[3.982,-8.071,0], "length_12_0":1.889, "length_34_0":1.889, "range":[-PI/6,PI/6]},
+    "P4_FINGER_MCP":{"centers_distance":18, "T1":[-9,4.336,0], "T2":[-8.813,-1.827,0], "T3":[2.4,9.157,0], "T4":[2.563,-8.627,0], "length_12_0":11.838, "length_34_0":0.27, "range":[0,PI/2]},
+    "P4_FINGER_PIP":{"centers_distance":12, "T1":[-6.42,-2.46,0], "T2":[-5.989,0.358,0], "T3":[1.443,5.606,0], "T4":[1.443,-5.571,0], "length_12_0":14.83, "length_34_0":0.823, "range":[0,PI/2]},
+    "P4_FINGER_DIP":{"centers_distance":9, "T1":[-4.495,0.218,0], "T2":[-4.348,-1.16,0], "T3":[1.75,4.146,0], "T4":[1.75,-4.146,0], "length_12_0":7.623, "length_34_0":0.707, "range":[0,PI/2]},
+    "THUMB_ABD":{"radius":1, "range":[-PI/2,PI/2]},
+    "THUMB_MCP":{"radius":1, "range":[0,PI/2]},
+    "THUMB_PIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
+    "THUMB_DIP":{"centers_distance":1, "T1":[0,0,1], "T2":[0,0,1], "T3":[0,0,1], "T4":[0,0,1], "length_12_0":1, "length_34_0":1, "range":[0,PI/2]},
     "WRIST":{"radius":1}
 }
 
