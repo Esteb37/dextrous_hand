@@ -69,13 +69,109 @@ class Finger(Subsystem):
 
         return joint_angles
 
+
+    def coupled_motors(self, virtual_tendon_abd, virtual_tendon_flex):
+
+        abd_l1 = virtual_tendon_abd[0]
+        abd_l2 = virtual_tendon_abd[1]
+        flex_l1 = virtual_tendon_flex[0]
+        flex_l2 = virtual_tendon_flex[1]
+
+        # compute virtual slack
+        s_abd = abd_l1 + abd_l2
+        s_flex = flex_l1 + flex_l2
+
+        dl_m1 = 0
+        dl_m2 = 0
+        s_m1 = 0
+        s_m2 = 0
+
+        # compute real tendons length
+        if abd_l1 > abd_l2 and flex_l1 == flex_l2:
+            # case 1
+            dl_m1 = abd_l1
+            dl_m2 = -abd_l1
+            s_m1 = s_abd
+            s_m2 = s_abd
+        elif abd_l1 < abd_l2 and flex_l1 == flex_l2:
+            # case 2
+            dl_m1 = -abd_l2
+            dl_m2 = abd_l2
+            s_m1 = s_abd
+            s_m2 = s_abd
+        elif abd_l1 == abd_l2 and flex_l1 > flex_l2:
+            # case 3
+            dl_m1 = flex_l1
+            dl_m2 = flex_l1
+            s_m1 = s_flex
+            s_m2 = s_flex
+        elif abd_l1 == abd_l2 and flex_l1 < flex_l2:
+            # case 4
+            dl_m1 = -flex_l2
+            dl_m2 = -flex_l2
+            s_m1 = s_flex
+            s_m2 = s_flex
+        elif abd_l1 > abd_l2 and flex_l1 > flex_l2:
+            # case 5
+            dl_m1 = abd_l1 + flex_l1
+            dl_m2 = flex_l1 - abd_l1
+            s_m1 = s_abd + s_flex
+            s_m2 = s_abd - s_flex
+        elif abd_l1 < abd_l2 and flex_l1 < flex_l2:
+            # case 6
+            dl_m1 = -abd_l2 - flex_l2
+            dl_m2 = -flex_l2 + abd_l2
+            s_m1 = s_abd + s_flex
+            s_m2 = -s_abd + s_flex #s_abd - s_flex
+        elif abd_l1 < abd_l2 and flex_l1 > flex_l2:
+            # case 7
+            dl_m1 = flex_l1 - abd_l2
+            dl_m2 = flex_l1 + abd_l2
+            s_m1 = s_abd - s_flex
+            s_m2 = s_abd + s_flex
+        elif abd_l1 > abd_l2 and flex_l1 < flex_l2:
+            # case 8
+            dl_m1 = - flex_l2 + abd_l1
+            dl_m2 = - abd_l1 - flex_l2
+            s_m1 = - s_abd + s_flex #s_abd - s_flex
+            s_m2 = s_abd + s_flex
+
+        # compute motor angles
+        motor_angle_1 = dl_m1/SPOOL_RADIUS
+        motor_angle_2 = dl_m2/SPOOL_RADIUS
+
+        return motor_angle_1, motor_angle_2
+
+    def single_motor(self, virtual_tendon_abd):
+
+        pip_l1 = virtual_tendon_abd[0]
+        pip_l2 = virtual_tendon_abd[1]
+
+        # compute slack
+        s_pip = pip_l1 + pip_l2
+
+        # compute real tendon length
+        if pip_l1 > pip_l2:
+            # case 1
+            dl_m1 = pip_l1
+        elif pip_l1 < pip_l2:
+            # case 2
+            dl_m1 = -pip_l2
+        elif pip_l1 == pip_l2:
+            # case 3
+            dl_m1 = 0
+
+        # compute motor angles
+        motor_angle_1 = dl_m1/SPOOL_RADIUS
+
+        return motor_angle_1
+
+
     def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angles of the joints to the angles of the motors.
         Note that the number of angles that can be set is 3 and not 4 because
         DIP is not settable.
-
-        TODO: Implement this method
         """
         assert len(joint_angles) == 3
 
@@ -83,17 +179,13 @@ class Finger(Subsystem):
         for i, joint_angle in enumerate(joint_angles):
             virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
 
-        tendons_pair_motor_1 = (virtual_tendons_diff[0][0]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][1]+virtual_tendons_diff[1][1])
-        tendons_pair_motor_2 = (virtual_tendons_diff[0][1]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][0]+virtual_tendons_diff[1][1])
-        tendons_length_diff=[tendons_pair_motor_1, tendons_pair_motor_2, virtual_tendons_diff[2]]
-
-        motor_angles=[]
-        for tendons_diff in tendons_length_diff:
-            motor_angles.append(tendons_diff[0]/SPOOL_RADIUS)
-        # !!!!! adjust the sign to the direction of the motor
-        # here it assumes that the the motor will pull when turning with a positive angle
+        motor_angles=[0.,0.,0.]
+        motor_angles[0], motor_angles[1] = self.coupled_motors(virtual_tendons_diff[0], virtual_tendons_diff[1])
+        motor_angles[2] = self.single_motor(virtual_tendons_diff[2])
 
         return motor_angles
+
+
 
     """
     Getters for the joints and motors of the finger

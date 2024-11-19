@@ -5,97 +5,97 @@ FULL_RANGE: &full_range [*mpi, *pi]
 
 
 THUMB_ABD:
-  port: 0
-  zero: 1.95937180519104
-  direction: 1
+  port: 3
+  zero: 2.7019999027252197
+  direction: -1
   range: *full_range
 
 THUMB_MCP:
-  port: 1
-  zero: 2.989
+  port: 0
+  zero: 3.8865222930908203
   direction: -1
   range: *full_range
 
 THUMB_PIP:
-  port: 2
-  zero: 1.654
-  direction: 1
+  port: 1
+  zero: 3.054901599884033
+  direction: -1
   range: *full_range
 
 INDEX_FRBL:
-  port: 3
-  zero: 4.649
+  port: 8
+  zero: 3.493727207183838
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
-  port: 4
-  zero: 4.623
+  port: 12
+  zero: 3.1515660285949707
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 1.040
+  zero: 3.2420928478240967
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
-  port: 6
-  zero: 3.759
-  direction: 1
+  port: 16
+  zero: 3.3172762393951416
+  direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 4.325347900390625
-  direction: -1
+  zero: 2.6866562366485596
+  direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
-  port: 8
-  zero: 4.592325687408447
+  port: 6
+  zero: 2.8216795921325684
   direction: -1
   range: *full_range
 
 RING_FRBL:
-  port: 9
-  zero: 3.736
-  direction: 1
-  range: *full_range
-
-RING_FLBR:
   port: 10
-  zero: 2.335
+  zero: 4.328416347503662
   direction: -1
   range: *full_range
 
-RING_FMBM:
+RING_FLBR:
   port: 11
-  zero: 3.798
+  zero: 2.910672187805176
+  direction: 1
+  range: *full_range
+
+RING_FMBM:
+  port: 9
+  zero: 3.386322259902954
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
-  port: 12
-  zero: 3.725
+  port: 14
+  zero: 3.142359733581543
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
-  port: 13
-  zero: 3.531
+  port: 15
+  zero: 3.75303316116333
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
-  port: 14
-  zero: 4.144
+  port: 13
+  zero: 3.5458953380584717
   direction: 1
   range: *full_range
 
 WRIST:
-  port: 15
-  zero: 5.232151985168457
-  direction: 1
+  port: 4
+  zero: 5.034220218658447
+  direction: -1
   range: *full_range
