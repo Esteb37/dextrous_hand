@@ -2,12 +2,7 @@
 
 import math
 import numpy as np
-from abc import ABC, abstractmethod
-
-import dextrous_hand.utils.ids as ids
-from dextrous_hand.motors.Motor import Motor
-from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
-from dextrous_hand.utils.constants import GLOBAL_CONSTANTS
+from scipy.interpolate import interp1d
 
 class Joint(ABC):
     """
@@ -59,6 +54,17 @@ class Joint(ABC):
         self.target = 0.0
 
         self.initialized = True
+
+        # Compute the interpolation function for the motors2joints function
+        def forward_algorithm(x):
+            l1, l2 = self.joint2length(x, self.geometry)
+            return l1/SPOOL_RADIUS
+
+        range = self.geometry["range"]
+        inputs = np.linspace(range[0], range[1], 100)
+        outputs = [forward_algorithm(x) for x in inputs]
+        self.motor2joint_interpol = interp1d(outputs, inputs, fill_value="extrapolate")
+
 
     @abstractmethod
     def motors2joint(self, motor_angles):

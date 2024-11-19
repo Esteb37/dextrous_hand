@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-import dextrous_hand.utils.ids as ids
-from dextrous_hand.subsystems.Subsystem import Subsystem
-from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
+from dextrous_hand.Subsystem import Subsystem
+import dextrous_hand.ids as ids
+
+from dextrous_hand.joints_geometry import SPOOL_RADIUS
+import numpy as np
 
 class Finger(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):
@@ -10,6 +12,36 @@ class Finger(Subsystem):
         params
             id [SUBSYSTEMS]: the finger's id
         """
+        super().__init__()
+
+        geo_abd = self.joints[0].geometry
+        geo_flex = self.joints[1].geometry
+
+        x = np.linspace(geo_abd["range"][0], geo_abd["range"][1], 100)
+        y = np.linspace(geo_flex["range"][0], geo_flex["range"][1], 100)
+
+        # Initialize lists to hold the computed values for each point
+        X_vals, Y_vals, Z_vals_1, Z_vals_2 = [], [], [], []
+
+        # Evaluate the function at each point individually
+        def joints2motor1(xi, yi):
+            return self.joints2motors([xi, yi, 0])[0]
+
+        def joints2motor2(xi, yi):
+            return self.joints2motors([xi, yi, 0])[1]
+
+        for xi in x:
+            for yi in y:
+                X_vals.append(xi)
+                Y_vals.append(yi)
+                Z_vals_1.append(joints2motor1(xi, yi))
+                Z_vals_2.append(joints2motor2(xi, yi))
+
+        self.X_vals = np.array(X_vals)
+        self.Y_vals = np.array(Y_vals)
+        self.Z_vals_1 = np.array(Z_vals_1)
+        self.Z_vals_2 = np.array(Z_vals_2)
+
         super().__init__(id)
 
 
@@ -69,13 +101,108 @@ class Finger(Subsystem):
 
         return joint_angles
 
+    def coupled_motors(self, virtual_tendon_abd, virtual_tendon_flex):
+
+        abd_l1 = virtual_tendon_abd[0]
+        abd_l2 = virtual_tendon_abd[1]
+        flex_l1 = virtual_tendon_flex[0]
+        flex_l2 = virtual_tendon_flex[1]
+
+        # compute virtual slack
+        s_abd = abd_l1 + abd_l2
+        s_flex = flex_l1 + flex_l2
+
+        dl_m1 = 0
+        dl_m2 = 0
+        s_m1 = 0
+        s_m2 = 0
+
+        # compute real tendons length
+        if abd_l1 > abd_l2 and flex_l1 == flex_l2:
+            # case 1
+            dl_m1 = abd_l1
+            dl_m2 = -abd_l1
+            s_m1 = s_abd
+            s_m2 = s_abd
+        elif abd_l1 < abd_l2 and flex_l1 == flex_l2:
+            # case 2
+            dl_m1 = -abd_l2
+            dl_m2 = abd_l2
+            s_m1 = s_abd
+            s_m2 = s_abd
+        elif abd_l1 == abd_l2 and flex_l1 > flex_l2:
+            # case 3
+            dl_m1 = flex_l1
+            dl_m2 = flex_l1
+            s_m1 = s_flex
+            s_m2 = s_flex
+        elif abd_l1 == abd_l2 and flex_l1 < flex_l2:
+            # case 4
+            dl_m1 = -flex_l2
+            dl_m2 = -flex_l2
+            s_m1 = s_flex
+            s_m2 = s_flex
+        elif abd_l1 > abd_l2 and flex_l1 > flex_l2:
+            # case 5
+            dl_m1 = abd_l1 + flex_l1
+            dl_m2 = flex_l1 - abd_l1
+            s_m1 = s_abd + s_flex
+            s_m2 = s_abd - s_flex
+        elif abd_l1 < abd_l2 and flex_l1 < flex_l2:
+            # case 6
+            dl_m1 = -abd_l2 - flex_l2
+            dl_m2 = -flex_l2 + abd_l2
+            s_m1 = s_abd + s_flex
+            s_m2 = -s_abd + s_flex #s_abd - s_flex
+        elif abd_l1 < abd_l2 and flex_l1 > flex_l2:
+            # case 7
+            dl_m1 = flex_l1 - abd_l2
+            dl_m2 = flex_l1 + abd_l2
+            s_m1 = s_abd - s_flex
+            s_m2 = s_abd + s_flex
+        elif abd_l1 > abd_l2 and flex_l1 < flex_l2:
+            # case 8
+            dl_m1 = - flex_l2 + abd_l1
+            dl_m2 = - abd_l1 - flex_l2
+            s_m1 = - s_abd + s_flex #s_abd - s_flex
+            s_m2 = s_abd + s_flex
+
+        # compute motor angles
+        motor_angle_1 = dl_m1/SPOOL_RADIUS
+        motor_angle_2 = dl_m2/SPOOL_RADIUS
+
+        return motor_angle_1, motor_angle_2
+
+    def single_motor(self, virtual_tendon_abd):
+
+        pip_l1 = virtual_tendon_abd[0]
+        pip_l2 = virtual_tendon_abd[1]
+
+        # compute slack
+        s_pip = pip_l1 + pip_l2
+
+        # compute real tendon length
+        if pip_l1 > pip_l2:
+            # case 1
+            dl_m1 = pip_l1
+        elif pip_l1 < pip_l2:
+            # case 2
+            dl_m1 = -pip_l2
+        elif pip_l1 == pip_l2:
+            # case 3
+            dl_m1 = 0
+
+        # compute motor angles
+        motor_angle_1 = dl_m1/SPOOL_RADIUS
+
+        return motor_angle_1
+
+
     def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angles of the joints to the angles of the motors.
         Note that the number of angles that can be set is 3 and not 4 because
         DIP is not settable.
-
-        TODO: Implement this method
         """
         assert len(joint_angles) == 3
 
@@ -83,17 +210,52 @@ class Finger(Subsystem):
         for i, joint_angle in enumerate(joint_angles):
             virtual_tendons_diff.append(self.joints[i].joint2length(joint_angle))
 
-        tendons_pair_motor_1 = (virtual_tendons_diff[0][0]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][1]+virtual_tendons_diff[1][1])
-        tendons_pair_motor_2 = (virtual_tendons_diff[0][1]+virtual_tendons_diff[1][0],virtual_tendons_diff[0][0]+virtual_tendons_diff[1][1])
-        tendons_length_diff=[tendons_pair_motor_1, tendons_pair_motor_2, virtual_tendons_diff[2]]
-
-        motor_angles=[]
-        for tendons_diff in tendons_length_diff:
-            motor_angles.append(tendons_diff[0]/SPOOL_RADIUS)
-        # !!!!! adjust the sign to the direction of the motor
-        # here it assumes that the the motor will pull when turning with a positive angle
+        motor_angles=[0,0,0]
+        motor_angles[0], motor_angles[1] = self.coupled_motors(virtual_tendons_diff[0], virtual_tendons_diff[1])
+        motor_angles[2] = self.single_motor(virtual_tendons_diff[2])
 
         return motor_angles
+
+    def motors2joints(self, plane_intersect_1, plane_intersect_2):
+
+        (x1, y1) = plane_intersect_1
+        (x2, y2) = plane_intersect_2
+
+        # Define a tolerance to consider points as intersecting
+        tolerance = 0.02
+
+        # Find intersections by comparing x1, y1 with x2, y2
+        intersection_x = []
+        intersection_y = []
+
+        for (xi1, yi1) in zip(x1, y1):
+            for (xi2, yi2) in zip(x2, y2):
+                if np.abs(xi1 - xi2) < tolerance and np.abs(yi1 - yi2) < tolerance:
+                    intersection_x.append((xi1 + xi2) / 2)  # Average the coordinates
+                    intersection_y.append((yi1 + yi2) / 2)
+
+        return intersection_x[0], intersection_y[0]
+
+    def read(self):
+        """
+        returns
+            The positions of all joints in the subsystem
+        """
+        motor_angles_abd, motor_angles_mcp = self.motors2joints(self.joints[0].read(), self.joints[1].read())
+        motor_angles = [0.5*(motor_angles_abd[0]+motor_angles_mcp[0]), 0.5*(motor_angles_abd[1]+motor_angles_mcp[1])]
+
+        tolerance = 0.001
+
+        # Filter points where Z is close to the target height
+        contour_x_1 = self.X_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+        contour_y_1 = self.Y_vals[np.abs(self.Z_vals_1 - motor_angles[0]) < tolerance]
+
+        contour_x_2 = self.X_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+        contour_y_2 = self.Y_vals[np.abs(self.Z_vals_2 - motor_angles[1]) < tolerance]
+
+        abd, flex_mcp = self.motors2joints((contour_x_1,contour_y_1), (contour_x_2,contour_y_2))
+
+        return [abd, flex_mcp, self.joints[2].read()]
 
     """
     Getters for the joints and motors of the finger
