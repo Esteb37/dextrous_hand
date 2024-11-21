@@ -163,4 +163,4 @@ class THUMB_DIP(Joint):
         """
         assert len(motor_angles) == len(self.motors)
 
-        return self.get_motor("PIP").read()
+        return self.get_motor("DIP").read()

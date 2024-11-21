@@ -99,7 +99,8 @@ class RetargeterNode(Node):
                                  RING = joint_rads[9:12],
                                  MIDDLE = joint_rads[6:9],
                                  INDEX = joint_rads[3:6],
-                                 THUMB = joint_rads[0:3])
+                                 # TODO: Get the thumb DIP from retargeter
+                                 THUMB = joint_rads[0:3] + [0.0])
 
         self.hand_config_pub.publish(hand_config.as_msg())
 
