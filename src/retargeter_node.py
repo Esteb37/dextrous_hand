@@ -5,6 +5,7 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import MarkerArray
+from scipy.spatial.transform import Rotation as R
 
 from dextrous_hand.mano.retargeter import Retargeter
 from dextrous_hand.utils.HandConfig import HandConfig
@@ -87,14 +88,17 @@ class RetargeterNode(Node):
         )
 
         joint_rads = np.deg2rad(joint_angles)
-        if self.wrist_orientation is not None:
-            wrist_joint = self.wrist_orientation
-        else :
-            wrist_joint = [0, 0, 0, 1]
 
-        # TODO: Once the hand config is properly calibrated, remove the unrestricted flag
+        if self.wrist_orientation is not None:
+            wrist_quat = self.wrist_orientation
+        else :
+            wrist_quat = [0, 0, 0, 1]
+
+        # TODO: Do proper mapping
+        wrist_joint = R.from_quat(wrist_quat).as_euler("xyz", degrees=True)[1]
+
         hand_config = HandConfig(unrestricted=True,
-                                 WRIST = wrist_joint[0:3],
+                                 WRIST = wrist_joint,
                                  PINKY = joint_rads[12:15],
                                  RING = joint_rads[9:12],
                                  MIDDLE = joint_rads[6:9],

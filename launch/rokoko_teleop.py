@@ -26,7 +26,7 @@ def generate_launch_description():
                         "hh_hand.xml",
                     )
                 },
-                {"retarget/hand_scheme": "p4"},
+                {"retarget/hand_scheme": "hh"},
             ]
         ),
 
@@ -36,7 +36,7 @@ def generate_launch_description():
                     parent_dir(),
                     "data",
                     "assets",
-                    "scheme_p4.yaml",
+                    "scheme_hh.yaml",
                 )}
             ]
         ),

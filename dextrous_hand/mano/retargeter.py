@@ -20,7 +20,7 @@ class Retargeter:
         urdf_filepath: str | None = None,
         mjcf_filepath: str | None = None,
         sdf_filepath: str | None = None,
-        hand_scheme: str = "p4",
+        hand_scheme: str = "hh",
         device: str = "cuda",
         lr: float = 2.5,
         use_scalar_distance_palm: bool = False,
@@ -31,8 +31,8 @@ class Retargeter:
             + int(sdf_filepath is not None)
         ) == 1, "Exactly one of urdf_filepath, mjcf_filepath, or sdf_filepath should be provided"
 
-        if hand_scheme == "p1":
-            from .hand_cfgs.p1_cfg import (
+        if hand_scheme == "hh":
+            from .hand_cfgs.hh_cfg import (
                 GC_TENDONS,
                 FINGER_TO_TIP,
                 FINGER_TO_BASE,
@@ -105,7 +105,7 @@ class Retargeter:
             joint_parameter_names
         ), "Joint names mismatch, please double check hand_scheme"
 
-        self.gc_joints = torch.ones(self.n_tendons).to(self.device) * 15.0
+        self.gc_joints = torch.ones(self.n_tendons).to(self.device) * 16.0
         self.gc_joints.requires_grad_()
 
         self.lr = lr
@@ -221,7 +221,7 @@ class Retargeter:
 
         start_time = time.time()
         if not warm:
-            self.gc_joints = torch.ones(self.n_joints).to(self.device) * 15.0
+            self.gc_joints = torch.ones(self.n_joints).to(self.device) * 16.0
             self.gc_joints.requires_grad_()
 
         assert joints.shape == (

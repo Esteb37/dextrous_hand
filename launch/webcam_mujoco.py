@@ -19,7 +19,7 @@ def generate_launch_description():
                         "hh_hand.xml",
                     )
                 },
-                {"retarget/hand_scheme": "p4"},
+                {"retarget/hand_scheme": "hh"},
             ]
         ),
     ])
