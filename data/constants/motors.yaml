@@ -2,7 +2,7 @@
 PI: &pi 3.141592
 MPI: &mpi -3.141592
 FULL_RANGE: &full_range [*mpi, *pi]
-
+MAX_CURRENT: 500
 
 THUMB_ABD:
   port: 3

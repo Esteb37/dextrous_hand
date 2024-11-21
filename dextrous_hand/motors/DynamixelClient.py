@@ -205,6 +205,8 @@ class DynamixelClient:
 
         LOG_INFO('Connected to Dynamixel motors: %s' % str(self.motor_ids))
 
+        self.set_operating_mode(self.motor_ids, 5)
+
     def disconnect(self):
         """Disconnects from the Dynamixel device."""
         if constants.GLOBAL_CONSTANTS["IS_SIMULATION"]:
@@ -304,6 +306,13 @@ class DynamixelClient:
 
         times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION, # type: ignore
                         LEN_GOAL_POSITION)
+
+        # Magic number, the actual maximum current is 1/3 higher than whatever you write to the motors
+        # This does not happen with the Wizard
+        max_current_scale = 3 / 4
+        max_current = constants.MOTOR_CONSTANTS["MAX_CURRENT"] * max_current_scale
+
+        times = self.sync_write(motor_ids, max_current * np.ones(len(motor_ids)), ADDR_GOAL_CURRENT, LEN_GOAL_CURRENT) # type: ignore
         return times
 
     def write_desired_current(self, motor_ids: Sequence[int], current: np.ndarray):
@@ -408,7 +417,7 @@ class DynamixelClient:
             if context is not None:
                 error_message = '> {}: {}'.format(context, error_message)
 
-            if (comm_result != -1000):
+            if (comm_result not in [-1000, -3001, -3002]):
                 # Ignore "Port is busy" errors to allow multithreaded read-write
                 LOG_ERROR(error_message)
             return False
@@ -437,6 +446,7 @@ class DynamixelClient:
         self._pos_vel_cur_reader.read()
         for i, motor in enumerate(self.motors):
             motor.dxl_angle = self._pos_vel_cur_reader._pos_data[i]
+            motor.dxl_current = float(self._pos_vel_cur_reader._cur_data[i])
 
     def write_targets(self):
         """Writes the target positions to all motors."""
@@ -522,6 +532,10 @@ class DynamixelReader:
         success = False
         while not success and retries >= 0:
             comm_result = self.operation.txRxPacket()
+            if (comm_result in [-1000, -3001, -3002]):
+                # Ignore when the error is due to the port being busy.
+                continue
+
             success = self.client.handle_packet_result(
                 comm_result, context='read')
             retries -= 1
@@ -531,6 +545,7 @@ class DynamixelReader:
             # Check if the data is available.
             available = self.operation.isAvailable(motor_id, self.address,
                                                    self.size)
+
             if not available:
                 errored_ids.append(motor_id)
                 continue
@@ -538,8 +553,8 @@ class DynamixelReader:
             self._update_data(i, motor_id)
 
         if errored_ids:
-            LOG_ERROR('Sync read data is unavailable for: %s' %
-                          str(errored_ids))
+            LOG_ERROR('Sync read data is unavailable for: %s %d' %
+                          (str(errored_ids), comm_result))
         return self._get_data()
 
     def update_motor_ids(self, motor_ids):
