@@ -8,7 +8,7 @@ MANUAL_CONTROL: false
 # - HOME: The hand will start in the home configuration.
 # - LAST: The hand will start in the last configuration it was in.
 # - CUSTOM: The hand will start in the configuration defined by the INITIAL_CONFIG variable.
-STARTUP_MODE: LAST
+STARTUP_MODE: HOME
 
 # Change this if the motor controller is connected to a different port
 DEVICE_NAME: "/dev/ttyUSB0"

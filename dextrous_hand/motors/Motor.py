@@ -74,6 +74,8 @@ class Motor():
 
         self.angle = 0.0
 
+        self.dxl_current = 0.0
+
         self.initialized = True
 
 

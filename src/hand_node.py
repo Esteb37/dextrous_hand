@@ -5,7 +5,7 @@ import threading
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
-from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Float32MultiArray, Float32
 
 from dextrous_hand.Hand import HAND
 from dextrous_hand.utils.HandConfig import HandConfig
@@ -57,6 +57,8 @@ class HandNode(Node):
         self.arm_msg = HAND.read_current_config().pose_msg()
         self.arm_subscription = self.create_subscription(PoseStamped,'/franka/end_effector_pose',self.arm_config_callback,10)
 
+        self.current_publishers = [self.create_publisher(Float32, "current/"+motor.name, 10) for motor in self.motor_bridge.motors]
+
         self.get_logger().warn('Hand node started, waiting for hand config...')
 
     def hand_config_callback(self, msg):
@@ -69,6 +71,9 @@ class HandNode(Node):
     def write(self):
         if self.initialized:
             self.motor_bridge.write_targets()
+
+            for i, motor in enumerate(self.motor_bridge.motors):
+                self.current_publishers[i].publish(Float32(data=motor.dxl_current))
 
     def read_loop(self):
         """
@@ -87,6 +92,7 @@ class HandNode(Node):
     def print(self):
         if self.initialized:
             print(HAND)
+
 
     def arm_config_callback(self, msg):
         self.arm_msg = msg
