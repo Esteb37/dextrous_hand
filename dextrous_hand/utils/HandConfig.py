@@ -83,7 +83,7 @@ class HandConfig:
 
         # Set the values provided in the kwargs
         for key, value in kwargs.items():
-            if type(value) is float:
+            if type(value) is float or type(value) is np.float64:
                 value = [value]
             self[key] = value
 
@@ -285,7 +285,8 @@ class HandConfig:
                     self.RING + \
                     self.PINKY)
 
-        arr[2:] *= 0.5 # all joints except the first one are rolling contact joints
+        # All joints except the wrist and the thumb's first two are rolling contact joints
+        arr[3:] *= 0.5
         return arr
 
     @property

@@ -8,16 +8,9 @@ def generate_launch_description():
     return LaunchDescription([
         DexNode("mujoco_node"),
 
-        DexNode("rokoko_node",
-            parameters=[
-                {"rokoko_tracker/ip": "0.0.0.0"},
-                {"rokoko_tracker/port": 14043},
-                {"rokoko_tracker/use_coil": True}
-            ],
-        ),
-
         DexNode("retargeter_node",
-            parameters=[
+                output="screen",
+                parameters=[
                 {
                     "retarget/mjcf_filepath": os.path.join(
                         parent_dir(),
@@ -29,4 +22,10 @@ def generate_launch_description():
                 {"retarget/hand_scheme": "hh"},
             ]
         ),
+
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            output='screen'),
     ])

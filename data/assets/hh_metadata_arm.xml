@@ -152,10 +152,11 @@
             <joint joint="thumb_pp2mp_virt" coef="1"/>
             <joint joint="thumb_pp2mp" coef="-1"/>
         </fixed>
-        <fixed name="thumb_jointlink">
-            <joint joint="thumb_pp2mp" coef="0.71"/>
-            <joint joint="thumb_mp2dp_virt" coef="-1"/>
+        <fixed name="thumb_mp2dp">
+            <joint joint="thumb_mp2dp_virt" coef="1"/>
+            <joint joint="thumb_mp2dp" coef="-1"/>
         </fixed>
+
 
         <!-- Index finger -->
         <fixed name="index_abd">
