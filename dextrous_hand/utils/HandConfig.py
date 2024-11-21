@@ -20,11 +20,10 @@ class HandConfig:
                     RING = [0, 0, 0],
                     MIDDLE = [0, 0, 0],
                     INDEX = [0, 0, 0],
-                    THUMB = [0, 0, 0],
+                    THUMB = [0, 0, 0, 0],
                     WRIST = [0],
                     POSITION = [0, 0, 0],
                     ORIENTATION = [0, 0, 0, 1])
-                    )
     """
 
     PINKY : list[float]
@@ -45,7 +44,7 @@ class HandConfig:
             RING = [float, float, float]
             MIDDLE = [float, float, float]
             INDEX = [float, float, float]
-            THUMB = [float, float, float]
+            THUMB = [float, float, float, float]
             WRIST = [float]
             POSITION = [float, float, float] # x, y, z
             ORIENTATION = [float, float, float, float] # x, y, z, w
@@ -54,7 +53,7 @@ class HandConfig:
         self.RING = [0.0, 0.0, 0.0]
         self.MIDDLE = [0.0, 0.0, 0.0]
         self.INDEX = [0.0, 0.0, 0.0]
-        self.THUMB = [0.0, 0.0, 0.0]
+        self.THUMB = [0.0, 0.0, 0.0, 0.0]
         self.WRIST = [0.0]
         self.POSITION = [0.0, 0.0, 0.0]
         self.ORIENTATION = [0.0, 0.0, 0.0, 1.0]
@@ -214,7 +213,7 @@ class HandConfig:
             RING = matrix[ids.SUBSYSTEMS.RING.value][:3],
             MIDDLE = matrix[ids.SUBSYSTEMS.MIDDLE.value][:3],
             INDEX = matrix[ids.SUBSYSTEMS.INDEX.value][:3],
-            THUMB = matrix[ids.SUBSYSTEMS.THUMB.value][:3],
+            THUMB = matrix[ids.SUBSYSTEMS.THUMB.value][:4],
             WRIST = matrix[ids.SUBSYSTEMS.WRIST.value][:1],
             POSITION = matrix[ids.SUBSYSTEMS.POSITION.value][:3],
             ORIENTATION = matrix[ids.SUBSYSTEMS.ORIENTATION.value][:4]
@@ -232,7 +231,7 @@ class HandConfig:
                           RING = RING.read()[:3],
                           MIDDLE = MIDDLE.read()[:3],
                           INDEX = INDEX.read()[:3],
-                          THUMB = THUMB.read()[:3],
+                          THUMB = THUMB.read()[:4],
                           WRIST = WRIST.read()[:1],
                           POSITION = ARM.POSITION[:3],
                           ORIENTATION = ARM.ORIENTATION[:4]

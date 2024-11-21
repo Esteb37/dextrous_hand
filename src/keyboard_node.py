@@ -27,6 +27,7 @@ class KeyboardNode(Node):
     1: joint 1
     2: joint 2
     3: joint 3
+    4: joint 4 (thumb only)
     o: increase joint angle
     l: decrease joint angle
     """
@@ -85,7 +86,7 @@ class KeyboardNode(Node):
 
     def on_press(self, key):
         try:
-            if key.char in "qwertyu123oplk":
+            if key.char in "qwertyu1234oplk":
                 # Map keys to finger ids
                 if key.char == 'q':
                     self.subsystem_id = "PINKY"
@@ -121,7 +122,7 @@ class KeyboardNode(Node):
                     self.all = False
 
                 # Map keys to joint ids
-                elif key.char in '123':
+                elif key.char in '1234':
                     self.joint_id = int(key.char) - 1
 
                 elif key.char == 'u':
@@ -191,7 +192,7 @@ class KeyboardNode(Node):
                     RING=[0.0, 0.0, angle],
                     MIDDLE=[0.0, 0.0, angle],
                     INDEX=[0.0, 0.0, angle],
-                    THUMB=[0.0, 0.0, angle],
+                    THUMB=[0.0, 0.0, angle, 0.0],
                 )
                 print(angle)
 

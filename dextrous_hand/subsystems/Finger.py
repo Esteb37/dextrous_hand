@@ -238,7 +238,7 @@ class Thumb(Finger):
 
         TODO: Implement this method
         """
-        assert len(joint_angles) == 3
+        assert len(joint_angles) == 4
 
         motors_angles=[]
         pin_joints = [joint_angles[0],joint_angles[1]]
@@ -246,6 +246,8 @@ class Thumb(Finger):
             motors_angles.append(self.joints[i].joint2length(joint_angle))
 
         motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
+
+        motors_angles.append(self.joints[3].joint2length(joint_angles[3])[0]/SPOOL_RADIUS)
 
         return motors_angles
 
@@ -257,6 +259,7 @@ class Thumb(Finger):
         joint_angles[0] = max(self.joints[0].geometry["range"][0], min(joint_angles[0], self.joints[0].geometry["range"][1]))
         joint_angles[1] = max(self.joints[1].geometry["range"][0], min(joint_angles[1], self.joints[1].geometry["range"][1]))
         joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
+        joint_angles[3] = max(self.joints[3].geometry["range"][0], min(joint_angles[3], self.joints[3].geometry["range"][1]))
         return joint_angles
 
 # Singleton instances
