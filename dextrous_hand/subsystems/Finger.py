@@ -63,6 +63,9 @@ class Finger(Subsystem):
         """
         Enforces the "triangle" restriction on the joint angles.
         """
+
+        assert len(joint_angles) == 3
+
         joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
 
         joint_angles[2] = max(self.joints[2].geometry["range"][0], min(joint_angles[2], self.joints[2].geometry["range"][1]))
@@ -233,10 +236,6 @@ class Thumb(Finger):
     def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angles of the joints to the angles of the motors.
-        Note that the number of angles that can be set is 3 and not 4 because
-        DIP is not settable.
-
-        TODO: Implement this method
         """
         assert len(joint_angles) == 4
 
@@ -255,6 +254,7 @@ class Thumb(Finger):
         """
         Enforces the "triangle" restriction on the joint angles.
         """
+        assert len(joint_angles) == 4
         # joint_angles[0],joint_angles[1] = self.find_closest_in_space(self.joints[0].geometry["range"], self.joints[1].geometry["range"], joint_angles[0],joint_angles[1])
         joint_angles[0] = max(self.joints[0].geometry["range"][0], min(joint_angles[0], self.joints[0].geometry["range"][1]))
         joint_angles[1] = max(self.joints[1].geometry["range"][0], min(joint_angles[1], self.joints[1].geometry["range"][1]))

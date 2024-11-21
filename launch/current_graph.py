@@ -10,7 +10,7 @@ def generate_launch_description():
     arguments = current_topics
 
     return LaunchDescription([
-        DexNode("hand_node", output="screen"),
+        DexNode("hand_node"),
         DexNode("keyboard_node"),
         Node(
             package="rqt_plot",

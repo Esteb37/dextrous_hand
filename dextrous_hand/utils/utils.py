@@ -12,12 +12,15 @@ def matrix_to_message(matrix):
     """
     msg = Float32MultiArray()
 
+    square_matrix = []
+
     # Make sure all arrays have the same length
     max_len = max([len(row) for row in matrix])
     for row in matrix:
-        row += [0] * (max_len - len(row))
+        new_row = row + [0.0] * (max_len - len(row))
+        square_matrix.append(new_row)
 
-    data = list(np.array(matrix, dtype = float).flatten())
+    data = list(np.array(square_matrix, dtype = float).flatten())
     msg.data = data
     return msg
 
