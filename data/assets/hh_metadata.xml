@@ -85,7 +85,7 @@
         the control ranges are set to match the values in hand_defs.yaml (due to how we simulate rolling contact joints, their ranges are reduced to half)
         -->
         <position name="root2thumb_base" joint="root2thumb_base" ctrlrange="-0.0 2.356" kp="10"/>
-        <position name="thumb_base2pp" joint="thumb_base2pp" ctrlrange="-0.785 0.785" kp="10"/>
+        <position name="thumb_base2pp" joint="thumb_base2pp" ctrlrange="0 1.48" kp="10"/>
         <position name="thumb_pp2mp" joint="thumb_pp2mp" ctrlrange="0 0.96" kp="10"/>
         <position name="thumb_mp2dp" joint="thumb_mp2dp" ctrlrange="0 0.96" kp="10"/>
 
