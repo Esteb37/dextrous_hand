@@ -262,7 +262,7 @@ class Finger(Subsystem):
         motor_angle = self.static_slack_into_account(motor_angle, idx)
 
         # update the slack in the system
-        motor_angle = self.update_slack(motor_angle, s_pip, idx)
+        self.update_slack(motor_angle, s_pip, idx)
         self.update_static_slack(motor_angle, idx)
 
         return motor_angle
