@@ -6,7 +6,7 @@ from dextrous_hand.utils.utils import parent_dir, DexNode
 
 def generate_launch_description():
 
-    p4_urdf = os.path.join(
+    urdf = os.path.join(
                     parent_dir(),
                     "data",
                     "assets",
@@ -15,14 +15,13 @@ def generate_launch_description():
                 )
 
 
-    with open(p4_urdf, 'r') as infp:
-        p4_robot_desc = infp.read()
+    with open(urdf, 'r') as infp:
+        robot_desc = infp.read()
 
     return LaunchDescription([
         DexNode("mujoco_node"),
 
         DexNode("retargeter_node",
-                output="screen",
                 parameters=[
                 {
                     "retarget/mjcf_filepath": os.path.join(
@@ -37,6 +36,7 @@ def generate_launch_description():
         ),
 
         DexNode("visualize_joints_node",
+                output="screen",
             parameters=[
                 {"scheme_path": os.path.join(
                     parent_dir(),
@@ -48,13 +48,12 @@ def generate_launch_description():
         ),
 
         Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            namespace='hand',
-            name='robot_state_publisher',
-            parameters=[{'robot_description': p4_robot_desc,}],
-            remappings=[('/joint_states', '/hand/joint_states')]
-        ),
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{'robot_description': robot_desc,}],
+        arguments=[urdf]),
 
 
         Node(package = "rviz2",

@@ -5,6 +5,18 @@ from launch_ros.actions import Node
 from dextrous_hand.utils.utils import parent_dir, DexNode
 
 def generate_launch_description():
+    urdf = os.path.join(
+                    parent_dir(),
+                    "data",
+                    "assets",
+                    "urdf",
+                    "hh_hand.urdf",
+                )
+
+
+    with open(urdf, 'r') as infp:
+        robot_desc = infp.read()
+
     return LaunchDescription([
         DexNode("hand_node"),
 
@@ -41,6 +53,15 @@ def generate_launch_description():
             ]
         ),
 
+        Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        output='screen',
+        parameters=[{'robot_description': robot_desc,}],
+        arguments=[urdf]),
+
+
         Node(package = "rviz2",
              executable="rviz2",
              name="rviz2",
@@ -48,7 +69,7 @@ def generate_launch_description():
                         os.path.join(parent_dir(),
                                      "data",
                                      "rviz",
-                                     "mano_points.rviz")
+                                     "urdf.rviz")
                         ],
             ),
     ])
