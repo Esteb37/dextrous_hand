@@ -6,102 +6,102 @@ MAX_CURRENT: 500
 
 THUMB_ABD:
   port: 3
-  zero: 3.039557933807373
+  zero: 3.252833366394043
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 0
-  zero: 3.855835199356079
+  zero: 4.207202434539795
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 1
-  zero: 3.1438941955566406
+  zero: 4.507936000823975
   direction: -1
   range: *full_range
 
 THUMB_DIP:
   port: 2
-  zero: 3.6088039875030518
+  zero: 3.6993308067321777
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 3.2911922931671143
+  zero: 3.295795440673828
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 2.680518865585327
+  zero: 2.672847032546997
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.1807186603546143
+  zero: 3.0625734329223633
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 3.2973296642303467
+  zero: 3.315742015838623
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 2.6406257152557373
+  zero: 2.6314194202423096
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 2.7848551273345947
+  zero: 2.8769164085388184
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 4.286988735198975
+  zero: 4.285454750061035
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 2.9520998001098633
+  zero: 2.941359281539917
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 3.229818105697632
+  zero: 3.228283643722534
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 14
-  zero: 3.169978141784668
+  zero: 3.481452465057373
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 15
-  zero: 3.694727659225464
+  zero: 3.9402246475219727
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 13
-  zero: 3.6640405654907227
+  zero: 3.6533002853393555
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 6.379849910736084
+  zero: 6.281651020050049
   direction: 1
   range: *full_range

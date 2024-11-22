@@ -84,7 +84,7 @@ class Finger(Subsystem):
         elif motor_angle < 0 and self.static_slack[idx][1]<0:
             motor_angle+=self.static_slack[idx][1]/SPOOL_RADIUS
         return motor_angle
-    
+
     def slack_into_account(self, motor_angle, idx):
         if motor_angle > 0 and self.motor_slack[idx][0]<0:
             motor_angle-=self.motor_slack[idx][0]/SPOOL_RADIUS
@@ -97,7 +97,7 @@ class Finger(Subsystem):
             self.motor_slack[idx] = [0,slack]
         else:
             self.motor_slack[idx] = [slack,0]
-        
+
     def update_static_slack(self, motor_angle, idx):
         static_slack = self.static_slack[idx][0] + self.static_slack[idx][1]
         if motor_angle > 0:
@@ -213,7 +213,7 @@ class Finger(Subsystem):
             self.motor_slack[0] = [0,s_m1]
         else:
             self.motor_slack[0] = [s_m1,0]
-        
+
         if motor_angle_2 > 0:
             self.motor_slack[1] = [0,s_m2]
         else:
@@ -229,7 +229,7 @@ class Finger(Subsystem):
             self.static_slack[0] = [0,static_slack]
         else:
             self.static_slack[0] = [static_slack,0]
-        
+
         static_slack = self.static_slack[1][0] + self.static_slack[1][1]
         if motor_angle_2 > 0:
             self.static_slack[1] = [0,static_slack]
@@ -262,7 +262,7 @@ class Finger(Subsystem):
         motor_angle = self.static_slack_into_account(motor_angle, idx)
 
         # update the slack in the system
-        motor_angle = self.update_slack(motor_angle, s_pip, idx)
+        self.update_slack(motor_angle, s_pip, idx)
         self.update_static_slack(motor_angle, idx)
 
         return motor_angle
@@ -342,8 +342,8 @@ class Thumb(Finger):
         for i, joint_angle in enumerate(pin_joints):
             motors_angles.append(self.joints[i].joint2length(joint_angle))
 
-        motors_angles.append(self.single_motor(self.single_motor(self.joints[2].joint2length(joint_angles[2]))),2)
-        motors_angles.append(self.single_motor(self.single_motor(self.joints[3].joint2length(joint_angles[3]))),3)
+        motors_angles.append(self.single_motor(self.joints[2].joint2length(joint_angles[2]), 2))
+        motors_angles.append(self.single_motor(self.joints[3].joint2length(joint_angles[3]), 3))
 
         return motors_angles
 

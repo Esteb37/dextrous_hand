@@ -289,6 +289,17 @@ class HandConfig:
         arr[3:] *= 0.5
         return arr
 
+    def from_mujoco_angles(self, value):
+        """
+        Sets the hand configuration from a list of joint angles for Mujoco
+        """
+        self.WRIST = [value[0]]
+        self.THUMB = value[1:5].tolist()
+        self.INDEX = value[5:8].tolist()
+        self.MIDDLE = value[8:11].tolist()
+        self.RING = value[11:14].tolist()
+        self.PINKY = value[14:].tolist()
+
     @property
     def FINGERS(self):
         """
