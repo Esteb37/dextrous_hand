@@ -18,7 +18,7 @@
             <!-- <site name="p01" pos="0.026435 0.018613 0.026355 " size="0.001" rgba="1 0.1 0.1 1"/> -->
             <!-- <site name="p02" pos="0.032864 0.032727 0.013103 " size="0.001" rgba="0.1 1 0.1 1"/> -->
             <body name="thumb_base" pos="0.0358 -0.008 0.0" euler="0  0 -0.1718">
-                <joint name="root2thumb_base" axis="0.000000 -1.000000 0.000000" pos="0.00000 0.000000 0.000000" range="-0.349 2.094" />
+                <joint name="root2thumb_base" axis="0.000000 -1.000000 0.000000" pos="0.00000 0.000000 0.000000" range="0.0 2.356" />
                 <geom mesh="thumb_base"/>
                 <body name="thumb_pp" pos="0.0375 0.0148 -0.0015" quat="0.71 -0.48 0.52 -0.03">
                     <joint name="thumb_base2pp" axis="-0.707 -0.707 0" pos="-0.013 -0 -0.0325" range="-0.785 0.785" />
@@ -35,7 +35,7 @@
                                 <body name="thumb_dp" pos="0.012 0 0">
                                     <joint name="thumb_mp2dp" axis="0 -1 0" pos="0.000000 0.000000 0.000000" range="0 0.68" />
                                     <geom mesh="thumb_dp" pos="-0.006 0.0065 0"/>
-                                    <body name="thumb_fingertip" pos="0.000386 -0.000394 -0.012633" euler="4.7 -0.25 2.92">
+                                    <body name="thumb_fingertip" pos="0.02 0.0 0.0" euler="0.0 0.0 0.0">
                                     </body>
                                 </body>
                             </body>
@@ -61,8 +61,6 @@
                         <body name="index_pp" pos="0.018 0 0">
                             <joint name="root2index_pp" axis="0 -1 0" range="-0.157 0.829"/>
                             <geom mesh="index_pp" pos = "-0.009 0 0"/>
-                            <body name="index_pp_sens" pos="0 -0.004 0.018">
-                            </body>
                             <body name="index_mp_virt" pos="0.026          0.         -0.001">
                                 <joint name="index_pp2mp_virt" axis="0 -1 0" pos = "0 0 0" range="-0.131 0.960"/>
                                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
@@ -75,7 +73,7 @@
                                         <body name="index_dp" pos="0.009 0. 0.0">
                                             <joint name="index_mp2dp" axis="0 -1 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
                                             <geom mesh="index_dp" pos = "-0.0045 0 0"/>
-                                            <body name="index_fingertip" pos="0 0 0.01">
+                                            <body name="index_fingertip" pos="0.02 0 0.0">
 
                                             </body>
                                         </body>
@@ -104,8 +102,6 @@
                         <body name="middle_pp" pos="0.018 0 0">
                             <joint name="root2middle_pp" axis="0 -1 0" range="-0.157 0.829"/>
                             <geom mesh="middle_pp" pos = "-0.009 0 0"/>
-                            <body name="middle_pp_sens" pos="0 -0.004 0.022">
-                            </body>
                             <body name="middle_mp_virt" pos="0.026          0.         -0.001">
                                 <joint name="middle_pp2mp_virt" axis="0 -1 0" pos = "0 0 0" range="-0.131 0.960"/>
                                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
@@ -118,7 +114,7 @@
                                         <body name="middle_dp" pos="0.009 0. 0.0">
                                             <joint name="middle_mp2dp" axis="0 -1 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
                                             <geom mesh="middle_dp" pos = "-0.0045 0 0"/>
-                                            <body name="middle_fingertip" pos="0 0 0.01">
+                                            <body name="middle_fingertip" pos="0.02 0 0.00">
                                             </body>
                                         </body>
                                     </body>
@@ -145,8 +141,6 @@
                         <body name="ring_pp" pos="0.018 0 0">
                             <joint name="root2ring_pp" axis="0 -1 0" range="-0.157 0.829"/>
                             <geom mesh="ring_pp" pos = "-0.009 0 0"/>
-                            <body name="ring_pp_sens" pos="0 -0.004 0.018">
-                            </body>
                             <body name="ring_mp_virt" pos="0.026          0.         -0.001">
                                 <joint name="ring_pp2mp_virt" axis="0 -1 0" pos = "0 0 0" range="-0.131 0.960"/>
                                 <inertial pos="0 0 0" mass="0.001" diaginertia="4E-10 4E-10 3E-10" />
@@ -159,7 +153,7 @@
                                         <body name="ring_dp" pos="0.009 0. 0.0">
                                             <joint name="ring_mp2dp" axis="0 -1 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
                                             <geom mesh="ring_dp" pos = "-0.0045 0 0"/>
-                                            <body name="ring_fingertip" pos="0 0 0.01">
+                                            <body name="ring_fingertip" pos="0.02 0 0.00">
                                             </body>
                                         </body>
                                     </body>
@@ -200,7 +194,7 @@
                                         <body name="pinky_dp" pos="0.009 0. 0.0">
                                             <joint name="pinky_mp2dp" axis="0 -1 0" pos = "0.         0.00350000102 0." range="-0.093 0.682"/>
                                             <geom mesh="pinky_dp" pos = "-0.0045 0 0"/>
-                                            <body name="pinky_fingertip" pos="0 0 0.01" >
+                                            <body name="pinky_fingertip" pos="0.02 0 0.00" >
                                             </body>
                                         </body>
                                     </body>

@@ -140,8 +140,8 @@ SUBSYSTEM_JOINTS = {
                        PIP(JOINTS.INDEX_PIP),
                        DIP(JOINTS.INDEX_DIP)],
 
-    SUBSYSTEMS.THUMB: [THUMB_ABD(JOINTS.THUMB_ABD),
-                       THUMB_MCP(JOINTS.THUMB_MCP),
+    SUBSYSTEMS.THUMB: [THUMB_MCP(JOINTS.THUMB_MCP),
+                       THUMB_ABD(JOINTS.THUMB_ABD),
                        THUMB_PIP(JOINTS.THUMB_PIP),
                        THUMB_DIP(JOINTS.THUMB_DIP)],
 
