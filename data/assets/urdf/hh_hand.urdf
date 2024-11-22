@@ -9,12 +9,12 @@
    </link>
    <link name="root">
       <inertial>
-         <origin xyz="0.02165263295083314 -0.00010637510939850689 0.010659821817215481" rpy="1.75671473222451 -0.12056098611531296 1.482979697246325"/>
-         <mass value="1.7061285524984284"/>
-         <inertia ixx="0.011825341533241714" iyy="0.011669691390776723" izz="0.0010564910029273783" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.04161047529095292 -6.509963065670219e-05 0.0006405320577736168" rpy="1.601756256288497 0.0003577336710351986 1.5696885660684892"/>
+         <mass value="1.2601437096752013"/>
+         <inertia ixx="0.0035950464418034005" iyy="0.003407421321228048" izz="0.0008540608341563234" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="tower">
-         <origin xyz="0.017152547762933838 -0.00011354821051387637 0.011177572272494343" rpy="1.7627442801527722 -0.1804584735548278 1.4659764873931884"/>
+         <origin xyz="0.036751331386063464 -7.220944867772884e-05 0.0006808335860844365" rpy="1.605818097654102 -0.00012196279526488496 1.5691792722553257"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_tower.stl"/>
          </geometry>
@@ -137,7 +137,7 @@
       <child link="root2thumb_base_jointbody"/>
       <origin xyz="0.0358 -0.008 0.0" rpy="0.0 0.0 -0.1718"/>
       <axis xyz="0.0 -1.0 0.0"/>
-      <limit lower="-0.349" upper="2.094" effort="100" velocity="100"/>
+      <limit lower="0.0" upper="2.356" effort="100" velocity="100"/>
    </joint>
    <joint type="fixed" name="root2thumb_base_offset">
       <parent link="root2thumb_base_jointbody"/>
@@ -264,12 +264,12 @@
    </joint>
    <link name="thumb_dp">
       <inertial>
-         <origin xyz="0.00697892587335348 0.006491398966384864 0.0008101392014298556" rpy="-2.9462168139718785 -1.5026988400389365 -0.19486058320826682"/>
-         <mass value="0.003041625293114536"/>
-         <inertia ixx="2.4774206111673134e-07" iyy="2.2821956810586812e-07" izz="4.955130175820544e-08" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.009315464353412545 0.006378450323251717 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
+         <mass value="0.00548455016800106"/>
+         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="thumb_dp">
-         <origin xyz="0.00697892587335348 0.006491398966384864 0.0008101392014298556" rpy="-2.9462168139718785 -1.5026988400389365 -0.19486058320826682"/>
+         <origin xyz="0.009315464353412545 0.006378450323251717 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_thumb_dp.stl"/>
          </geometry>
@@ -297,7 +297,7 @@
    </joint>
    <link name="thumb_fingertip">
       <inertial>
-         <origin xyz="0.000386 -0.000394 -0.012633" rpy="1.583092548356868 0.21851142430155246 -2.8889085939445414"/>
+         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -312,7 +312,7 @@
    <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed">
       <parent link="thumb_dp"/>
       <child link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
-      <origin xyz="0.000386 -0.000394 -0.012633" rpy="1.583092548356868 0.21851142430155246 -2.8889085939445414"/>
+      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed_offset">
       <parent link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
@@ -437,30 +437,6 @@
       <child link="index_pp"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
    </joint>
-   <link name="index_pp_sens">
-      <inertial>
-         <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
-         <mass value="0.0"/>
-         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <link name="index_pp2index_pp_sens_fixed_jointbody">
-      <inertial>
-         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-         <mass value="0.001"/>
-         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <joint type="fixed" name="index_pp2index_pp_sens_fixed">
-      <parent link="index_pp"/>
-      <child link="index_pp2index_pp_sens_fixed_jointbody"/>
-      <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
-   </joint>
-   <joint type="fixed" name="index_pp2index_pp_sens_fixed_offset">
-      <parent link="index_pp2index_pp_sens_fixed_jointbody"/>
-      <child link="index_pp_sens"/>
-      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
-   </joint>
    <link name="index_mp_virt">
       <inertial>
          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -548,12 +524,12 @@
    </joint>
    <link name="index_dp">
       <inertial>
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.504367416654762 -0.004553311345358857"/>
-         <mass value="0.0014084542990363813"/>
-         <inertia ixx="7.1654985365166e-08" iyy="6.26907668592227e-08" izz="1.693785122209944e-08" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
+         <mass value="0.00548455016800106"/>
+         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="index_dp">
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.5043674166547616 -0.004553311345358857"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_index_dp.stl"/>
          </geometry>
@@ -581,7 +557,7 @@
    </joint>
    <link name="index_fingertip">
       <inertial>
-         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -596,7 +572,7 @@
    <joint type="fixed" name="index_dp2index_fingertip_fixed">
       <parent link="index_dp"/>
       <child link="index_dp2index_fingertip_fixed_jointbody"/>
-      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="index_dp2index_fingertip_fixed_offset">
       <parent link="index_dp2index_fingertip_fixed_jointbody"/>
@@ -721,30 +697,6 @@
       <child link="middle_pp"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
    </joint>
-   <link name="middle_pp_sens">
-      <inertial>
-         <origin xyz="0.0 -0.004 0.022" rpy="0.0 0.0 0.0"/>
-         <mass value="0.0"/>
-         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <link name="middle_pp2middle_pp_sens_fixed_jointbody">
-      <inertial>
-         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-         <mass value="0.001"/>
-         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <joint type="fixed" name="middle_pp2middle_pp_sens_fixed">
-      <parent link="middle_pp"/>
-      <child link="middle_pp2middle_pp_sens_fixed_jointbody"/>
-      <origin xyz="0.0 -0.004 0.022" rpy="0.0 0.0 0.0"/>
-   </joint>
-   <joint type="fixed" name="middle_pp2middle_pp_sens_fixed_offset">
-      <parent link="middle_pp2middle_pp_sens_fixed_jointbody"/>
-      <child link="middle_pp_sens"/>
-      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
-   </joint>
    <link name="middle_mp_virt">
       <inertial>
          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -832,12 +784,12 @@
    </joint>
    <link name="middle_dp">
       <inertial>
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.504367416654762 -0.004553311345358857"/>
-         <mass value="0.0014084542990363813"/>
-         <inertia ixx="7.1654985365166e-08" iyy="6.26907668592227e-08" izz="1.693785122209944e-08" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
+         <mass value="0.00548455016800106"/>
+         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="middle_dp">
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.5043674166547616 -0.004553311345358857"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_middle_dp.stl"/>
          </geometry>
@@ -865,7 +817,7 @@
    </joint>
    <link name="middle_fingertip">
       <inertial>
-         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -880,7 +832,7 @@
    <joint type="fixed" name="middle_dp2middle_fingertip_fixed">
       <parent link="middle_dp"/>
       <child link="middle_dp2middle_fingertip_fixed_jointbody"/>
-      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="middle_dp2middle_fingertip_fixed_offset">
       <parent link="middle_dp2middle_fingertip_fixed_jointbody"/>
@@ -1005,30 +957,6 @@
       <child link="ring_pp"/>
       <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
    </joint>
-   <link name="ring_pp_sens">
-      <inertial>
-         <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
-         <mass value="0.0"/>
-         <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <link name="ring_pp2ring_pp_sens_fixed_jointbody">
-      <inertial>
-         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-         <mass value="0.001"/>
-         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-   </link>
-   <joint type="fixed" name="ring_pp2ring_pp_sens_fixed">
-      <parent link="ring_pp"/>
-      <child link="ring_pp2ring_pp_sens_fixed_jointbody"/>
-      <origin xyz="0.0 -0.004 0.018" rpy="0.0 0.0 0.0"/>
-   </joint>
-   <joint type="fixed" name="ring_pp2ring_pp_sens_fixed_offset">
-      <parent link="ring_pp2ring_pp_sens_fixed_jointbody"/>
-      <child link="ring_pp_sens"/>
-      <origin xyz="-0.0 -0.0 -0.0" rpy="0.0 0.0 0.0"/>
-   </joint>
    <link name="ring_mp_virt">
       <inertial>
          <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
@@ -1116,12 +1044,12 @@
    </joint>
    <link name="ring_dp">
       <inertial>
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.504367416654762 -0.004553311345358857"/>
-         <mass value="0.0014084542990363813"/>
-         <inertia ixx="7.1654985365166e-08" iyy="6.26907668592227e-08" izz="1.693785122209944e-08" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
+         <mass value="0.00548455016800106"/>
+         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="ring_dp">
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.5043674166547616 -0.004553311345358857"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_ring_dp.stl"/>
          </geometry>
@@ -1149,7 +1077,7 @@
    </joint>
    <link name="ring_fingertip">
       <inertial>
-         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -1164,7 +1092,7 @@
    <joint type="fixed" name="ring_dp2ring_fingertip_fixed">
       <parent link="ring_dp"/>
       <child link="ring_dp2ring_fingertip_fixed_jointbody"/>
-      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="ring_dp2ring_fingertip_fixed_offset">
       <parent link="ring_dp2ring_fingertip_fixed_jointbody"/>
@@ -1400,12 +1328,12 @@
    </joint>
    <link name="pinky_dp">
       <inertial>
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.504367416654762 -0.004553311345358857"/>
-         <mass value="0.0014084542990363813"/>
-         <inertia ixx="7.1654985365166e-08" iyy="6.26907668592227e-08" izz="1.693785122209944e-08" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
+         <mass value="0.00548455016800106"/>
+         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="pinky_dp">
-         <origin xyz="0.004381160421251124 4.005492317108322e-06 7.681035053446665e-05" rpy="-3.1372774418927376 -1.5043674166547616 -0.004553311345358857"/>
+         <origin xyz="0.010815464353412546 -0.0001215496767482827 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_pinky_dp.stl"/>
          </geometry>
@@ -1433,7 +1361,7 @@
    </joint>
    <link name="pinky_fingertip">
       <inertial>
-         <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -1448,7 +1376,7 @@
    <joint type="fixed" name="pinky_dp2pinky_fingertip_fixed">
       <parent link="pinky_dp"/>
       <child link="pinky_dp2pinky_fingertip_fixed_jointbody"/>
-      <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="pinky_dp2pinky_fingertip_fixed_offset">
       <parent link="pinky_dp2pinky_fingertip_fixed_jointbody"/>

@@ -180,7 +180,6 @@
                         <body name="pinky_pp" pos="0.018 0 0">
                             <joint name="root2pinky_pp" axis="0 -1 0" range="-0.157 0.829"/>
                             <geom mesh="pinky_pp" pos = "-0.009 0 0"/>
-                            <body name="pinky_pp_sens" pos="0 -0.004 0.015">
                             </body>
                             <body name="pinky_mp_virt" pos="0.026          0.         -0.001">
                                 <joint name="pinky_pp2mp_virt" axis="0 -1 0" pos = "0 0 0" range="-0.131 0.960"/>
