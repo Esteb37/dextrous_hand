@@ -208,7 +208,7 @@ class Retargeter:
         self,
         joints,
         warm: bool = True,
-        opt_steps: int = 2,
+        opt_steps: int = 3,
         dynamic_keyvector_scaling: bool = False,
     ):
         """
