@@ -65,7 +65,6 @@ SUBSYSTEM_MOTORS = {
                          MOTORS.RING_FLBR,
                          MOTORS.RING_FMBM
                          ],
-
     SUBSYSTEMS.MIDDLE : [MOTORS.MIDDLE_FRBL,
                          MOTORS.MIDDLE_FLBR,
                          MOTORS.MIDDLE_FMBM
