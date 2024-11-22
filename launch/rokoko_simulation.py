@@ -29,4 +29,15 @@ def generate_launch_description():
                 {"retarget/hand_scheme": "hh"},
             ]
         ),
+
+        Node(package = "rviz2",
+             executable="rviz2",
+             name="rviz2",
+             arguments=["-d",
+                        os.path.join(parent_dir(),
+                                     "data",
+                                     "rviz",
+                                     "mano_points.rviz")
+                        ],
+            ),
     ])
