@@ -2,15 +2,15 @@
 
 from numpy import pi as PI
 from dextrous_hand.utils.ids import JOINTS
+from dextrous_hand.utils.ids import *
 import math
 
 # in mm
 SPOOL_RADIUS = 8.5
 SPOOL_RADIUS_WRIST = 4
 
-z_offset = 0.765
-
 # in mm
+z_offset = 0.765
 GEOMETRY_TYPES = {
     "P4_FINGER_ABD":{"centers_distance":18, "T1":[-4.042,8.041,0], "T2":[-3.982,-8.071,0], "T3":[4.042,8.041,0], "T4":[3.982,-8.071,0], "length_12_0":1.889, "length_34_0":1.889, "range":[-PI/6,PI/6]},
     "P4_FINGER_MCP":{"centers_distance":18, "T1":[-9,4.336,0], "T2":[-8.813,-1.827,0], "T3":[2.4,9.157,0], "T4":[2.563,-8.627,0], "length_12_0":11.838, "length_34_0":0.27, "range":[0,PI/2]},
@@ -21,6 +21,26 @@ GEOMETRY_TYPES = {
     "THUMB_PIP":{"centers_distance":18, "T1":[-8.917,4.495,z_offset], "T2":[-8.796,-1.905,0], "T3":[2.575,9.376,0], "T4":[2.575,-8.624,0], "length_12_0":1, "length_34_0":math.sqrt(11.601**2+z_offset**2), "range":[0,PI/2]},
     "THUMB_DIP":{"centers_distance":9, "T1":[-4.495,0.218,0], "T2":[-4.348,-1.16,0], "T3":[1.75,4.146,0], "T4":[1.75,-4.146,0], "length_12_0":7.623, "length_34_0":0.707, "range":[0,PI/2]},
     "WRIST":{"radius":16, "range":[-PI/2, PI/2]}
+}
+
+STATIC_SLACK = {
+    MOTORS.PINKY_FRBL: [0,0],
+    MOTORS.PINKY_FLBR: [0,0],
+    MOTORS.PINKY_FMBM: [0,0],
+    MOTORS.RING_FRBL: [0,0],
+    MOTORS.RING_FLBR: [0,0],
+    MOTORS.RING_FMBM: [0,0],
+    MOTORS.MIDDLE_FRBL: [0,0],
+    MOTORS.MIDDLE_FLBR: [0,0],
+    MOTORS.MIDDLE_FMBM: [0,0],
+    MOTORS.INDEX_FRBL: [0,0],
+    MOTORS.INDEX_FLBR: [0,0],
+    MOTORS.INDEX_FMBM: [0,0],
+    MOTORS.THUMB_ABD: [0,0],
+    MOTORS.THUMB_MCP: [0,0],
+    MOTORS.THUMB_PIP: [0,0],
+    MOTORS.THUMB_DIP: [0,0],
+    MOTORS.WRIST: [0,0]
 }
 
 JOINTS_GEOMETRY = {
