@@ -4,6 +4,9 @@ import dextrous_hand.utils.ids as ids
 from dextrous_hand.subsystems.Subsystem import Subsystem
 from dextrous_hand.joints.joints_geometry import SPOOL_RADIUS
 
+from dextrous_hand.utils.architecture import SUBSYSTEM_MOTORS
+from dextrous_hand.joints.joints_geometry import STATIC_SLACK
+
 class Finger(Subsystem):
     def __init__(self, id : ids.SUBSYSTEMS):
         """
@@ -11,6 +14,8 @@ class Finger(Subsystem):
             id [SUBSYSTEMS]: the finger's id
         """
         super().__init__(id)
+        self.motor_slack = [[0, 0]] * len(self.motors)
+        self.static_slack = [STATIC_SLACK[motor_id] for motor_id in SUBSYSTEM_MOTORS[self.id]]
 
 
     def find_closest_in_space(self, range_abd, range_flex, abd_angle, flex_angle):
@@ -73,6 +78,34 @@ class Finger(Subsystem):
         return joint_angles
 
 
+    def static_slack_into_account(self, motor_angle, idx):
+        if motor_angle > 0 and self.motor_slack[idx][0]<0:
+            motor_angle-=self.static_slack[idx][0]/SPOOL_RADIUS
+        elif motor_angle < 0 and self.static_slack[idx][1]<0:
+            motor_angle+=self.static_slack[idx][1]/SPOOL_RADIUS
+        return motor_angle
+    
+    def slack_into_account(self, motor_angle, idx):
+        if motor_angle > 0 and self.motor_slack[idx][0]<0:
+            motor_angle-=self.motor_slack[idx][0]/SPOOL_RADIUS
+        elif motor_angle < 0 and self.motor_slack[idx][1]<0:
+            motor_angle+=self.motor_slack[idx][1]/SPOOL_RADIUS
+        return motor_angle
+
+    def update_slack(self, motor_angle, slack, idx):
+        if motor_angle > 0:
+            self.motor_slack[idx] = [0,slack]
+        else:
+            self.motor_slack[idx] = [slack,0]
+        
+    def update_static_slack(self, motor_angle, idx):
+        static_slack = self.static_slack[idx][0] + self.static_slack[idx][1]
+        if motor_angle > 0:
+            self.static_slack[idx] = [0,static_slack]
+        else:
+            self.static_slack[idx] = [static_slack,0]
+
+
     def coupled_motors(self, virtual_tendon_abd, virtual_tendon_flex):
 
         abd_l1 = virtual_tendon_abd[0]
@@ -119,55 +152,120 @@ class Finger(Subsystem):
             dl_m1 = abd_l1 + flex_l1
             dl_m2 = flex_l1 - abd_l1
             s_m1 = s_abd + s_flex
-            s_m2 = s_abd - s_flex
+            s_m2 = s_abd + s_flex
         elif abd_l1 < abd_l2 and flex_l1 < flex_l2:
             # case 6
             dl_m1 = -abd_l2 - flex_l2
             dl_m2 = -flex_l2 + abd_l2
             s_m1 = s_abd + s_flex
-            s_m2 = -s_abd + s_flex #s_abd - s_flex
+            s_m2 = s_abd + s_flex
         elif abd_l1 < abd_l2 and flex_l1 > flex_l2:
             # case 7
             dl_m1 = flex_l1 - abd_l2
             dl_m2 = flex_l1 + abd_l2
-            s_m1 = s_abd - s_flex
+            s_m1 = s_abd + s_flex
             s_m2 = s_abd + s_flex
         elif abd_l1 > abd_l2 and flex_l1 < flex_l2:
             # case 8
             dl_m1 = - flex_l2 + abd_l1
             dl_m2 = - abd_l1 - flex_l2
-            s_m1 = - s_abd + s_flex #s_abd - s_flex
+            s_m1 = s_abd + s_flex
             s_m2 = s_abd + s_flex
 
         # compute motor angles
         motor_angle_1 = dl_m1/SPOOL_RADIUS
         motor_angle_2 = dl_m2/SPOOL_RADIUS
 
+
+        # take salck into account
+        motor_angle_1 = self.slack_into_account(motor_angle_1, 0)
+        motor_angle_2 = self.slack_into_account(motor_angle_2, 1)
+        """
+        if motor_angle_1 > 0 and self.motor_slack[0][0]<0:
+            motor_angle_1-=self.motor_slack[0][0]/SPOOL_RADIUS
+        elif motor_angle_1 < 0 and self.motor_slack[0][1]<0:
+            motor_angle_1+=self.motor_slack[0][1]/SPOOL_RADIUS
+        if motor_angle_2 > 0 and self.motor_slack[1][0]<0:
+            motor_angle_2-=self.motor_slack[1][0]/SPOOL_RADIUS
+        elif motor_angle_2 < 0 and self.motor_slack[1][1]<0:
+            motor_angle_2+=self.motor_slack[1][1]/SPOOL_RADIUS
+        """
+        # take static salck into account
+        motor_angle_1 = self.static_slack_into_account(motor_angle_1, 0)
+        motor_angle_2 = self.static_slack_into_account(motor_angle_2, 1)
+        """
+        if motor_angle_1 > 0 and self.motor_slack[0][0]<0:
+            motor_angle_1-=self.static_slack[0][0]/SPOOL_RADIUS
+        elif motor_angle_1 < 0 and self.static_slack[0][1]<0:
+            motor_angle_1+=self.static_slack[0][1]/SPOOL_RADIUS
+        if motor_angle_2 > 0 and self.motor_slack[1][0]<0:
+            motor_angle_2-=self.motor_slack[1][0]/SPOOL_RADIUS
+        elif motor_angle_2 < 0 and self.motor_slack[1][1]<0:
+            motor_angle_2+=self.motor_slack[1][1]/SPOOL_RADIUS
+        """
+
+        # update the slack in the system
+        self.update_slack(motor_angle_1, s_m1, 0)
+        self.update_slack(motor_angle_2, s_m2, 1)
+
+        """
+        if motor_angle_1 > 0:
+            self.motor_slack[0] = [0,s_m1]
+        else:
+            self.motor_slack[0] = [s_m1,0]
+        
+        if motor_angle_2 > 0:
+            self.motor_slack[1] = [0,s_m2]
+        else:
+            self.motor_slack[1] = [s_m2,0]
+        """
+
+        # update the static slack side
+        self.update_static_slack(motor_angle_1, 0)
+        self.update_static_slack(motor_angle_2, 1)
+        """
+        static_slack = self.static_slack[0][0] + self.static_slack[0][1]
+        if motor_angle_1 > 0:
+            self.static_slack[0] = [0,static_slack]
+        else:
+            self.static_slack[0] = [static_slack,0]
+        
+        static_slack = self.static_slack[1][0] + self.static_slack[1][1]
+        if motor_angle_2 > 0:
+            self.static_slack[1] = [0,static_slack]
+        else:
+            self.static_slack[1] = [static_slack,0]
+        """
         return motor_angle_1, motor_angle_2
 
-    def single_motor(self, virtual_tendon_abd):
+    def single_motor(self, virtual_tendon_pip, idx):
 
-        pip_l1 = virtual_tendon_abd[0]
-        pip_l2 = virtual_tendon_abd[1]
+        pip_l1 = virtual_tendon_pip[0]
+        pip_l2 = virtual_tendon_pip[1]
 
         # compute slack
         s_pip = pip_l1 + pip_l2
 
         # compute real tendon length
         if pip_l1 > pip_l2:
-            # case 1
             dl_m1 = pip_l1
         elif pip_l1 < pip_l2:
-            # case 2
             dl_m1 = -pip_l2
         elif pip_l1 == pip_l2:
-            # case 3
             dl_m1 = 0
 
         # compute motor angles
-        motor_angle_1 = dl_m1/SPOOL_RADIUS
+        motor_angle = dl_m1/SPOOL_RADIUS
 
-        return motor_angle_1
+        # take dynamic and static salck into account
+        motor_angle = self.slack_into_account(motor_angle, idx)
+        motor_angle = self.static_slack_into_account(motor_angle, idx)
+
+        # update the slack in the system
+        motor_angle = self.update_slack(motor_angle, s_pip, idx)
+        self.update_static_slack(motor_angle, idx)
+
+        return motor_angle
 
 
     def joints2motors(self, joint_angles) -> list[float]:
@@ -184,7 +282,7 @@ class Finger(Subsystem):
 
         motor_angles=[0.,0.,0.]
         motor_angles[0], motor_angles[1] = self.coupled_motors(virtual_tendons_diff[0], virtual_tendons_diff[1])
-        motor_angles[2] = self.single_motor(virtual_tendons_diff[2])
+        motor_angles[2] = self.single_motor(virtual_tendons_diff[2], 2)
 
         return motor_angles
 
@@ -244,9 +342,8 @@ class Thumb(Finger):
         for i, joint_angle in enumerate(pin_joints):
             motors_angles.append(self.joints[i].joint2length(joint_angle))
 
-        motors_angles.append(self.joints[2].joint2length(joint_angles[2])[0]/SPOOL_RADIUS)
-
-        motors_angles.append(self.joints[3].joint2length(joint_angles[3])[0]/SPOOL_RADIUS)
+        motors_angles.append(self.single_motor(self.single_motor(self.joints[2].joint2length(joint_angles[2]))),2)
+        motors_angles.append(self.single_motor(self.single_motor(self.joints[3].joint2length(joint_angles[3]))),3)
 
         return motors_angles
 
