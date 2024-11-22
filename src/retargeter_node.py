@@ -21,12 +21,12 @@ class RetargeterNode(Node):
         self.declare_parameter("retarget/hand_scheme", rclpy.Parameter.Type.STRING)
 
         mjcf_filepath = self.get_parameter("retarget/mjcf_filepath").value
-        hand_scheme = self.get_parameter("retarget/hand_scheme").value
+        self.hand_scheme = self.get_parameter("retarget/hand_scheme").value
 
         if mjcf_filepath is None:
             raise ValueError("No mjcf_filepath provided")
 
-        if hand_scheme is None:
+        if self.hand_scheme is None:
             raise ValueError("No hand_scheme provided")
 
         # subscribe to ingress topics
@@ -39,7 +39,7 @@ class RetargeterNode(Node):
         )
 
         self.retargeter = Retargeter(
-            device="cuda", mjcf_filepath=mjcf_filepath, hand_scheme=hand_scheme
+            device="cuda", mjcf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme
         )
 
         self.joints_pub = self.create_publisher(
@@ -97,14 +97,22 @@ class RetargeterNode(Node):
         # TODO: Do proper mapping
         wrist_joint = R.from_quat(wrist_quat).as_euler("xyz", degrees=True)[1]
 
-        hand_config = HandConfig(unrestricted=True,
-                                 WRIST = wrist_joint,
-                                 PINKY = joint_rads[12:15],
-                                 RING = joint_rads[9:12],
-                                 MIDDLE = joint_rads[6:9],
-                                 INDEX = joint_rads[3:6],
-                                 # TODO: Get the thumb DIP from retargeter
-                                 THUMB = joint_rads[0:3] + [0.0])
+        if self.hand_scheme == "hh":
+            hand_config = HandConfig(unrestricted=True,
+                                    WRIST = wrist_joint,
+                                    PINKY = joint_rads[13:16],
+                                    RING = joint_rads[10:13],
+                                    MIDDLE = joint_rads[7:10],
+                                    INDEX = joint_rads[4:7],
+                                    THUMB = joint_rads[0:4])
+        else:
+            hand_config = HandConfig(unrestricted=True,
+                                    WRIST = wrist_joint,
+                                    PINKY = joint_rads[12:15],
+                                    RING = joint_rads[9:12],
+                                    MIDDLE = joint_rads[6:9],
+                                    INDEX = joint_rads[3:6],
+                                    THUMB = joint_rads[0:3] + [0.0])
 
         self.hand_config_pub.publish(hand_config.as_msg())
 

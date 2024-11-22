@@ -105,7 +105,12 @@ class Retargeter:
             joint_parameter_names
         ), "Joint names mismatch, please double check hand_scheme"
 
-        self.gc_joints = torch.ones(self.n_tendons).to(self.device) * 16.0
+        if hand_scheme == "hh":
+            self.motor_count = 16
+        else:
+            self.motor_count = 15
+
+        self.gc_joints = torch.ones(self.n_tendons).to(self.device) * float(self.motor_count)
         self.gc_joints.requires_grad_()
 
         self.lr = lr
@@ -221,7 +226,7 @@ class Retargeter:
 
         start_time = time.time()
         if not warm:
-            self.gc_joints = torch.ones(self.n_joints).to(self.device) * 16.0
+            self.gc_joints = torch.ones(self.n_joints).to(self.device) * float(self.motor_count)
             self.gc_joints.requires_grad_()
 
         assert joints.shape == (
