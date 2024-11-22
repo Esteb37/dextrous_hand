@@ -119,13 +119,14 @@ class Retargeter:
 
         self.root = torch.zeros(1, 3).to(self.device)
 
-        self.loss_coeffs = torch.tensor([5.0, 5.0, 5.0, 5.0, 5.0]).to(self.device)
+        keyvector_count = 15
+
+        self.loss_coeffs = torch.tensor([5.0] * keyvector_count).to(self.device)
 
         if use_scalar_distance_palm:
-            self.use_scalar_distance = [False, True, True, True, True]
+            self.use_scalar_distance = [True] * 15
         else:
-            self.use_scalar_distance = [False, False, False, False, False]
-
+            self.use_scalar_distance = [False] * 15
         self.sanity_check()
         _chain_transforms = self.chain.forward_kinematics(
             torch.zeros(self.chain.n_joints, device=self.chain.device)
