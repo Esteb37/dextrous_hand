@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob(os.path.join("launch", '*.[py][yma]*'))),
+        (os.path.join('share', package_name, 'data/assets/urdf'), glob(os.path.join("data/assets/urdf", '*')))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
