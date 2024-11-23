@@ -264,12 +264,12 @@
    </joint>
    <link name="thumb_dp">
       <inertial>
-         <origin xyz="0.009315464353412545 0.006378450323251717 0.0012896754031385832" rpy="1.5764145551207425 -1.4522812855915879 1.5560216173398569"/>
-         <mass value="0.00548455016800106"/>
-         <inertia ixx="3.613497835659551e-07" iyy="3.5727297003439324e-07" izz="1.1563205693695991e-07" ixy="0" ixz="0" iyz="0"/>
+         <origin xyz="0.01561284110475684 0.006399393209142038 0.00129114363060014" rpy="-1.3841219530173001 -1.5655735717851773 -1.7640748331048437"/>
+         <mass value="0.007138375295193356"/>
+         <inertia ixx="8.849906238234302e-07" iyy="8.682038184958313e-07" izz="1.4921804697795188e-07" ixy="0" ixz="0" iyz="0"/>
       </inertial>
       <visual name="thumb_dp">
-         <origin xyz="0.009315464353412545 0.006378450323251717 0.0012896754031385832" rpy="1.5764145551207438 -1.4522812855915879 1.5560216173398556"/>
+         <origin xyz="0.01561284110475684 0.006399393209142038 0.00129114363060014" rpy="-1.3841219530173001 -1.5655735717851773 -1.7640748331048437"/>
          <geometry>
             <mesh filename="package://dextrous_hand/data/assets/urdf/converted_thumb_dp.stl"/>
          </geometry>
@@ -297,7 +297,7 @@
    </joint>
    <link name="thumb_fingertip">
       <inertial>
-         <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <origin xyz="0.03 0.0 0.0" rpy="0.0 0.0 0.0"/>
          <mass value="0.0"/>
          <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0" ixz="0" iyz="0"/>
       </inertial>
@@ -312,7 +312,7 @@
    <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed">
       <parent link="thumb_dp"/>
       <child link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
-      <origin xyz="0.02 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <origin xyz="0.03 0.0 0.0" rpy="0.0 0.0 0.0"/>
    </joint>
    <joint type="fixed" name="thumb_dp2thumb_fingertip_fixed_offset">
       <parent link="thumb_dp2thumb_fingertip_fixed_jointbody"/>
