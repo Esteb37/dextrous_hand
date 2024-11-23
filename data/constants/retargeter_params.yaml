@@ -26,7 +26,7 @@ zero_grad: True
 # Default: zeros
 # Effect: The center is calculated as the midpoint between the thumb base and the pinky base
 # This adds an offset to the center
-hand_center_offset: [0.0, 0.0, 0.0]
+hand_center_offset: [0.0, -0.0, 0.0]
 # In degrees
 hand_rotation_offset: [0.0, 0.0, 0.0]
 
@@ -59,15 +59,15 @@ keyvectors: [palm2thumb,
 # The  individual coefficient is multiplied by the keyvector error and added to the total loss
 # The higher the coefficient, the higher the impact of the keyvector
 loss_coeffs:
-  palm2thumb: 10.0
+  palm2thumb: 20.0
   palm2index: 5.0
   palm2middle: 5.0
   palm2ring: 5.0
   palm2pinky: 5.0
-  thumb2index: 5.0
-  thumb2middle: 5.0
-  thumb2ring: 5.0
-  thumb2pinky: 5.0
+  thumb2index: 10.0
+  thumb2middle: 10.0
+  thumb2ring: 10.0
+  thumb2pinky: 10.0
   index2middle: 5.0
   index2ring: 5.0
   index2pinky: 5.0
@@ -75,25 +75,25 @@ loss_coeffs:
   middle2pinky: 5.0
   ring2pinky: 5.0
 
-# Default: True
+# Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
 # I think they are either all true or all false, but in the original code palm2thumb was always false even if use_scalar_distance was true
 use_scalar_distance:
-  palm2thumb: True
-  palm2index: True
-  palm2middle: True
-  palm2ring: True
-  palm2pinky: True
-  thumb2index: True
-  thumb2middle: True
-  thumb2ring: True
-  thumb2pinky: True
-  index2middle: True
-  index2ring: True
-  index2pinky: True
-  middle2ring: True
-  middle2pinky: True
-  ring2pinky: True
+  palm2thumb: False
+  palm2index: False
+  palm2middle: False
+  palm2ring: False
+  palm2pinky: False
+  thumb2index: False
+  thumb2middle: False
+  thumb2ring: False
+  thumb2pinky: False
+  index2middle: False
+  index2ring: False
+  index2pinky: False
+  middle2ring: False
+  middle2pinky: False
+  ring2pinky: False
 
 # In degrees, do not change order
 # Effect: Self-explanatory

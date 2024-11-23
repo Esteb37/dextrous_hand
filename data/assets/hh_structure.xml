@@ -35,7 +35,7 @@
                                 <body name="thumb_dp" pos="0.012 0 0">
                                     <joint name="thumb_mp2dp" axis="0 -1 0" pos="0.000000 0.000000 0.000000" range="0 0.68" />
                                     <geom mesh="thumb_dp" pos="-0.006 0.0065 0"/>
-                                    <body name="thumb_fingertip" pos="0.02 0.0 0.0" euler="0.0 0.0 0.0">
+                                    <body name="thumb_fingertip" pos="0.03 0.0 0.0" euler="0.0 0.0 0.0">
                                     </body>
                                 </body>
                             </body>
