@@ -18,10 +18,6 @@ learning_rate: 2.5
 # The higher the number, the more accurate the hand model will be but also the more computation
 opt_steps: 3
 
-# Default: True
-# Effect: If true, the optimizer will reset the gradients after each optimization step
-zero_grad: True
-
 # X Y Z
 # Default: zeros
 # Effect: The center is calculated as the midpoint between the thumb base and the pinky base

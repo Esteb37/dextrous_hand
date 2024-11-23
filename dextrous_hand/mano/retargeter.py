@@ -303,8 +303,7 @@ class Retargeter:
             print(f"step: {step} Loss: {loss}")
             self.scaling_factors_set = True
 
-            if RETARGETER_PARAMS["zero_grad"]:
-                self.opt.zero_grad()
+            self.opt.zero_grad()
 
             loss.backward() # type: ignore
             self.opt.step()
