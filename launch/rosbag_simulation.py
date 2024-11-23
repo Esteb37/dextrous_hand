@@ -22,6 +22,7 @@ def generate_launch_description():
         DexNode("mujoco_node"),
 
         DexNode("retargeter_node",
+                output="screen",
                 parameters=[
                 {
                     "retarget/mjcf_filepath": os.path.join(

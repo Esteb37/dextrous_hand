@@ -6,6 +6,7 @@ import numpy as np
 import pytorch_kinematics as pk
 
 from dextrous_hand.mano import retarget_utils
+from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
 ######################################################
 #TODO: Implement the Retargeter class for your hand model
@@ -20,10 +21,7 @@ class Retargeter:
         urdf_filepath: str | None = None,
         mjcf_filepath: str | None = None,
         sdf_filepath: str | None = None,
-        hand_scheme: str = "hh",
-        device: str = "cuda",
-        lr: float = 2.5,
-        use_scalar_distance_palm: bool = False,
+        hand_scheme: str = "hh"
     ) -> None:
         assert (
             int(urdf_filepath is not None)
@@ -52,7 +50,7 @@ class Retargeter:
 
         self.target_angles = None
 
-        self.device = device
+        self.device = RETARGETER_PARAMS["device"]
 
         self.gc_limits_lower = GC_LIMITS_LOWER
         self.gc_limits_upper = GC_LIMITS_UPPER
@@ -87,7 +85,7 @@ class Retargeter:
         self.n_tendons = len(
             GC_TENDONS
         )  # each tendon can be understand as the tendon drive by a motor individually
-        self.joint_map = torch.zeros(self.n_joints, self.n_tendons).to(device)
+        self.joint_map = torch.zeros(self.n_joints, self.n_tendons).to(self.device)
         self.finger_to_tip = FINGER_TO_TIP
         self.tendon_names = []
         joint_names_check = []
@@ -113,20 +111,25 @@ class Retargeter:
         self.gc_joints = torch.ones(self.n_tendons).to(self.device) * float(self.motor_count)
         self.gc_joints.requires_grad_()
 
-        self.lr = lr
-        # self.opt = torch.optim.Adam([self.gc_joints], lr=self.lr)
-        self.opt = torch.optim.RMSprop([self.gc_joints], lr=self.lr)
+        self.lr = RETARGETER_PARAMS["learning_rate"]
+
+        optimizer =  RETARGETER_PARAMS["optimizer"]
+        if optimizer == "Adam":
+            self.opt = torch.optim.Adam([self.gc_joints], lr=self.lr)
+        elif optimizer == "RMSprop":
+            self.opt = torch.optim.RMSprop([self.gc_joints], lr=self.lr)
+        else:
+            raise ValueError("Optimizer " + optimizer + " not supported. Rewrite code to support it")
 
         self.root = torch.zeros(1, 3).to(self.device)
 
-        keyvector_count = 15
+        coeffs = list(RETARGETER_PARAMS["loss_coeffs"].values())
 
-        self.loss_coeffs = torch.tensor([5.0] * keyvector_count).to(self.device)
 
-        if use_scalar_distance_palm:
-            self.use_scalar_distance = [True] * 15
-        else:
-            self.use_scalar_distance = [False] * 15
+        self.loss_coeffs = torch.tensor(coeffs).to(self.device)
+
+        self.use_scalar_distance = list(RETARGETER_PARAMS["use_scalar_distance"].values())
+
         self.sanity_check()
         _chain_transforms = self.chain.forward_kinematics(
             torch.zeros(self.chain.n_joints, device=self.chain.device)
@@ -208,9 +211,7 @@ class Retargeter:
     def retarget_finger_mano_joints(
         self,
         joints,
-        warm: bool = True,
-        opt_steps: int = 3,
-        dynamic_keyvector_scaling: bool = False,
+        warm: bool = True
     ):
         """
         Process the MANO joints and update the finger joint angles
@@ -222,6 +223,8 @@ class Retargeter:
         13-16: ring
         17-20: pinky
         """
+
+        opt_steps = RETARGETER_PARAMS["opt_steps"]
 
         print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
 
@@ -299,7 +302,10 @@ class Retargeter:
 
             print(f"step: {step} Loss: {loss}")
             self.scaling_factors_set = True
-            self.opt.zero_grad()
+
+            if RETARGETER_PARAMS["zero_grad"]:
+                self.opt.zero_grad()
+
             loss.backward() # type: ignore
             self.opt.step()
             with torch.no_grad():
