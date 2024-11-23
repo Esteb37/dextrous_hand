@@ -3,6 +3,7 @@ from typing import Dict
 import torch
 import numpy as np
 
+from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
 def get_mano_joints_dict(
     joints: torch.Tensor, include_wrist=False, batch_processing=False
@@ -149,6 +150,17 @@ def get_hand_center_and_rotation(
     rot_matrix = np.concatenate(
         (x_axis.reshape(1, 3), y_axis.reshape(1, 3), z_axis.reshape(1, 3)), axis=0
     ).T
+
+    pos_offset = RETARGETER_PARAMS["hand_center_offset"]
+
+    hand_center += pos_offset
+
+    rot_offset_xyz = np.array(RETARGETER_PARAMS["hand_rotation_offset"]) * np.pi / 180
+
+    rot_matrix = rot_matrix @ rotation_matrix_x(rot_offset_xyz[0])
+    rot_matrix = rot_matrix @ rotation_matrix_y(rot_offset_xyz[1])
+    rot_matrix = rot_matrix @ rotation_matrix_z(rot_offset_xyz[2])
+
     return hand_center, rot_matrix
 
 

@@ -1,6 +1,10 @@
 import numpy as np
 from typing import Dict
 
+from dextrous_hand.utils.constants import RETARGETER_PARAMS
+
+coupled_scale = RETARGETER_PARAMS["coupled_scale"]
+
 # the information of the tendons in the hand. Each tendon represents a grouped actuation.
 GC_TENDONS = {
     "root2thumb_base": {},
@@ -16,32 +20,32 @@ GC_TENDONS = {
     "root2index_pp_virt": {"root2index_pp": 1},
     "index_pp2mp_virt": {
         "index_pp2mp": 1,
-        "index_mp2dp_virt": 0.71,
-        "index_mp2dp": 0.71,
+        "index_mp2dp_virt": coupled_scale,
+        "index_mp2dp": coupled_scale,
     },
 
     "middle_abd_virt": {"middle_abd": 1},
     "root2middle_pp_virt": {"root2middle_pp": 1},
     "middle_pp2mp_virt": {
         "middle_pp2mp": 1,
-        "middle_mp2dp_virt": 0.71,
-        "middle_mp2dp": 0.71,
+        "middle_mp2dp_virt": coupled_scale,
+        "middle_mp2dp": coupled_scale,
     },
 
     "ring_abd_virt": {"ring_abd": 1},
     "root2ring_pp_virt": {"root2ring_pp": 1},
     "ring_pp2mp_virt": {
         "ring_pp2mp": 1,
-        "ring_mp2dp_virt": 0.71,
-        "ring_mp2dp": 0.71
+        "ring_mp2dp_virt": coupled_scale,
+        "ring_mp2dp": coupled_scale
     },
 
     "pinky_abd_virt": {"pinky_abd": 1},
     "root2pinky_pp_virt": {"root2pinky_pp": 1},
     "pinky_pp2mp_virt": {
         "pinky_pp2mp": 1,
-        "pinky_mp2dp_virt": 0.71,
-        "pinky_mp2dp": 0.71,
+        "pinky_mp2dp_virt": coupled_scale,
+        "pinky_mp2dp": coupled_scale,
     },
 }
 
@@ -66,42 +70,9 @@ FINGER_TO_BASE = {
 }
 
 GC_LIMITS_LOWER = np.array(
-    [
-        0.0,  # root2thumb_base
-        0.0,  # thumb_base2pp
-        0.0,  # thumb_pp2mp_virt
-        0.0,  # thumb_mp2dp_virt
-        -25.0,  # index_abd_virt
-        0.0,  # root2index_pp_virt
-        0.0,  # index_pp2mp_virt
-        -25.0,  # middle_abd_virt
-        0.0,  # root2middle_pp_virt
-        0.0,  # middle_pp2mp_virt
-        -25.0,  # ring_abd_virt
-        0.0,  # root2ring_pp_virt
-        0.0,  # ring_pp2mp_virt
-        -25.0,  # pinky_abd_virt
-        0.0,  # root2pinky_pp_virt
-        0.0,  # pinky_pp2mp_virt
-    ]
+    [rng[0] for rng in RETARGETER_PARAMS["joint_ranges"].values()]
 )
+
 GC_LIMITS_UPPER = np.array(
-    [
-        130.0,  # root2thumb_base
-        85.0,  # thumb_base2pp
-        180.0,  # thumb_pp2mp_virt
-        180.0,  # thumb_mp2dp_virt
-        25.0,  # index_abd_virt
-        180.0,  # root2index_pp_virt
-        180.0,  # index_pp2mp_virt
-        25.0,  # middle_abd_virt
-        180.0,  # root2middle_pp_virt
-        180.0,  # middle_pp2mp_virt
-        25.0,  # ring_abd_virt
-        180.0,  # root2ring_pp_virt
-        180.0,  # ring_pp2mp_virt
-        25.0,  # pinky_abd_virt
-        180.0,  # root2pinky_pp_virt
-        180.0,  # pinky_pp2mp_virt
-    ]
+    [rng[1] for rng in RETARGETER_PARAMS["joint_ranges"].values()]
 )
