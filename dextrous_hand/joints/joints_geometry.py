@@ -16,7 +16,7 @@ GEOMETRY_TYPES = {
     "P4_FINGER_MCP":{"centers_distance":18, "T1":[-9,4.336,0], "T2":[-8.813,-1.827,0], "T3":[2.4,9.157,0], "T4":[2.563,-8.627,0], "length_12_0":11.838, "length_34_0":0.27, "range":[0,PI/2]},
     "P4_FINGER_PIP":{"centers_distance":12, "T1":[-6.42,-2.46,0], "T2":[-5.989,0.358,0], "T3":[1.443,5.606,0], "T4":[1.443,-5.571,0], "length_12_0":14.83, "length_34_0":0.823, "range":[0,PI/2]},
     "P4_FINGER_DIP":{"centers_distance":9, "T1":[-4.495,0.218,0], "T2":[-4.348,-1.16,0], "T3":[1.75,4.146,0], "T4":[1.75,-4.146,0], "length_12_0":7.623, "length_34_0":0.707, "range":[0,PI/2]},
-    "THUMB_ABD":{"radius":11.6, "range":[-PI/4,0.698]}, # 40 deg
+    "THUMB_ABD":{"radius":11.6, "range":[0,PI/4 + 0.698]}, # 40 deg
     "THUMB_MCP":{"radius":10, "range":[0,2.356]}, # 135 deg
     "THUMB_PIP":{"centers_distance":18, "T1":[-8.917,4.495,z_offset], "T2":[-8.796,-1.905,0], "T3":[2.575,9.376,0], "T4":[2.575,-8.624,0], "length_12_0":math.sqrt(11.601**2+z_offset**2), "length_34_0":0, "range":[0,PI/2]},
     "THUMB_DIP":{"centers_distance":12, "T1":[-6.42,-2.46,0], "T2":[-5.989,0.358,0], "T3":[1.443,5.606,0], "T4":[1.443,-5.571,0], "length_12_0":14.83, "length_34_0":0.823, "range":[0,PI/2]},
