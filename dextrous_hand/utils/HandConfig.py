@@ -294,12 +294,14 @@ class HandConfig:
         """
         Sets the hand configuration from a list of joint angles for Mujoco
         """
-        self.WRIST = [value[0]]
-        self.THUMB = value[1:5].tolist()
-        self.INDEX = value[5:8].tolist()
-        self.MIDDLE = value[8:11].tolist()
-        self.RING = value[11:14].tolist()
-        self.PINKY = value[14:].tolist()
+        array = np.array(value)
+        array[3:] *= 2
+        self.WRIST = [array[0]]
+        self.THUMB = array[1:5].tolist()
+        self.INDEX = array[5:8].tolist()
+        self.MIDDLE = array[8:11].tolist()
+        self.RING = array[11:14].tolist()
+        self.PINKY = array[14:].tolist()
 
     @property
     def FINGERS(self):

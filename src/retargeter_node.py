@@ -103,8 +103,7 @@ class RetargeterNode(Node):
         wrist_joint = [0.0]
 
         if self.hand_scheme == "hh":
-            hand_config = HandConfig(unrestricted=True,
-                                    WRIST = wrist_joint,
+            hand_config = HandConfig(WRIST = wrist_joint,
                                     PINKY = joint_rads[13:16],
                                     RING = joint_rads[10:13],
                                     MIDDLE = joint_rads[7:10],
@@ -114,8 +113,7 @@ class RetargeterNode(Node):
                                     ORIENTATION = wrist_rotation
                                     )
         else:
-            hand_config = HandConfig(unrestricted=True,
-                                    WRIST = wrist_joint,
+            hand_config = HandConfig(WRIST = wrist_joint,
                                     PINKY = joint_rads[12:15],
                                     RING = joint_rads[9:12],
                                     MIDDLE = joint_rads[6:9],

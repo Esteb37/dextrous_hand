@@ -166,35 +166,7 @@ class KeyboardNode(Node):
 
                 print()
 
-            elif key.char in "zxcvbnm":
-                if key.char == 'z':
-                    config = "HOME"
-                elif key.char == 'x':
-                    config = "GRASP"
-                elif key.char == 'c':
-                    config = "ROCK"
-                elif key.char == 'v':
-                    config = "FINGER"
-                elif key.char == 'b':
-                    config = "LOVE"
-                elif key.char == 'n':
-                    config = "THUMB"
-                elif key.char == 'm':
-                    config = "SPOCK"
 
-                print(config)
-                self.hand_config = HandConfig(config)
-
-            if key.char == "a":
-                angle = (np.sin(time.time()) * np.pi + np.pi) / 2
-                self.hand_config = HandConfig(
-                    PINKY=[0.0, 0.0, angle],
-                    RING=[0.0, 0.0, angle],
-                    MIDDLE=[0.0, 0.0, angle],
-                    INDEX=[0.0, 0.0, angle],
-                    THUMB=[0.0, 0.0, angle, 0.0],
-                )
-                print(angle)
 
         except AttributeError:
             pass  # Handle special keys or other exceptions
