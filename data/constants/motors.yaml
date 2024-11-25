@@ -6,102 +6,102 @@ MAX_CURRENT: 600
 
 THUMB_ABD:
   port: 3
-  zero: 5.505267143249512
+  zero: 5.445427417755127
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 4.356034755706787
+  zero: 4.382119178771973
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 15
-  zero: 2.27544903755188
+  zero: 2.2616398334503174
   direction: 1
   range: *full_range
 
 THUMB_DIP:
   port: 14
-  zero: 3.76070499420166
+  zero: 3.6993308067321777
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 2.7495648860931396
+  zero: 2.732686996459961
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 4.524814128875732
+  zero: 4.5355544090271
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.3464291095733643
+  zero: 3.398597240447998
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 1.509805679321289
+  zero: 1.3855229616165161
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 3.5903916358947754
+  zero: 3.733086585998535
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 3.5474295616149902
+  zero: 3.469177484512329
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 5.14315938949585
+  zero: 5.077181816101074
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 3.6640405654907227
+  zero: 3.76070499420166
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 3.996995687484741
+  zero: 3.9893240928649902
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 1
-  zero: 4.5278825759887695
+  zero: 4.570844650268555
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 2
-  zero: 2.7664427757263184
+  zero: 2.697396755218506
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 0
-  zero: 5.006601810455322
+  zero: 5.00046443939209
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 2.18031907081604
+  zero: 2.7388243675231934
   direction: -1
   range: [-6.18, 6.18]
