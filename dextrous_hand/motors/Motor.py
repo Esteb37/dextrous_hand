@@ -106,11 +106,7 @@ class Motor():
 
     @target.setter
     def target(self, target):
-        target = target * self.direction + self.zero
-        # Limit to dynamixel's range
-        from dextrous_hand.motors.DynamixelClient import DXL_MAXIMUM_ANGLE_VALUE
-        target = min(max(target, 0), DXL_MAXIMUM_ANGLE_VALUE)
-        self.dxl_target = target
+        self.dxl_target = target * self.direction + self.zero
 
     @property
     def angle(self):

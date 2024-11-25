@@ -150,11 +150,12 @@ class HandConfig:
                   and overengineering, so please don't do that. Use a JOINT id instead to
                   modify a specific joint.
         """
-        if type(value) is float:
-            value = [value]
 
         if type(value) is np.ndarray:
             value = value.tolist()
+
+        if type(value) is not list:
+            value = [float(value)]
 
         if isinstance(key, str):
             key = key.upper()

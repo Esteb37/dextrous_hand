@@ -5,7 +5,7 @@ from dextrous_hand.joints.Joint import Joint
 
 class WristJoint(Joint):
 
-    GEAR_RATIO = 1.0
+    GEAR_RATIO = 1/4.0
 
     def __init__(self, id : ids.JOINTS):
         """
