@@ -342,7 +342,9 @@ class Thumb(Finger):
         for i, joint_angle in enumerate(pin_joints):
             motors_angles.append(self.joints[i].joint2length(joint_angle))
 
-        motors_angles.append(self.single_motor(self.joints[2].joint2length(joint_angles[2]), 2))
+        motors_angles[1] *= self.joints[1].geometry["multiplier"]
+
+        motors_angles.append(self.single_motor(self.joints[2].joint2length(joint_angles[2]), 2)  * self.joints[2].geometry["multiplier"])
         motors_angles.append(self.single_motor(self.joints[3].joint2length(joint_angles[3]), 3))
 
         return motors_angles

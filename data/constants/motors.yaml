@@ -2,106 +2,106 @@
 PI: &pi 3.141592
 MPI: &mpi -3.141592
 FULL_RANGE: &full_range [*mpi, *pi]
-MAX_CURRENT: 500
+MAX_CURRENT: 600
 
 THUMB_ABD:
   port: 3
-  zero: 5.500664234161377
+  zero: 5.505267143249512
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 4.280851364135742
+  zero: 4.356034755706787
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 15
-  zero: 1.827417254447937
-  direction: -1
+  zero: 2.27544903755188
+  direction: 1
   range: *full_range
 
 THUMB_DIP:
   port: 14
-  zero: 3.8849878311157227
+  zero: 3.76070499420166
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 2.5884575843811035
+  zero: 2.7495648860931396
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 4.475714683532715
+  zero: 4.524814128875732
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.3541009426116943
+  zero: 3.3464291095733643
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 1.4515001773834229
+  zero: 1.509805679321289
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 3.6809184551239014
+  zero: 3.5903916358947754
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 3.5949947834014893
+  zero: 3.5474295616149902
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 5.0449604988098145
+  zero: 5.14315938949585
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 3.7745141983032227
+  zero: 3.6640405654907227
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 4.113606929779053
+  zero: 3.996995687484741
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 1
-  zero: 4.595394611358643
+  zero: 4.5278825759887695
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 2
-  zero: 2.6482973098754883
+  zero: 2.7664427757263184
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 0
-  zero: 4.785654544830322
+  zero: 5.006601810455322
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 2.4380908012390137
+  zero: 2.18031907081604
   direction: -1
   range: [-6.18, 6.18]

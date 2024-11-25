@@ -96,21 +96,21 @@ use_scalar_distance:
 joint_ranges:
   THUMB_MCP: [0.0, 130.0]
   THUMB_ABD: [0.0, 85.0]
-  THUMB_PIP: [0.0, 180.0]
-  THUMB_DIP: [0.0, 180.0]
+  THUMB_PIP: [0.0, 90.0]
+  THUMB_DIP: [0.0, 90.0]
 
   INDEX_ABD: [-30.0, 30.0]
-  INDEX_MCP: [0.0, 180.0]
-  INDEX_PIP: [0.0, 180.0]
+  INDEX_MCP: [0.0, 90.0]
+  INDEX_PIP: [0.0, 90.0]
 
   MIDDLE_ABD: [-30.0, 30.0]
-  MIDDLE_MCP: [0.0, 180.0]
-  MIDDLE_PIP: [0.0, 180.0]
+  MIDDLE_MCP: [0.0, 90.0]
+  MIDDLE_PIP: [0.0, 90.0]
 
   RING_ABD: [-30.0, 30.0]
-  RING_MCP: [0.0, 180.0]
-  RING_PIP: [0.0, 180.0]
+  RING_MCP: [0.0, 90.0]
+  RING_PIP: [0.0, 90.0]
 
   PINKY_ABD: [-30.0, 30.0]
-  PINKY_MCP: [0.0, 180.0]
-  PINKY_PIP: [0.0, 180.0]
+  PINKY_MCP: [0.0, 90.0]
+  PINKY_PIP: [0.0, 90.0]
