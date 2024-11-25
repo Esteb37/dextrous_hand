@@ -301,9 +301,6 @@ class DynamixelClient:
         # Convert to Dynamixel position space.
         positions = positions / self._pos_vel_cur_reader.pos_scale
 
-        # Limit to the motor limit
-        positions = np.clip(positions, 0, DXL_MAXIMUM_POSITION_VALUE)
-
         times = self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION, # type: ignore
                         LEN_GOAL_POSITION)
 

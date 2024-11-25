@@ -53,8 +53,10 @@ class RetargeterNode(Node):
             self.mano_hand_visualizer = ManoHandVisualizer(self.rviz_pub)
 
         self.keypoint_positions = None
-        self.wrist_position = None
-        self.wrist_orientation = None
+        self.wrist_position = [0, 0, 0]
+        self.wrist_orientation = [0, 0, 0, 1]
+        self.wrist_initial_rotation = None
+        self.wrist_initial_position = None
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
 
@@ -65,6 +67,8 @@ class RetargeterNode(Node):
 
     def ingress_wrist_cb(self, msg):
         self.wrist_orientation = np.array([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
+        self.wrist_position = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
+
 
     def timer_publish_cb(self):
         if self.keypoint_positions is None:
@@ -88,13 +92,15 @@ class RetargeterNode(Node):
 
         joint_rads = np.deg2rad(joint_angles)
 
-        if self.wrist_orientation is not None:
-            wrist_quat = self.wrist_orientation
-        else :
-            wrist_quat = [0, 0, 0, 1]
+        if self.wrist_initial_position is None or self.wrist_initial_rotation is None:
+            self.wrist_initial_position = self.wrist_position
+            self.wrist_initial_rotation = R.from_quat(self.wrist_orientation)
 
-        # TODO: Do proper mapping
-        wrist_joint = R.from_quat(wrist_quat).as_euler("xyz", degrees=True)[1]
+
+        wrist_rotation = (R.from_quat(self.wrist_orientation) * self.wrist_initial_rotation.inv()).as_quat().tolist()
+        wrist_position = (self.wrist_position - self.wrist_initial_position).tolist() # type: ignore
+
+        wrist_joint = [0.0]
 
         if self.hand_scheme == "hh":
             hand_config = HandConfig(unrestricted=True,
@@ -103,7 +109,10 @@ class RetargeterNode(Node):
                                     RING = joint_rads[10:13],
                                     MIDDLE = joint_rads[7:10],
                                     INDEX = joint_rads[4:7],
-                                    THUMB = joint_rads[0:4])
+                                    THUMB = joint_rads[0:4],
+                                    POSITION = wrist_position,
+                                    ORIENTATION = wrist_rotation
+                                    )
         else:
             hand_config = HandConfig(unrestricted=True,
                                     WRIST = wrist_joint,

@@ -75,8 +75,8 @@ SUBSYSTEM_MOTORS = {
                          MOTORS.INDEX_FMBM
                          ],
 
-    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_ABD,
-                         MOTORS.THUMB_MCP,
+    SUBSYSTEMS.THUMB :  [MOTORS.THUMB_MCP,
+                         MOTORS.THUMB_ABD,
                          MOTORS.THUMB_PIP,
                          MOTORS.THUMB_DIP
                          ],
