@@ -16,15 +16,7 @@ learning_rate: 2.5
 # Default 3
 # Effect: How many times the retargeter will try to optimize the hand model
 # The higher the number, the more accurate the hand model will be but also the more computation
-opt_steps: 3
-
-# X Y Z
-# Default: zeros
-# Effect: The center is calculated as the midpoint between the thumb base and the pinky base
-# This adds an offset to the center
-hand_center_offset: [0.0, -0.0, 0.0]
-# In degrees
-hand_rotation_offset: [0.0, 0.0, 0.0]
+opt_steps: 2
 
 # Default: 0.71
 # Effect: The weight scaling for coupled joints
@@ -55,21 +47,21 @@ keyvectors: [palm2thumb,
 # The  individual coefficient is multiplied by the keyvector error and added to the total loss
 # The higher the coefficient, the higher the impact of the keyvector
 loss_coeffs:
-  palm2thumb: 20.0
+  palm2thumb: 5.0
   palm2index: 5.0
   palm2middle: 5.0
   palm2ring: 5.0
   palm2pinky: 5.0
-  thumb2index: 10.0
-  thumb2middle: 10.0
-  thumb2ring: 10.0
-  thumb2pinky: 10.0
-  index2middle: 5.0
-  index2ring: 5.0
-  index2pinky: 5.0
-  middle2ring: 5.0
-  middle2pinky: 5.0
-  ring2pinky: 5.0
+  thumb2index: 20.0
+  thumb2middle: 20.0
+  thumb2ring: 20.0
+  thumb2pinky: 20.0
+  index2middle: 0.0
+  index2ring: 0.0
+  index2pinky: 0.0
+  middle2ring: 0.0
+  middle2pinky: 0.0
+  ring2pinky: 0.0
 
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
@@ -99,18 +91,24 @@ joint_ranges:
   THUMB_PIP: [0.0, 180.0]
   THUMB_DIP: [0.0, 180.0]
 
-  INDEX_ABD: [-30.0, 30.0]
+  INDEX_ABD: [-15.0, 15.0]
   INDEX_MCP: [0.0, 180.0]
   INDEX_PIP: [0.0, 180.0]
 
-  MIDDLE_ABD: [-30.0, 30.0]
+  MIDDLE_ABD: [-15.0, 15.0]
   MIDDLE_MCP: [0.0, 180.0]
   MIDDLE_PIP: [0.0, 180.0]
 
-  RING_ABD: [-30.0, 30.0]
+  RING_ABD: [-15.0, 15.0]
   RING_MCP: [0.0, 180.0]
   RING_PIP: [0.0, 180.0]
 
-  PINKY_ABD: [-30.0, 30.0]
+  PINKY_ABD: [-15.0, 15.0]
   PINKY_MCP: [0.0, 180.0]
   PINKY_PIP: [0.0, 180.0]
+
+visualization_rotation: [0.0, 0.0, 0.2]
+visualization_translation: [-0.015, 0.0, 0.0]
+
+retarget_rotation: [0.3, 0.0, 0.25]
+retarget_translation: [0.0, 0.0, 0.0]

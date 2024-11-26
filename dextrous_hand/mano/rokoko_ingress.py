@@ -6,7 +6,6 @@ import numpy as np
 import threading
 from scipy.spatial.transform import Rotation
 
-
 MANO_KEYPOINTS_LIST = [
     "rightHand",
     "rightThumbProximal",
