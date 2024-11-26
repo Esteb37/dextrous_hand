@@ -15,7 +15,8 @@ def generate_launch_description():
                         parent_dir(),
                         "data",
                         "assets",
-                        "hh_hand.xml",
+                        "urdf",
+                        "hh_hand.urdf",
                     )
                 },
                 {"retarget/hand_scheme": "hh"},
@@ -40,7 +41,7 @@ def generate_launch_description():
                         os.path.join(parent_dir(),
                                      "data",
                                      "rviz",
-                                     "mano_points.rviz")
+                                     "urdf.rviz")
                         ],
             ),
     ])

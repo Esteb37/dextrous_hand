@@ -66,9 +66,9 @@ loss_coeffs:
   middle2ring: 5.0
   middle2pinky: 5.0
   ring2pinky: 5.0
-  pinky2ring_mp: 0.0
-  ring2middle_mp: 0.0
-  middle2index_mp: 0.0
+  pinky2ring_mp: 5.0
+  ring2middle_mp: 5.0
+  middle2index_mp: 5.0
 
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
