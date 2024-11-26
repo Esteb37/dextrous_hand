@@ -6,102 +6,102 @@ MAX_CURRENT: 500
 
 THUMB_ABD:
   port: 3
-  zero: 5.500664234161377
+  zero: 5.437755584716797
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 4.280851364135742
+  zero: 4.286988735198975
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 15
-  zero: 1.827417254447937
+  zero: 2.3567698001861572
   direction: -1
   range: *full_range
 
 THUMB_DIP:
   port: 14
-  zero: 3.8849878311157227
+  zero: 3.840491533279419
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 2.5884575843811035
+  zero: 2.705068588256836
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 4.475714683532715
+  zero: 4.5186767578125
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.3541009426116943
+  zero: 3.403200149536133
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 1.4515001773834229
+  zero: 1.3471640348434448
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 3.6809184551239014
+  zero: 3.717743158340454
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 3.5949947834014893
+  zero: 3.4722461700439453
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 5.0449604988098145
+  zero: 5.124746799468994
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 3.7745141983032227
+  zero: 3.6655750274658203
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 4.113606929779053
+  zero: 4.046095371246338
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 1
-  zero: 4.595394611358643
+  zero: 4.5754475593566895
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 2
-  zero: 2.6482973098754883
+  zero: 2.7434275150299072
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 0
-  zero: 4.785654544830322
+  zero: 5.03268575668335
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 2.4380908012390137
+  zero: 3.0226800441741943
   direction: -1
   range: [-6.18, 6.18]
