@@ -37,8 +37,10 @@ class ArmNode(Node):
         )
 
         # publishes to franka/end_effector_pose_cmd
+        # TODO: Create an intermediate topic to publish the target pose, so that wrist rotation can be isolated from the rest of the arm
+        # TODO: Create a new node to subscribe to the intermediate topic and publish to franka/end_effector_pose and 
         self.arm_publisher = self.create_publisher(
-            PoseStamped, "/franka/end_effector_pose_cmd", 10
+            PoseStamped, "/arm_end_effector_cmd", 10
         )
 
         self.tf_publisher = TransformBroadcaster(self)
@@ -119,10 +121,10 @@ class ArmNode(Node):
 
         # Assume robot is at home pose
         self.X_W_fEE_init = deepcopy(self.X_W_fEE)
-        while self.X_W_fEE_init is None:
-            print("Waiting for robot pose...")
-            time.sleep(0.2)
-            self.X_W_fEE_init = deepcopy(self.X_W_fEE)
+        # while self.X_W_fEE_init is None:
+        #     print("Waiting for robot pose...")
+        #     time.sleep(0.2)
+        #     self.X_W_fEE_init = deepcopy(self.X_W_fEE)
 
         start_target = np.array(
             [[0, 0, -1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0.5, -0.1, 0.25, 1]]
