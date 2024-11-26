@@ -174,32 +174,7 @@ def normalize_points_to_hands_local(joint_pos):
     joint_pos = joint_pos - hand_center
     joint_pos = joint_pos @ hand_rot
 
-    rot_x = rotation_matrix_x(RETARGETER_PARAMS["retarget_rotation"][0])
-    rot_y = rotation_matrix_y(RETARGETER_PARAMS["retarget_rotation"][1])
-    rot_z = rotation_matrix_z(RETARGETER_PARAMS["retarget_rotation"][2])
-
-    joint_pos =  joint_pos @ rot_z @ rot_y @ rot_x + RETARGETER_PARAMS["retarget_translation"]
-
     return joint_pos, (hand_center, hand_rot)
-
-def normalize_points_for_visualization(joint_pos):
-
-    joint_pos, _ = normalize_points_to_hands_local(joint_pos)
-
-    rot_x = rotation_matrix_x(RETARGETER_PARAMS["visualization_rotation"][0])
-    rot_y = rotation_matrix_y(RETARGETER_PARAMS["visualization_rotation"][1])
-    rot_z = rotation_matrix_z(RETARGETER_PARAMS["visualization_rotation"][2])
-
-    rot = rot_z @ rot_y @ rot_x
-
-    joint_pos[6:9, :] = joint_pos[6:9, :] @ rot
-    joint_pos[10:13, :] = joint_pos[10:13, :] @ rot
-    joint_pos[14:17, :] = joint_pos[14:17, :] @ rot
-    joint_pos[18:21, :] = joint_pos[18:21, :] @ rot
-
-    joint_pos += RETARGETER_PARAMS["visualization_translation"]
-
-    return joint_pos
 
 
 def get_unoccluded_hand_joint_idx(joint_pos):

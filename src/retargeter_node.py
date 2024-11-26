@@ -13,7 +13,7 @@ from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.mano.utils import numpy_to_float32_multiarray
 from dextrous_hand.mano.visualize_mano import ManoHandVisualizer
 from dextrous_hand.mano.retarget_utils import rotation_matrix_x, rotation_matrix_y, rotation_matrix_z
-
+from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
 class RetargeterNode(Node):
     def __init__(self, debug=False):
@@ -85,12 +85,20 @@ class RetargeterNode(Node):
             self.absolute_mano_hand_visualizer.reset_markers()
 
         debug_dict = {}
-        joint_angles = self.retargeter.retarget(self.keypoint_positions, debug_dict)
+        joint_angles, mano_fingertips, mano_palm, fingertips, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
 
         if self.debug:
             self.mano_hand_visualizer.generate_hand_markers(
                 debug_dict["normalized_joint_pos"],
                 stamp=self.get_clock().now().to_msg(),
+            )
+
+            self.mano_hand_visualizer.generate_keyvector_markers(
+                mano_fingertips, mano_palm, stamp=self.get_clock().now().to_msg()
+            )
+
+            self.mano_hand_visualizer.generate_keyvector_markers(
+                fingertips, palm, detach = True, stamp=self.get_clock().now().to_msg()
             )
 
             self.absolute_mano_hand_visualizer.generate_hand_markers(

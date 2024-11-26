@@ -1,8 +1,9 @@
-import rclpy
-from rclpy.node import Node
-from visualization_msgs.msg import Marker, MarkerArray
-from geometry_msgs.msg import Point
+
 import numpy as np
+from geometry_msgs.msg import Point
+from visualization_msgs.msg import Marker, MarkerArray
+
+from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
 
 class ManoHandVisualizer:
@@ -123,5 +124,91 @@ class ManoHandVisualizer:
             arrow_marker.points.append(p_end) # type: ignore
 
             markers.append(arrow_marker)
+
+        self.markers.extend(markers)
+
+    def generate_keyvector_markers(self, fingertips, palm, stamp, detach = False):
+
+        markers = []
+
+        if detach:
+            tips = [tip_tensor.detach().cpu().numpy()[0] for tip_tensor in fingertips.values()]
+
+            palm = palm.detach().cpu().numpy()[0]
+        else:
+            tips = [tip_tensor.cpu().numpy()[0] for tip_tensor in fingertips.values()]
+
+            palm = palm.cpu().numpy()[0]
+
+
+        # Create marker for joints
+
+        if detach:
+            joint_marker = Marker()
+            joint_marker.header.frame_id = "world"
+            joint_marker.header.stamp = stamp
+            joint_marker.ns = "joints"
+            joint_marker.type = Marker.POINTS
+            joint_marker.action = Marker.ADD
+            joint_marker.scale.x = 0.01  # Point width
+            joint_marker.scale.y = 0.01  # Point height
+            joint_marker.color.a = 1.0
+            joint_marker.color.r = 1.0  # Red color
+
+            for joint in tips + [palm]:
+                p = Point(x=float(joint[0]), y=float(joint[1]), z=float(joint[2]))
+                joint_marker.points.append(p) # type: ignore
+
+            markers.append(joint_marker)
+
+        bone_marker = Marker()
+        bone_marker.header.frame_id = "world"
+        bone_marker.header.stamp = stamp
+        bone_marker.ns = "palm_keyvectors"
+        bone_marker.type = Marker.LINE_LIST
+        bone_marker.action = Marker.ADD
+        bone_marker.scale.x = 0.001  # Line width
+        bone_marker.color.a = 1.0
+        bone_marker.color.g = 1.0  # Blue color
+
+        # Add bone lines
+        for tip in tips:
+            if detach:
+                start_joint = palm
+                end_joint = tip
+            else:
+                start_joint = palm  + np.array(RETARGETER_PARAMS["mano_shift"])
+                end_joint = tip + np.array(RETARGETER_PARAMS["mano_shift"])
+            p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
+            p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
+            bone_marker.points.append(p_start) # type: ignore
+            bone_marker.points.append(p_end) # type: ignore
+
+        markers.append(bone_marker)
+
+        bone_marker = Marker()
+        bone_marker.header.frame_id = "world"
+        bone_marker.header.stamp = stamp
+        bone_marker.ns = "thumb_keyvectors"
+        bone_marker.type = Marker.LINE_LIST
+        bone_marker.action = Marker.ADD
+        bone_marker.scale.x = 0.001  # Line width
+        bone_marker.color.a = 1.0
+        bone_marker.color.g = 1.0
+        bone_marker.color.r = 1.0
+
+        for tip in tips[1:]:
+            if detach:
+                start_joint = tips[0]
+                end_joint = tip
+            else:
+                start_joint = tips[0]  + np.array(RETARGETER_PARAMS["mano_shift"])
+                end_joint = tip + np.array(RETARGETER_PARAMS["mano_shift"])
+            p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
+            p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
+            bone_marker.points.append(p_start) # type: ignore
+            bone_marker.points.append(p_end) # type: ignore
+
+        markers.append(bone_marker)
 
         self.markers.extend(markers)
