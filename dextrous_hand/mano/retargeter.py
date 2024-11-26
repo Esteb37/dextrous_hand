@@ -34,6 +34,7 @@ class Retargeter:
                 GC_TENDONS,
                 FINGER_TO_TIP,
                 FINGER_TO_BASE,
+                FINGER_TO_MP,
                 GC_LIMITS_LOWER,
                 GC_LIMITS_UPPER,
             )
@@ -56,6 +57,7 @@ class Retargeter:
         self.gc_limits_upper = GC_LIMITS_UPPER
         self.finger_to_tip = FINGER_TO_TIP
         self.finger_to_base = FINGER_TO_BASE
+        self.finger_to_mp = FINGER_TO_MP
 
         prev_cwd = os.getcwd()
         model_path = (
@@ -157,7 +159,7 @@ class Retargeter:
                 .transform_points(self.root)
                 .cpu()
                 .numpy(),
-                wrist=_chain_transforms["palm"]
+                wrist=_chain_transforms["retarget_palm"]
                 .transform_points(self.root)
                 .cpu()
                 .numpy(),
@@ -182,6 +184,10 @@ class Retargeter:
             assert (
                 base in self.chain.get_link_names()
             ), f"Base frame {base} not found in the chain"
+        for finger, mp in self.finger_to_mp.items():
+            assert (
+                mp in self.chain.get_link_names()
+            ), f"MP frame {mp} not found in the chain"
 
         ## Check the base frame is fixed to the palm
         chain_transform1 = self.chain.forward_kinematics(
@@ -246,6 +252,10 @@ class Retargeter:
         for finger, finger_joints in mano_joints_dict.items():
             mano_fingertips[finger] = finger_joints[[-1], :]
 
+        mano_mps = {}
+        for finger, finger_joints in mano_joints_dict.items():
+            mano_mps[finger] = finger_joints[[1], :]
+
         mano_pps = {}
         for finger, finger_joints in mano_joints_dict.items():
             mano_pps[finger] = finger_joints[[0], :]
@@ -256,9 +266,10 @@ class Retargeter:
             keepdim=True,
         )
 
-        keyvectors_mano = retarget_utils.get_keyvectors(mano_fingertips, mano_palm)
+        keyvectors_mano = retarget_utils.get_keyvectors(mano_fingertips, mano_mps, mano_palm)
         # norms_mano = {k: torch.norm(v) for k, v in keyvectors_mano.items()}
         # print(f"keyvectors_mano: {norms_mano}")
+
 
         for _ in range(opt_steps):
             chain_transforms = self.chain.forward_kinematics(
@@ -270,11 +281,15 @@ class Retargeter:
                     self.root
                 )
 
-            palm = chain_transforms["palm"].transform_points(
+            mps = {}
+            for finger, finger_mp in self.finger_to_mp.items():
+                mps[finger] = chain_transforms[finger_mp].transform_points(self.root)
+
+            palm = chain_transforms["retarget_palm"].transform_points(
                     self.root
                 )
 
-            keyvectors_faive = retarget_utils.get_keyvectors(fingertips, palm)
+            keyvectors_faive = retarget_utils.get_keyvectors(fingertips, mps, palm)
             # norms_faive = {k: torch.norm(v) for k, v in keyvectors_faive.items()}
             # print(f"keyvectors_faive: {norms_faive}")
 
@@ -313,7 +328,7 @@ class Retargeter:
 
         # print(f"Retarget time: {(time.time() - start_time) * 1000} ms")
 
-        return finger_joint_angles, mano_fingertips, mano_palm, fingertips, palm
+        return finger_joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm
 
     def retarget(self, joints, debug_dict):
         normalized_joint_pos, mano_center_and_rot = (
@@ -331,8 +346,8 @@ class Retargeter:
             debug_dict["normalized_joint_pos"] = shifted_points
             debug_dict["original_joint_pos"] = joints
 
-        self.target_angles, mano_fingertips, mano_palm, fingertips, palm = self.retarget_finger_mano_joints(
+        self.target_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retarget_finger_mano_joints(
             normalized_joint_pos
         )
 
-        return self.target_angles, mano_fingertips, mano_palm, fingertips, palm
+        return self.target_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm

@@ -58,8 +58,8 @@ class RetargeterNode(Node):
             self.absolute_mano_hand_visualizer = ManoHandVisualizer(self.absolute_pub)
 
         self.keypoint_positions = None
-        self.wrist_position = np.array([0, 0, 0])
-        self.wrist_orientation = [0, 0, 0, 1]
+        self.wrist_position = np.array([0.0, 0.0, 0.0])
+        self.wrist_orientation = [0.0, 0.0, 0.0, 1.0]
         self.wrist_initial_rotation = None
         self.wrist_initial_position = None
 
@@ -85,7 +85,7 @@ class RetargeterNode(Node):
             self.absolute_mano_hand_visualizer.reset_markers()
 
         debug_dict = {}
-        joint_angles, mano_fingertips, mano_palm, fingertips, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
+        joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
 
         if self.debug:
             self.mano_hand_visualizer.generate_hand_markers(
@@ -94,11 +94,11 @@ class RetargeterNode(Node):
             )
 
             self.mano_hand_visualizer.generate_keyvector_markers(
-                mano_fingertips, mano_palm, stamp=self.get_clock().now().to_msg()
+                mano_fingertips, mano_mps, mano_palm, stamp=self.get_clock().now().to_msg()
             )
 
             self.mano_hand_visualizer.generate_keyvector_markers(
-                fingertips, palm, detach = True, stamp=self.get_clock().now().to_msg()
+                fingertips, mps, palm, detach = True, stamp=self.get_clock().now().to_msg()
             )
 
             self.absolute_mano_hand_visualizer.generate_hand_markers(

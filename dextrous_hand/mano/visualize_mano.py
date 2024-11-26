@@ -127,19 +127,22 @@ class ManoHandVisualizer:
 
         self.markers.extend(markers)
 
-    def generate_keyvector_markers(self, fingertips, palm, stamp, detach = False):
+    def generate_keyvector_markers(self, fingertips, mps, palm, stamp, detach = False):
 
         markers = []
 
         if detach:
             tips = [tip_tensor.detach().cpu().numpy()[0] for tip_tensor in fingertips.values()]
 
+            mps = [mp.detach().cpu().numpy()[0] for mp in mps.values()]
+
             palm = palm.detach().cpu().numpy()[0]
         else:
             tips = [tip_tensor.cpu().numpy()[0] for tip_tensor in fingertips.values()]
 
-            palm = palm.cpu().numpy()[0]
+            mps = [mp.cpu().numpy()[0] for mp in mps.values()]
 
+            palm = palm.cpu().numpy()[0]
 
         # Create marker for joints
 
@@ -189,7 +192,7 @@ class ManoHandVisualizer:
         bone_marker = Marker()
         bone_marker.header.frame_id = "world"
         bone_marker.header.stamp = stamp
-        bone_marker.ns = "thumb_keyvectors"
+        bone_marker.ns = "tip_keyvectors"
         bone_marker.type = Marker.LINE_LIST
         bone_marker.action = Marker.ADD
         bone_marker.scale.x = 0.001  # Line width
@@ -197,13 +200,42 @@ class ManoHandVisualizer:
         bone_marker.color.g = 1.0
         bone_marker.color.r = 1.0
 
-        for tip in tips[1:]:
+        for i, start_tip in enumerate(tips):
+            for i, end_tip in enumerate(tips[i:]):
+                if detach:
+                    start_joint = start_tip
+                    end_joint = end_tip
+                else:
+                    start_joint = start_tip  + np.array(RETARGETER_PARAMS["mano_shift"])
+                    end_joint = end_tip + np.array(RETARGETER_PARAMS["mano_shift"])
+                p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
+                p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
+                bone_marker.points.append(p_start) # type: ignore
+                bone_marker.points.append(p_end) # type: ignore
+
+        markers.append(bone_marker)
+
+        bone_marker = Marker()
+        bone_marker.header.frame_id = "world"
+        bone_marker.header.stamp = stamp
+        bone_marker.ns = "mcp_keyvectors"
+        bone_marker.type = Marker.LINE_LIST
+        bone_marker.action = Marker.ADD
+        bone_marker.scale.x = 0.001  # Line width
+        bone_marker.color.a = 1.0
+        bone_marker.color.b = 1.0
+        bone_marker.color.r = 1.0
+
+        for i, start_tip in enumerate(mps):
+            if i == len(mps) - 1:
+                break
+            end_tip = mps[i+1]
             if detach:
-                start_joint = tips[0]
-                end_joint = tip
+                start_joint = start_tip
+                end_joint = end_tip
             else:
-                start_joint = tips[0]  + np.array(RETARGETER_PARAMS["mano_shift"])
-                end_joint = tip + np.array(RETARGETER_PARAMS["mano_shift"])
+                start_joint = start_tip  + np.array(RETARGETER_PARAMS["mano_shift"])
+                end_joint = end_tip + np.array(RETARGETER_PARAMS["mano_shift"])
             p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
             p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
             bone_marker.points.append(p_start) # type: ignore

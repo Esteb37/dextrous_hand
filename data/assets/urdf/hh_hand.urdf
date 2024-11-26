@@ -340,6 +340,18 @@
       <axis xyz="1.0 0.0 0.0"/>
       <limit lower="-0.264" upper="0.264" effort="100" velocity="100"/>
    </joint>
+   <link name="retarget_palm">
+      <inertial>
+         <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+         <mass value="0.001"/>
+         <inertia ixx="1e-09" iyy="1e-09" izz="1e-09" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+   </link>
+   <joint type="fixed" name="retarget_palm_offset">
+      <parent link="palm"/>
+      <child link="retarget_palm"/>
+      <origin xyz="-0.015 0.00 0" rpy="0 0 0"/>
+   </joint>
    <joint type="fixed" name="index_abd_virt_offset">
       <parent link="index_abd_virt_jointbody"/>
       <child link="index_um_virt"/>

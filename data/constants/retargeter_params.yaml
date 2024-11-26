@@ -40,7 +40,11 @@ keyvectors: [palm2thumb,
             index2pinky,
             middle2ring,
             middle2pinky,
-            ring2pinky]
+            ring2pinky,
+            pinky2ring_mp,
+            ring2middle_mp,
+            middle2index_mp,
+            ]
 
 # Default: 5.0
 # The loss coefficient for each keyvector.
@@ -62,6 +66,9 @@ loss_coeffs:
   middle2ring: 5.0
   middle2pinky: 5.0
   ring2pinky: 5.0
+  pinky2ring_mp: 0.0
+  ring2middle_mp: 0.0
+  middle2index_mp: 0.0
 
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
@@ -82,6 +89,9 @@ use_scalar_distance:
   middle2ring: False
   middle2pinky: False
   ring2pinky: False
+  pinky2ring_mp: False
+  ring2middle_mp: False
+  middle2index_mp: False
 
 # In degrees, do not change order
 # Effect: Self-explanatory
