@@ -151,16 +151,6 @@ def get_hand_center_and_rotation(
         (x_axis.reshape(1, 3), y_axis.reshape(1, 3), z_axis.reshape(1, 3)), axis=0
     ).T
 
-    pos_offset = RETARGETER_PARAMS["hand_center_offset"]
-
-    hand_center += pos_offset
-
-    rot_offset_xyz = np.array(RETARGETER_PARAMS["hand_rotation_offset"]) * np.pi / 180
-
-    rot_matrix = rot_matrix @ rotation_matrix_x(rot_offset_xyz[0])
-    rot_matrix = rot_matrix @ rotation_matrix_y(rot_offset_xyz[1])
-    rot_matrix = rot_matrix @ rotation_matrix_z(rot_offset_xyz[2])
-
     return hand_center, rot_matrix
 
 
@@ -183,7 +173,33 @@ def normalize_points_to_hands_local(joint_pos):
     )
     joint_pos = joint_pos - hand_center
     joint_pos = joint_pos @ hand_rot
+
+    rot_x = rotation_matrix_x(RETARGETER_PARAMS["retarget_rotation"][0])
+    rot_y = rotation_matrix_y(RETARGETER_PARAMS["retarget_rotation"][1])
+    rot_z = rotation_matrix_z(RETARGETER_PARAMS["retarget_rotation"][2])
+
+    joint_pos =  joint_pos @ rot_z @ rot_y @ rot_x + RETARGETER_PARAMS["retarget_translation"]
+
     return joint_pos, (hand_center, hand_rot)
+
+def normalize_points_for_visualization(joint_pos):
+
+    joint_pos, _ = normalize_points_to_hands_local(joint_pos)
+
+    rot_x = rotation_matrix_x(RETARGETER_PARAMS["visualization_rotation"][0])
+    rot_y = rotation_matrix_y(RETARGETER_PARAMS["visualization_rotation"][1])
+    rot_z = rotation_matrix_z(RETARGETER_PARAMS["visualization_rotation"][2])
+
+    rot = rot_z @ rot_y @ rot_x
+
+    joint_pos[6:9, :] = joint_pos[6:9, :] @ rot
+    joint_pos[10:13, :] = joint_pos[10:13, :] @ rot
+    joint_pos[14:17, :] = joint_pos[14:17, :] @ rot
+    joint_pos[18:21, :] = joint_pos[18:21, :] @ rot
+
+    joint_pos += RETARGETER_PARAMS["visualization_translation"]
+
+    return joint_pos
 
 
 def get_unoccluded_hand_joint_idx(joint_pos):

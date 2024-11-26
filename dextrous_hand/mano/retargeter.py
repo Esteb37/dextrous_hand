@@ -331,6 +331,14 @@ class Retargeter:
             normalized_joint_pos @ self.model_rotation.T + self.model_center
         )
         if debug_dict is not None:
-            debug_dict["normalized_joint_pos"] = normalized_joint_pos
+
+            vis_points = retarget_utils.normalize_points_for_visualization(joints)
+
+            vis_points = (
+                vis_points @ self.model_rotation.T + self.model_center
+            )
+            debug_dict["normalized_joint_pos"] = vis_points
+            debug_dict["original_joint_pos"] = joints
+
         self.target_angles = self.retarget_finger_mano_joints(normalized_joint_pos)
         return self.target_angles

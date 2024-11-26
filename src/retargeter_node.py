@@ -5,12 +5,15 @@ from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import MarkerArray
+from tf2_ros import TransformBroadcaster, TransformStamped
 from scipy.spatial.transform import Rotation as R
 
 from dextrous_hand.mano.retargeter import Retargeter
 from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.mano.utils import numpy_to_float32_multiarray
 from dextrous_hand.mano.visualize_mano import ManoHandVisualizer
+from dextrous_hand.mano.retarget_utils import rotation_matrix_x, rotation_matrix_y, rotation_matrix_z
+
 
 class RetargeterNode(Node):
     def __init__(self, debug=False):
@@ -50,15 +53,19 @@ class RetargeterNode(Node):
         self.debug = True
         if self.debug:
             self.rviz_pub = self.create_publisher(MarkerArray, 'retarget/normalized_mano_points', 10)
+            self.absolute_pub = self.create_publisher(MarkerArray, 'retarget/absolute_mano_points', 10)
             self.mano_hand_visualizer = ManoHandVisualizer(self.rviz_pub)
+            self.absolute_mano_hand_visualizer = ManoHandVisualizer(self.absolute_pub)
 
         self.keypoint_positions = None
-        self.wrist_position = [0, 0, 0]
+        self.wrist_position = np.array([0, 0, 0])
         self.wrist_orientation = [0, 0, 0, 1]
         self.wrist_initial_rotation = None
         self.wrist_initial_position = None
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
+
+        self.world_coil_broadcaster = TransformBroadcaster(self)
 
         self.get_logger().warn("Retargeter Node started")
 
@@ -69,13 +76,13 @@ class RetargeterNode(Node):
         self.wrist_orientation = np.array([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
         self.wrist_position = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
 
-
     def timer_publish_cb(self):
         if self.keypoint_positions is None:
             return
 
         if self.debug:
             self.mano_hand_visualizer.reset_markers()
+            self.absolute_mano_hand_visualizer.reset_markers()
 
         debug_dict = {}
         joint_angles = self.retargeter.retarget(self.keypoint_positions, debug_dict)
@@ -83,6 +90,11 @@ class RetargeterNode(Node):
         if self.debug:
             self.mano_hand_visualizer.generate_hand_markers(
                 debug_dict["normalized_joint_pos"],
+                stamp=self.get_clock().now().to_msg(),
+            )
+
+            self.absolute_mano_hand_visualizer.generate_hand_markers(
+                debug_dict["original_joint_pos"],
                 stamp=self.get_clock().now().to_msg(),
             )
 
@@ -96,10 +108,6 @@ class RetargeterNode(Node):
             self.wrist_initial_position = self.wrist_position
             self.wrist_initial_rotation = R.from_quat(self.wrist_orientation)
 
-
-        wrist_rotation = (R.from_quat(self.wrist_orientation) * self.wrist_initial_rotation.inv()).as_quat().tolist()
-        wrist_position = (self.wrist_position - self.wrist_initial_position).tolist() # type: ignore
-
         wrist_joint = [0.0]
 
         if self.hand_scheme == "hh":
@@ -109,9 +117,7 @@ class RetargeterNode(Node):
                                     RING = joint_rads[10:13],
                                     MIDDLE = joint_rads[7:10],
                                     INDEX = joint_rads[4:7],
-                                    THUMB = joint_rads[0:4],
-                                    POSITION = wrist_position,
-                                    ORIENTATION = wrist_rotation
+                                    THUMB = joint_rads[0:4]
                                     )
         else:
             hand_config = HandConfig(unrestricted=True,
@@ -126,6 +132,40 @@ class RetargeterNode(Node):
 
         if self.debug:
             self.mano_hand_visualizer.publish_markers()
+            self.absolute_mano_hand_visualizer.publish_markers()
+
+        # Static transform from world to coil
+        transform =  TransformStamped()
+        transform.header.stamp = self.get_clock().now().to_msg()
+        transform.header.frame_id = "coil"
+        transform.child_frame_id = "world"
+
+        transform.transform.translation.x = self.wrist_position[0]
+        transform.transform.translation.y = self.wrist_position[1]
+        transform.transform.translation.z = self.wrist_position[2]
+
+        wrist_offset = rotation_matrix_x(0)
+        wrist_offset = wrist_offset @ rotation_matrix_y(0)
+        wrist_offset = wrist_offset @ rotation_matrix_z(0)
+
+        wrist_offset = R.from_matrix(wrist_offset)
+
+        # rotate self.wrist_orientation quaternion by the rotation matrix
+        wrist_rot = R.from_quat(self.wrist_orientation)
+        wrist_rot = wrist_offset * wrist_rot
+
+        self.wrist_orientation = wrist_rot.as_quat()
+
+
+        transform.transform.rotation.x = self.wrist_orientation[0]
+        transform.transform.rotation.y = self.wrist_orientation[1]
+        transform.transform.rotation.z = self.wrist_orientation[2]
+        transform.transform.rotation.w = self.wrist_orientation[3]
+
+        self.world_coil_broadcaster.sendTransform(transform)
+
+
+
 
 
 def main(args=None):

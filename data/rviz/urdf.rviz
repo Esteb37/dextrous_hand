@@ -276,14 +276,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        pinky_pp2pinky_pp_sens_fixed_jointbody:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        pinky_pp_sens:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         pinky_pp_virt:
           Alpha: 1
           Show Axes: false
@@ -482,6 +474,33 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 255; 25; 0
+      Enabled: false
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: Pose
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /ingress/wrist
+      Value: false
+    - Class: rviz_default_plugins/Axes
+      Enabled: false
+      Length: 1
+      Name: Axes
+      Radius: 0.10000000149011612
+      Reference Frame: <Fixed Frame>
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -528,25 +547,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.1087778806686401
+      Distance: 1.024247169494629
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.20545285940170288
+        Y: -0.19679339230060577
+        Z: -0.00020606600446626544
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.010398751124739647
+      Pitch: 0.5197967886924744
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.853555679321289
+      Yaw: 3.1853768825531006
     Saved: ~
 Window Geometry:
   Displays:
