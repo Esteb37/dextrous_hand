@@ -59,6 +59,13 @@ FINGER_TO_TIP: Dict[str, str] = {
     "pinky": "pinky_fingertip",
 }
 
+FINGER_TO_MP: Dict[str, str] = {
+    "index": "index_mp_virt",
+    "middle": "middle_mp_virt",
+    "ring": "ring_mp_virt",
+    "pinky": "pinky_mp_virt",
+}
+
 # the mapping from fingername to the frame of the fingerbase (The base that fixed to the palm)
 # Use pytorch_kinematics.Chain.print_tree() to see the base frame
 FINGER_TO_BASE = {
