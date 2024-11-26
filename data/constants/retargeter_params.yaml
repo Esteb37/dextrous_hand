@@ -107,8 +107,4 @@ joint_ranges:
   PINKY_MCP: [0.0, 180.0]
   PINKY_PIP: [0.0, 180.0]
 
-visualization_rotation: [0.0, 0.0, 0.2]
-visualization_translation: [-0.015, 0.0, 0.0]
-
-retarget_rotation: [0.3, 0.0, 0.25]
-retarget_translation: [0.0, 0.0, 0.0]
+mano_shift: [0.0, 0.4, 0.0]

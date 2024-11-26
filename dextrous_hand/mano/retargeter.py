@@ -226,7 +226,7 @@ class Retargeter:
 
         opt_steps = RETARGETER_PARAMS["opt_steps"]
 
-        print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
+        # print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
 
         start_time = time.time()
         if not warm:
@@ -260,7 +260,7 @@ class Retargeter:
         # norms_mano = {k: torch.norm(v) for k, v in keyvectors_mano.items()}
         # print(f"keyvectors_mano: {norms_mano}")
 
-        for step in range(opt_steps):
+        for _ in range(opt_steps):
             chain_transforms = self.chain.forward_kinematics(
                 self.joint_map @ (self.gc_joints / (180 / np.pi))
             )
@@ -300,7 +300,7 @@ class Retargeter:
                         ** 2
                     )
 
-            print(f"step: {step} Loss: {loss}")
+            # print(f"step: {step} Loss: {loss}")
             self.scaling_factors_set = True
 
             self.opt.zero_grad()
@@ -316,9 +316,9 @@ class Retargeter:
 
         finger_joint_angles = self.gc_joints.detach().cpu().numpy()
 
-        print(f"Retarget time: {(time.time() - start_time) * 1000} ms")
+        # print(f"Retarget time: {(time.time() - start_time) * 1000} ms")
 
-        return finger_joint_angles
+        return finger_joint_angles, mano_fingertips, mano_palm, fingertips, palm
 
     def retarget(self, joints, debug_dict):
         normalized_joint_pos, mano_center_and_rot = (
@@ -332,13 +332,12 @@ class Retargeter:
         )
         if debug_dict is not None:
 
-            vis_points = retarget_utils.normalize_points_for_visualization(joints)
-
-            vis_points = (
-                vis_points @ self.model_rotation.T + self.model_center
-            )
-            debug_dict["normalized_joint_pos"] = vis_points
+            shifted_points = normalized_joint_pos + RETARGETER_PARAMS["mano_shift"]
+            debug_dict["normalized_joint_pos"] = shifted_points
             debug_dict["original_joint_pos"] = joints
 
-        self.target_angles = self.retarget_finger_mano_joints(normalized_joint_pos)
-        return self.target_angles
+        self.target_angles, mano_fingertips, mano_palm, fingertips, palm = self.retarget_finger_mano_joints(
+            normalized_joint_pos
+        )
+
+        return self.target_angles, mano_fingertips, mano_palm, fingertips, palm
