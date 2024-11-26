@@ -41,7 +41,7 @@ class RetargeterNode(Node):
             PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
         )
 
-        self.retargeter = Retargeter(mjcf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme
+        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme
         )
 
         self.joints_pub = self.create_publisher(

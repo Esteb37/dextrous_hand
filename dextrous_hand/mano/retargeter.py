@@ -270,14 +270,9 @@ class Retargeter:
                     self.root
                 )
 
-            palm = (
-                chain_transforms[self.finger_to_base["thumb"]].transform_points(
+            palm = chain_transforms["palm"].transform_points(
                     self.root
                 )
-                + chain_transforms[self.finger_to_base["pinky"]].transform_points(
-                    self.root
-                )
-            ) / 2
 
             keyvectors_faive = retarget_utils.get_keyvectors(fingertips, palm)
             # norms_faive = {k: torch.norm(v) for k, v in keyvectors_faive.items()}
