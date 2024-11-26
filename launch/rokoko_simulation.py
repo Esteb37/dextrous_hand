@@ -54,6 +54,10 @@ def generate_launch_description():
             ]
         ),
 
+        DexNode("wrist_controller_node",
+                output="screen",
+        ),
+
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
@@ -63,14 +67,14 @@ def generate_launch_description():
             remappings=[('/joint_states', '/hand/joint_states')]
         ),
 
-        Node(package = "rviz2",
-             executable="rviz2",
-             name="rviz2",
-             arguments=["-d",
-                        os.path.join(parent_dir(),
-                                     "data",
-                                     "rviz",
-                                     "urdf.rviz")
-                        ],
-            ),
+        # Node(package = "rviz2",
+        #      executable="rviz2",
+        #      name="rviz2",
+        #      arguments=["-d",
+        #                 os.path.join(parent_dir(),
+        #                              "data",
+        #                              "rviz",
+        #                              "urdf.rviz")
+        #                 ],
+        #     ),
     ])

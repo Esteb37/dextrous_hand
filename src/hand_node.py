@@ -63,6 +63,7 @@ class HandNode(Node):
 
     def hand_config_callback(self, msg):
         HAND.write_config(HandConfig.from_msg(msg))
+        # TODO: edit config with the new wrist joint
 
         if not self.initialized:
             self.motor_bridge.connect()

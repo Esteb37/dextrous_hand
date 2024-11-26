@@ -34,6 +34,7 @@ class RetargeterNode(Node):
             Float32MultiArray, "/ingress/mano", self.ingress_mano_cb, 10
         )
 
+        # TODO: Subscribe to a new topic for wrist pose, coming from the hijacker node
         self.ingress_wrist = self.create_subscription(
             PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
         )
@@ -53,7 +54,7 @@ class RetargeterNode(Node):
             self.mano_hand_visualizer = ManoHandVisualizer(self.rviz_pub)
 
         self.keypoint_positions = None
-        self.wrist_position = [0, 0, 0]
+        self.wrist_position = np.array([0, 0, 0])
         self.wrist_orientation = [0, 0, 0, 1]
         self.wrist_initial_rotation = None
         self.wrist_initial_position = None
@@ -98,7 +99,7 @@ class RetargeterNode(Node):
 
 
         wrist_rotation = (R.from_quat(self.wrist_orientation) * self.wrist_initial_rotation.inv()).as_quat().tolist()
-        wrist_position = (self.wrist_position - self.wrist_initial_position).tolist() # type: ignore
+        wrist_position = (self.wrist_position - self.wrist_initial_position).tolist()
 
         wrist_joint = [0.0]
 
