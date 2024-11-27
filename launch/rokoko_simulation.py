@@ -27,6 +27,7 @@ def generate_launch_description():
                 {"rokoko_tracker/port": 14043},
                 {"rokoko_tracker/use_coil": True}
             ],
+                output="screen",
         ),
 
         DexNode("retargeter_node",
@@ -67,14 +68,14 @@ def generate_launch_description():
             remappings=[('/joint_states', '/hand/joint_states')]
         ),
 
-        # Node(package = "rviz2",
-        #      executable="rviz2",
-        #      name="rviz2",
-        #      arguments=["-d",
-        #                 os.path.join(parent_dir(),
-        #                              "data",
-        #                              "rviz",
-        #                              "urdf.rviz")
-        #                 ],
-        #     ),
+        Node(package = "rviz2",
+             executable="rviz2",
+             name="rviz2",
+             arguments=["-d",
+                        os.path.join(parent_dir(),
+                                     "data",
+                                     "rviz",
+                                     "urdf.rviz")
+                        ],
+            ),
     ])

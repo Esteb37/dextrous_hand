@@ -40,7 +40,7 @@ class ArmNode(Node):
         # TODO: Create an intermediate topic to publish the target pose, so that wrist rotation can be isolated from the rest of the arm
         # TODO: Create a new node to subscribe to the intermediate topic and publish to franka/end_effector_pose and 
         self.arm_publisher = self.create_publisher(
-            PoseStamped, "/arm_end_effector_cmd", 10
+            PoseStamped, "/franka/end_effector_pose_cmd", 10
         )
 
         self.tf_publisher = TransformBroadcaster(self)

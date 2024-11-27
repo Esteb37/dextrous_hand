@@ -8,7 +8,6 @@ from scipy.spatial.transform import Rotation
 
 
 MANO_KEYPOINTS_LIST = [
-    "rightLowerArm",
     "rightHand",
     "rightThumbProximal",
     "rightThumbMedial",
@@ -121,8 +120,6 @@ class RokokoTracker:
                 ]
             )
             for bone_name in MANO_KEYPOINTS_LIST:
-                if bone_name == "rightLowerArm":
-                    print("rightLowerArm", body_data[bone_name]["position"])
                 local_position = np.array(
                     [
                         body_data[bone_name]["position"]["x"],

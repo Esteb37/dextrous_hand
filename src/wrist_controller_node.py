@@ -13,18 +13,26 @@ class WristControllerNode(Node):
     def __init__(self):
         super().__init__('wrist_controller_node')
 
-        self.arm_frame_id = None
-        self.arm_pos = None
-        self.arm_quat = None
+        self.wrist_frame_id = None
+        self.wrist_pos = None
+        self.wrist_quat = None
+        self.elbow_frame_id = None
+        self.elbow_pos = None
+        self.elbow_quat = None
 
-        self.arm_cmd_sub = self.create_subscription(
+        self.wrist_sub = self.create_subscription(
             PoseStamped,
-            'arm_end_effector_cmd',
-            self.arm_cb,
+            'ingress/wrist',
+            self.wrist_cb,
+            10)
+        self.elbow_sub = self.create_subscription(
+            PoseStamped,
+            'ingress/elbow',
+            self.elbow_cb,
             10)
         
-        self.franka_publisher = self.create_publisher(PoseStamped, 'franka/end_effector_pose_cmd', 10)
         self.wrist_publisher = self.create_publisher(Float32, 'wrist_cmd', 10)
+        self.wrist_with_elbow_publisher = self.create_publisher(Float32, 'wrist_with_elbow_cmd', 10)
         # TODO 1: Create a simple WristController, sends all the wrist axis motion to the Franka / Hand
         # TODO 2: Subscribe to user input to allow for more custom control of the wrist between the Franka and Hand
         # Custom control : Either "wrist" (hand) priority, or "elbow" (franka) priority
@@ -38,34 +46,33 @@ class WristControllerNode(Node):
         # If we include user input, we would need to create a subscriber to the user input, and update the wrist_controller based on the user input
         # So wrist controller would have a method to update the priority based on the user input 
 
-
-
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
 
         self.get_logger().warn("Wrist controller node started")
 
-    def arm_cb(self, msg: PoseStamped):
-        self.arm_frame_id = msg.header.frame_id
-        self.arm_pos, self.arm_quat = pose_to_pos_orient(msg)
+    def wrist_cb(self, msg: PoseStamped):
+        self.wrist_frame_id = msg.header.frame_id
+        self.wrist_pos, self.wrist_quat = pose_to_pos_orient(msg)
         # self.get_logger().info('Received: "%s"' % msg)
 
+    def elbow_cb(self, msg: PoseStamped):
+        self.eblow_frame_id = msg.header.frame_id
+        self.elbow_pos, self.elbow_quat = pose_to_pos_orient(msg)
 
     def timer_publish_cb(self):
-        if self.arm_pos is None or self.arm_quat is None:
+        if self.wrist_pos is None or self.wrist_quat is None or self.elbow_pos is None or self.elbow_quat is None:
             # self.get_logger().info('No arm pose received yet')
             return
-        franka_pos_cmd, franka_quat_cmd, wrist_joint = self.wrist_controller.get_commands(self.arm_pos, self.arm_quat)
-        franka_msg = pos_orient_to_pose(franka_pos_cmd, franka_quat_cmd)
-        franka_msg.header.frame_id = self.arm_frame_id
-        franka_msg.header.stamp = self.get_clock().now().to_msg()
+        wrist_joint, wrist_with_elbow_joint = self.wrist_controller.get_wrist_command(self.wrist_pos, self.wrist_quat, self.elbow_quat)
 
         wrist_msg = Float32()
         wrist_msg.data = wrist_joint
 
-        # self.get_logger().info('Publishing Franka: "%s"' % franka_msg)
-        # self.get_logger().info('Publishing Wrist: "%s"' % wrist_msg.data)
-        self.franka_publisher.publish(franka_msg)
+        wrist_with_elbow_msg = Float32()
+        wrist_with_elbow_msg.data = wrist_with_elbow_joint
+
         self.wrist_publisher.publish(wrist_msg)
+        self.wrist_with_elbow_publisher.publish(wrist_with_elbow_msg)
 
 
 def main(args=None):
