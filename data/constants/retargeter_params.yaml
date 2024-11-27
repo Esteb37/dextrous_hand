@@ -51,7 +51,7 @@ keyvectors: [palm2thumb,
 # The  individual coefficient is multiplied by the keyvector error and added to the total loss
 # The higher the coefficient, the higher the impact of the keyvector
 loss_coeffs:
-  palm2thumb: 5.0
+  palm2thumb: 50.0
   palm2index: 5.0
   palm2middle: 5.0
   palm2ring: 5.0
@@ -70,6 +70,26 @@ loss_coeffs:
   ring2middle_mp: 5.0
   middle2index_mp: 5.0
 
+# Default: 1.0
+scale_coeffs:
+  palm2thumb: 0.5
+  palm2index: 1.0
+  palm2middle: 1.0
+  palm2ring: 1.0
+  palm2pinky: 1.0
+  thumb2index: 1.0
+  thumb2middle: 1.0
+  thumb2ring: 1.2
+  thumb2pinky: 1.0
+  index2middle: 1.0
+  index2ring: 1.0
+  index2pinky: 1.0
+  middle2ring: 1.0
+  middle2pinky: 1.0
+  ring2pinky: 1.0
+  pinky2ring_mp: 1.0
+  ring2middle_mp: 1.0
+  middle2index_mp: 1.0
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
 # I think they are either all true or all false, but in the original code palm2thumb was always false even if use_scalar_distance was true
