@@ -20,7 +20,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         DexNode("mujoco_node",
-                output="screen",
         ), 
 
         DexNode("retargeter_node",

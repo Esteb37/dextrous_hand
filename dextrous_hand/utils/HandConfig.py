@@ -278,7 +278,6 @@ class HandConfig:
         """
         Returns the hand configuration as a list of joint angles for Mujoco
         """
-        print(f"Wrist: {self.WRIST}")
         arr = np.array(
                     self.WRIST + \
                     self.THUMB + \

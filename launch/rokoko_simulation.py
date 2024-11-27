@@ -27,7 +27,6 @@ def generate_launch_description():
                 {"rokoko_tracker/port": 14043},
                 {"rokoko_tracker/use_coil": True}
             ],
-                output="screen",
         ),
 
         DexNode("retargeter_node",
