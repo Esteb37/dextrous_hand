@@ -86,21 +86,30 @@ class Finger(Subsystem):
         # elif motor_angle < 0 and self.static_slack[idx][1]<0:
         #     motor_angle+=self.static_slack[idx][1]/SPOOL_RADIUS
 
-        # if abs(motor_angle-self.previous_motor_angles[idx])>0.1:
-        #     previous_motor_dir = self.previous_motor_angles[idx] - self.previous_prev_motor_angles[idx]
-        #     if previous_motor_dir != 0:
-        #         previous_motor_dir = previous_motor_dir/abs(previous_motor_dir)
+        previous_motor_dir = self.previous_motor_angles[idx] - self.previous_prev_motor_angles[idx]
+        # if previous_motor_dir != 0:
+        #     previous_motor_dir = previous_motor_dir/abs(previous_motor_dir)
 
-        #     current_motor_dir = motor_angle - self.previous_motor_angles[idx]
-        #     if current_motor_dir != 0:
-        #         current_motor_dir = current_motor_dir/abs(current_motor_dir)
+        if previous_motor_dir <= 0:
+            previous_motor_dir = -1
+        else:
+            previous_motor_dir = 1
 
-        #     if motor_angle > previous_motor_dir != current_motor_dir:
-        #         slack_angle = current_motor_dir*4/SPOOL_RADIUS
-        #         motor_angle+=slack_angle
+        current_motor_dir = motor_angle - self.previous_motor_angles[idx]
+        # if current_motor_dir != 0:
+        #     current_motor_dir = current_motor_dir/abs(current_motor_dir)
+        
+        if current_motor_dir <= 0:
+            current_motor_dir = -1
+        else:
+            previous_motor_dir = 1
 
-        #     self.previous_prev_motor_angles[idx] = self.previous_motor_angles[idx]
-        #     self.previous_motor_angles[idx] = motor_angle
+        if motor_angle > previous_motor_dir != current_motor_dir:
+            slack_angle = current_motor_dir*4/SPOOL_RADIUS
+            motor_angle+=slack_angle
+
+        self.previous_prev_motor_angles[idx] = self.previous_motor_angles[idx]
+        self.previous_motor_angles[idx] = motor_angle
         return motor_angle
 
     def slack_into_account(self, motor_angle, idx):
