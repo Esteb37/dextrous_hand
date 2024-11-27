@@ -87,7 +87,7 @@ class Retargeter:
         self.n_tendons = len(
             GC_TENDONS
         )  # each tendon can be understand as the tendon drive by a motor individually
-        self.joint_map = torch.zeros(self.n_joints, self.n_tendons).to(self.device)
+        self. joint_map = torch.zeros(self.n_joints, self.n_tendons).to(self.device)
         self.finger_to_tip = FINGER_TO_TIP
         self.tendon_names = []
         joint_names_check = []
@@ -125,10 +125,11 @@ class Retargeter:
 
         self.root = torch.zeros(1, 3).to(self.device)
 
-        coeffs = list(RETARGETER_PARAMS["loss_coeffs"].values())
 
+        self.loss_coeffs = torch.tensor(list(RETARGETER_PARAMS["loss_coeffs"].values())).to(self.device)
 
-        self.loss_coeffs = torch.tensor(coeffs).to(self.device)
+        self.scale_coeffs = torch.tensor(list(RETARGETER_PARAMS["scale_coeffs"].values())).to(self.device)
+
 
         self.use_scalar_distance = list(RETARGETER_PARAMS["use_scalar_distance"].values())
 
@@ -298,6 +299,7 @@ class Retargeter:
             for i, (keyvector_faive, keyvector_mano) in enumerate(
                 zip(keyvectors_faive.values(), keyvectors_mano.values())
             ):
+                keyvector_faive *= self.scale_coeffs[i]
                 if not self.use_scalar_distance[i]:
                     loss += (
                         self.loss_coeffs[i]

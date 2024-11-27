@@ -35,8 +35,6 @@ def generate_launch_description():
             ]
         ),
 
-        DexNode("mujoco_node"),
-
         DexNode("visualize_joints_node",
                 output="screen",
             parameters=[
