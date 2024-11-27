@@ -83,3 +83,5 @@ GC_LIMITS_LOWER = np.array(
 GC_LIMITS_UPPER = np.array(
     [rng[1] for rng in RETARGETER_PARAMS["joint_ranges"].values()]
 )
+
+WRIST_NAME = "retarget_palm"
