@@ -71,7 +71,7 @@ class RokokoNode(Node):
             wrist_pos, wrist_rot = wrist_pose
             # Create a PoseStamped message
             wrist_msg = PoseStamped()
-            wrist_msg.header.frame_id = "coil"
+            wrist_msg.header.frame_id = "coil_pro"
             wrist_msg.header.stamp = self.get_clock().now().to_msg()
 
             # Assign position using Point
@@ -90,7 +90,7 @@ class RokokoNode(Node):
             elbow_pos, elbow_rot = elbow_pose
 
             elbow_msg = PoseStamped()
-            elbow_msg.header.frame_id = "coil"
+            elbow_msg.header.frame_id = "coil_pro"
             elbow_msg.header.stamp = self.get_clock().now().to_msg()
             
             elbow_msg.pose.position = Point(    
