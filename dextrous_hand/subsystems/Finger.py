@@ -85,16 +85,22 @@ class Finger(Subsystem):
         #     motor_angle-=self.static_slack[idx][0]/SPOOL_RADIUS
         # elif motor_angle < 0 and self.static_slack[idx][1]<0:
         #     motor_angle+=self.static_slack[idx][1]/SPOOL_RADIUS
-        previous_motor_dir = self.previous_motor_angles[idx] - self.previous_prev_motor_angles[idx]
-        previous_motor_dir = previous_motor_dir/abs(previous_motor_dir)
 
-        current_motor_dir = motor_angle - self.previous_motor_angles[idx]
-        current_motor_dir = current_motor_dir/abs(current_motor_dir)
+        # if abs(motor_angle-self.previous_motor_angles[idx])>0.1:
+        #     previous_motor_dir = self.previous_motor_angles[idx] - self.previous_prev_motor_angles[idx]
+        #     if previous_motor_dir != 0:
+        #         previous_motor_dir = previous_motor_dir/abs(previous_motor_dir)
 
-        if motor_angle > previous_motor_dir != current_motor_dir:
-            slack_angle = current_motor_dir*4/SPOOL_RADIUS
-            motor_angle+=slack_angle
+        #     current_motor_dir = motor_angle - self.previous_motor_angles[idx]
+        #     if current_motor_dir != 0:
+        #         current_motor_dir = current_motor_dir/abs(current_motor_dir)
 
+        #     if motor_angle > previous_motor_dir != current_motor_dir:
+        #         slack_angle = current_motor_dir*4/SPOOL_RADIUS
+        #         motor_angle+=slack_angle
+
+        #     self.previous_prev_motor_angles[idx] = self.previous_motor_angles[idx]
+        #     self.previous_motor_angles[idx] = motor_angle
         return motor_angle
 
     def slack_into_account(self, motor_angle, idx):
@@ -102,7 +108,7 @@ class Finger(Subsystem):
         #     motor_angle-=self.motor_slack[idx][0]/SPOOL_RADIUS
         # elif motor_angle < 0 and self.motor_slack[idx][1]<0:
         #     motor_angle+=self.motor_slack[idx][1]/SPOOL_RADIUS
-        return motor_angle*1.5
+        return motor_angle*1.2
 
     def update_slack(self, motor_angle, slack, idx):
         if motor_angle > 0:
@@ -193,66 +199,22 @@ class Finger(Subsystem):
         motor_angle_1 = dl_m1/SPOOL_RADIUS
         motor_angle_2 = dl_m2/SPOOL_RADIUS
 
-
         # take salck into account
         motor_angle_1 = self.slack_into_account(motor_angle_1, 0)
         motor_angle_2 = self.slack_into_account(motor_angle_2, 1)
-        """
-        if motor_angle_1 > 0 and self.motor_slack[0][0]<0:
-            motor_angle_1-=self.motor_slack[0][0]/SPOOL_RADIUS
-        elif motor_angle_1 < 0 and self.motor_slack[0][1]<0:
-            motor_angle_1+=self.motor_slack[0][1]/SPOOL_RADIUS
-        if motor_angle_2 > 0 and self.motor_slack[1][0]<0:
-            motor_angle_2-=self.motor_slack[1][0]/SPOOL_RADIUS
-        elif motor_angle_2 < 0 and self.motor_slack[1][1]<0:
-            motor_angle_2+=self.motor_slack[1][1]/SPOOL_RADIUS
-        """
+
         # take static salck into account
         motor_angle_1 = self.static_slack_into_account(motor_angle_1, 0)
         motor_angle_2 = self.static_slack_into_account(motor_angle_2, 1)
-        """
-        if motor_angle_1 > 0 and self.motor_slack[0][0]<0:
-            motor_angle_1-=self.static_slack[0][0]/SPOOL_RADIUS
-        elif motor_angle_1 < 0 and self.static_slack[0][1]<0:
-            motor_angle_1+=self.static_slack[0][1]/SPOOL_RADIUS
-        if motor_angle_2 > 0 and self.motor_slack[1][0]<0:
-            motor_angle_2-=self.motor_slack[1][0]/SPOOL_RADIUS
-        elif motor_angle_2 < 0 and self.motor_slack[1][1]<0:
-            motor_angle_2+=self.motor_slack[1][1]/SPOOL_RADIUS
-        """
 
-        # update the slack in the system
-        self.update_slack(motor_angle_1, s_m1, 0)
-        self.update_slack(motor_angle_2, s_m2, 1)
+        # # update the slack in the system
+        # self.update_slack(motor_angle_1, s_m1, 0)
+        # self.update_slack(motor_angle_2, s_m2, 1)
 
-        """
-        if motor_angle_1 > 0:
-            self.motor_slack[0] = [0,s_m1]
-        else:
-            self.motor_slack[0] = [s_m1,0]
+        # # update the static slack side
+        # self.update_static_slack(motor_angle_1, 0)
+        # self.update_static_slack(motor_angle_2, 1)
 
-        if motor_angle_2 > 0:
-            self.motor_slack[1] = [0,s_m2]
-        else:
-            self.motor_slack[1] = [s_m2,0]
-        """
-
-        # update the static slack side
-        self.update_static_slack(motor_angle_1, 0)
-        self.update_static_slack(motor_angle_2, 1)
-        """
-        static_slack = self.static_slack[0][0] + self.static_slack[0][1]
-        if motor_angle_1 > 0:
-            self.static_slack[0] = [0,static_slack]
-        else:
-            self.static_slack[0] = [static_slack,0]
-
-        static_slack = self.static_slack[1][0] + self.static_slack[1][1]
-        if motor_angle_2 > 0:
-            self.static_slack[1] = [0,static_slack]
-        else:
-            self.static_slack[1] = [static_slack,0]
-        """
         return motor_angle_1, motor_angle_2
 
     def single_motor(self, virtual_tendon_pip, idx):
