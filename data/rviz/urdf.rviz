@@ -10,6 +10,7 @@ Panels:
         - /RobotModel1/Description Topic1
         - /Pose1
         - /Pose2
+        - /Pose3
       Splitter Ratio: 0.5
     Tree Height: 1151
   - Class: rviz_common/Selection
@@ -99,7 +100,7 @@ Visualization Manager:
       Head Radius: 0.30000001192092896
       Name: Pose
       Shaft Length: 0.800000011920929
-      Shaft Radius: 0.5
+      Shaft Radius: 0.30000001192092896
       Shape: Arrow
       Topic:
         Depth: 5
@@ -126,7 +127,7 @@ Visualization Manager:
       Head Radius: 0.30000001192092896
       Name: Pose
       Shaft Length: 0.800000011920929
-      Shaft Radius: 0.5
+      Shaft Radius: 0.30000001192092896
       Shape: Arrow
       Topic:
         Depth: 5
@@ -135,6 +136,26 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /ingress/wrist
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Pose
+      Color: 38; 162; 105
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.30000001192092896
+      Name: Pose
+      Shaft Length: 0.800000011920929
+      Shaft Radius: 0.30000001192092896
+      Shape: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /wrist_difference
       Value: true
   Enabled: true
   Global Options:
@@ -197,10 +218,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.21979816257953644
+      Pitch: 0.3647982180118561
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.278574466705322
+      Yaw: 5.918551445007324
     Saved: ~
 Window Geometry:
   Displays:

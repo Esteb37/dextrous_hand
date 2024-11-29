@@ -31,6 +31,10 @@ class WristControllerNode(Node):
             10)
         
         self.wrist_publisher = self.create_publisher(Float32, 'wrist_cmd', 10)
+        self.wrist_x_publisher = self.create_publisher(PoseStamped, 'wrist_x', 10)
+        self.elbow_x_publisher = self.create_publisher(PoseStamped, 'elbow_x', 10)
+        # self.wrist_2_publisher = self.create_publisher(Float32, 'wrist_2_cmd', 10)
+        # self.wrist_3_publisher = self.create_publisher(Float32, 'wrist_3_cmd', 10)
 
         self.wrist_controller = WristController()
 
@@ -40,7 +44,12 @@ class WristControllerNode(Node):
 
     def wrist_cb(self, msg: PoseStamped):
         self.wrist_frame_id = msg.header.frame_id
-        self.wrist_pos, self.wrist_quat = pose_to_pos_orient(msg)
+        if self.wrist_pos is None or self.wrist_quat is None:
+            self.wrist_pos, self.wrist_quat = pose_to_pos_orient(msg)
+            self.wrist_pos_init = self.wrist_pos
+            self.wrist_quat_init = self.wrist_quat
+        else:
+            self.wrist_pos, self.wrist_quat = pose_to_pos_orient(msg)
 
     def elbow_cb(self, msg: PoseStamped):
         self.eblow_frame_id = msg.header.frame_id
@@ -49,12 +58,45 @@ class WristControllerNode(Node):
     def timer_publish_cb(self):
         if self.wrist_pos is None or self.wrist_quat is None or self.elbow_pos is None or self.elbow_quat is None:
             return
-        wrist_joint = self.wrist_controller.get_wrist_command(self.wrist_pos, self.wrist_quat, self.elbow_quat)
+        # wrist_joint, wrist_x_quat, elbow_x_quat = self.wrist_controller.get_wrist_command(self.wrist_quat_init, self.wrist_quat, self.elbow_quat)
+        wrist_joint, wrist_to_elbow_in_coil_frame_quat = self.wrist_controller.get_wrist_command(self.wrist_quat_init, self.wrist_quat, self.elbow_quat)
 
         wrist_msg = Float32()
         wrist_msg.data = wrist_joint
 
+        # wrist_2_msg = Float32()
+        # wrist_2_msg.data = wrist_joint2
+
+        # wrist_3_msg = Float32()
+        # wrist_3_msg.data = wrist_joint_3
+
+        difference_quat = PoseStamped()
+        difference_quat.header.frame_id = self.wrist_frame_id
+        difference_quat.pose.position.x = self.wrist_pos[0]
+        difference_quat.pose.position.y = self.wrist_pos[1]
+        difference_quat.pose.position.z = self.wrist_pos[2]
+
+        difference_quat.pose.orientation.x = wrist_to_elbow_in_coil_frame_quat[0]
+        difference_quat.pose.orientation.y = wrist_to_elbow_in_coil_frame_quat[1]
+        difference_quat.pose.orientation.z = wrist_to_elbow_in_coil_frame_quat[2]
+        difference_quat.pose.orientation.w = wrist_to_elbow_in_coil_frame_quat[3]
+
+        # elbow_x = PoseStamped()
+        # elbow_x.header.frame_id = self.wrist_frame_id
+        # elbow_x.pose.position.x = self.elbow_pos[0]
+        # elbow_x.pose.position.y = self.elbow_pos[1]
+        # elbow_x.pose.position.z = self.elbow_pos[2]
+
+        # elbow_x.pose.orientation.x = elbow_x_quat[0]
+        # elbow_x.pose.orientation.y = elbow_x_quat[1]
+        # elbow_x.pose.orientation.z = elbow_x_quat[2]
+        # elbow_x.pose.orientation.w = elbow_x_quat[3]        
+
         self.wrist_publisher.publish(wrist_msg)
+        self.wrist_x_publisher.publish(difference_quat)
+        # self.elbow_x_publisher.publish(elbow_x)
+        # self.wrist_2_publisher.publish(wrist_2_msg)
+        # self.wrist_3_publisher.publish(wrist_3_msg)
 
 def main(args=None):
     rclpy.init(args=args)
