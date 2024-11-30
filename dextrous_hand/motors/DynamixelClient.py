@@ -444,6 +444,7 @@ class DynamixelClient:
         for i, motor in enumerate(self.motors):
             motor.dxl_angle = self._pos_vel_cur_reader._pos_data[i]
             motor.dxl_current = float(self._pos_vel_cur_reader._cur_data[i])
+            motor.dxl_velocity = float(self._pos_vel_cur_reader._vel_data[i])
 
     def write_targets(self):
         """Writes the target positions to all motors."""
@@ -483,6 +484,24 @@ class DynamixelClient:
                 motor.direction = -1
 
         return self.motors
+
+    def read_targets(self):
+        return [motor.target for motor in self.motors]
+
+    def read_dxl_targets(self):
+        return [motor.dxl_target for motor in self.motors]
+
+    def read_currents(self):
+        return [motor.dxl_current for motor in self.motors]
+
+    def read_velocities(self):
+        return [motor.dxl_velocity for motor in self.motors]
+
+    def read_dxl_positions(self):
+        return [motor.dxl_angle for motor in self.motors]
+
+    def read_positions(self):
+        return [motor.angle for motor in self.motors]
 
     def __enter__(self):
         """Enables use as a context manager."""

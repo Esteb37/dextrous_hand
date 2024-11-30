@@ -57,7 +57,17 @@ class HandNode(Node):
         self.arm_msg = HAND.read_current_config().pose_msg()
         self.arm_subscription = self.create_subscription(PoseStamped,'/franka/end_effector_pose',self.arm_config_callback,10)
 
-        self.current_publishers = [self.create_publisher(Float32, "current/"+motor.name, 10) for motor in self.motor_bridge.motors]
+        self.current_hand_config = self.create_publisher(Float32MultiArray, '/current_hand_config', 10)
+
+        self.motor_target_publisher = self.create_publisher(Float32MultiArray, '/motors/target/positions', 10)
+        self.motor_dxl_target_publisher = self.create_publisher(Float32MultiArray, '/motors/target/dxl_positions', 10)
+        self.motor_read_publisher = self.create_publisher(Float32MultiArray, '/motors/read/positions', 10)
+        self.motor_dxl_read_publisher = self.create_publisher(Float32MultiArray, '/motors/read/dxl_positions', 10)
+        self.motor_current_read_publisher = self.create_publisher(Float32MultiArray, '/motors/read/dxl_currents', 10)
+        self.motor_velocity_read_publisher = self.create_publisher(Float32MultiArray, '/motors/read/dxl_velocities', 10)
+        self.motor_read_publishers = [self.motor_read_publisher, self.motor_dxl_read_publisher, self.motor_velocity_read_publisher, self.motor_current_read_publisher]
+
+        self.current_publishers = [self.create_publisher(Float32, "/motors/current/"+motor.name, 10) for motor in self.motor_bridge.motors]
 
         self.get_logger().warn('Hand node started, waiting for hand config...')
 
@@ -88,6 +98,33 @@ class HandNode(Node):
             # This needs to be called before calling read_config
             self.motor_bridge.update_positions()
             HAND.update_arm_pose(self.arm_msg)
+
+            self.current_hand_config.publish(HAND.read_current_config().as_msg())
+
+            motor_positions = Float32MultiArray()
+            motor_positions.data = self.motor_bridge.read_positions()
+            self.motor_read_publisher.publish(motor_positions)
+
+            motor_dxl_positions = Float32MultiArray()
+            motor_dxl_positions.data = self.motor_bridge.read_dxl_positions()
+            self.motor_dxl_read_publisher.publish(motor_dxl_positions)
+
+            motor_velocities = Float32MultiArray()
+            motor_velocities.data = self.motor_bridge.read_velocities()
+            self.motor_velocity_read_publisher.publish(motor_velocities)
+
+            motor_currents = Float32MultiArray()
+            motor_currents.data = self.motor_bridge.read_currents()
+            self.motor_current_read_publisher.publish(motor_currents)
+
+            motor_targets = Float32MultiArray()
+            motor_targets.data = self.motor_bridge.read_targets()
+            self.motor_target_publisher.publish(motor_targets)
+
+            motor_dxl_targets = Float32MultiArray()
+            motor_dxl_targets.data = self.motor_bridge.read_dxl_targets()
+            self.motor_dxl_target_publisher.publish(motor_dxl_targets)
+
 
     def print(self):
         if self.initialized:
