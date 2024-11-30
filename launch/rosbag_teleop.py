@@ -34,6 +34,10 @@ def generate_launch_description():
             ]
         ),
 
+        DexNode("wrist_controller_node",
+                output="screen",
+        ),
+
         Node(package = "rviz2",
              executable="rviz2",
              name="rviz2",
