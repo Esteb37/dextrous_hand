@@ -486,22 +486,22 @@ class DynamixelClient:
         return self.motors
 
     def read_targets(self):
-        return [motor.target for motor in self.motors]
+        return [float(motor.target) for motor in self.motors]
 
     def read_dxl_targets(self):
-        return [motor.dxl_target for motor in self.motors]
+        return [float(motor.dxl_target) for motor in self.motors]
 
     def read_currents(self):
-        return [motor.dxl_current for motor in self.motors]
+        return [float(motor.dxl_current) for motor in self.motors]
 
     def read_velocities(self):
-        return [motor.dxl_velocity for motor in self.motors]
+        return [float(motor.dxl_velocity) for motor in self.motors]
 
     def read_dxl_positions(self):
-        return [motor.dxl_angle for motor in self.motors]
+        return [float(motor.dxl_angle) for motor in self.motors]
 
     def read_positions(self):
-        return [motor.angle for motor in self.motors]
+        return [float(motor.angle) for motor in self.motors]
 
     def __enter__(self):
         """Enables use as a context manager."""

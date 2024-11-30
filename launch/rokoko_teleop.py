@@ -20,6 +20,8 @@ def generate_launch_description():
     return LaunchDescription([
         DexNode("hand_node"),
 
+        DexNode("mujoco_node"),
+
         DexNode("rokoko_node",
             parameters=[
                 {"rokoko_tracker/ip": "0.0.0.0"},
@@ -52,6 +54,10 @@ def generate_launch_description():
                     "scheme_hh.yaml",
                 )}
             ]
+        ),
+
+        DexNode("wrist_controller_node",
+                output="screen",
         ),
 
         Node(

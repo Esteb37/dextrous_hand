@@ -2,106 +2,106 @@
 PI: &pi 3.141592
 MPI: &mpi -3.141592
 FULL_RANGE: &full_range [*mpi, *pi]
-MAX_CURRENT: 600
+MAX_CURRENT: 400
 
 THUMB_ABD:
   port: 3
-  zero: 5.437755584716797
+  zero: 5.379449844360352
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 4.286988735198975
+  zero: 4.236355304718018
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 15
-  zero: 2.3567698001861572
+  zero: 2.082120180130005
   direction: -1
   range: *full_range
 
 THUMB_DIP:
   port: 14
-  zero: 3.840491533279419
+  zero: 3.855835199356079
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 8
-  zero: 2.705068588256836
+  zero: 2.748030424118042
   direction: -1
   range: *full_range
 
 INDEX_FLBR:
   port: 12
-  zero: 4.5186767578125
+  zero: 4.458836555480957
   direction: -1
   range: *full_range
 
 INDEX_FMBM:
   port: 5
-  zero: 3.403200149536133
+  zero: 3.4246811866760254
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 16
-  zero: 1.3471640348434448
+  zero: 1.2581714391708374
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 7
-  zero: 3.717743158340454
+  zero: 3.860438108444214
   direction: 1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 6
-  zero: 3.4722461700439453
+  zero: 3.5857884883880615
   direction: -1
   range: *full_range
 
 RING_FRBL:
   port: 10
-  zero: 5.124746799468994
+  zero: 4.891524791717529
   direction: -1
   range: *full_range
 
 RING_FLBR:
   port: 11
-  zero: 3.6655750274658203
+  zero: 3.9018657207489014
   direction: 1
   range: *full_range
 
 RING_FMBM:
   port: 9
-  zero: 4.046095371246338
+  zero: 4.096728801727295
   direction: -1
   range: *full_range
 
 PINKY_FRBL:
   port: 1
-  zero: 4.5754475593566895
+  zero: 4.652165412902832
   direction: 1
   range: *full_range
 
 PINKY_FLBR:
   port: 2
-  zero: 2.7434275150299072
+  zero: 2.6114728450775146
   direction: -1
   range: *full_range
 
 PINKY_FMBM:
   port: 0
-  zero: 5.03268575668335
+  zero: 5.268976211547852
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 3.0226800441741943
+  zero: 2.6835875511169434
   direction: -1
   range: [-6.18, 6.18]

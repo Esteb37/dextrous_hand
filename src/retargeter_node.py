@@ -4,6 +4,7 @@ import numpy as np
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float32
 from visualization_msgs.msg import MarkerArray
 from tf2_ros import TransformBroadcaster, TransformStamped
 from scipy.spatial.transform import Rotation as R
@@ -37,12 +38,16 @@ class RetargeterNode(Node):
             Float32MultiArray, "/ingress/mano", self.ingress_mano_cb, 10
         )
 
+        # TODO: Subscribe to a new topic for wrist pose, coming from the hijacker node
         self.ingress_wrist = self.create_subscription(
             PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
         )
 
-        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme
+        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme)
+        self.wrist_cmd_sub = self.create_subscription(
+            Float32, "/wrist_cmd", self.wrist_cmd_cb, 10
         )
+
 
         self.joints_pub = self.create_publisher(
             Float32MultiArray, "/hand/policy_output", 10
@@ -62,6 +67,7 @@ class RetargeterNode(Node):
         self.wrist_orientation = [0.0, 0.0, 0.0, 1.0]
         self.wrist_initial_rotation = None
         self.wrist_initial_position = None
+        self.wrist_joint_cmd = None
 
         self.timer = self.create_timer(0.005, self.timer_publish_cb)
 
@@ -75,6 +81,9 @@ class RetargeterNode(Node):
     def ingress_wrist_cb(self, msg):
         self.wrist_orientation = np.array([msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w])
         self.wrist_position = np.array([msg.pose.position.x, msg.pose.position.y, msg.pose.position.z])
+
+    def wrist_cmd_cb(self, msg):
+        self.wrist_joint_cmd = float(msg.data)
 
     def timer_publish_cb(self):
         if self.keypoint_positions is None:
@@ -112,11 +121,18 @@ class RetargeterNode(Node):
 
         joint_rads = np.deg2rad(joint_angles)
 
-        if self.wrist_initial_position is None or self.wrist_initial_rotation is None:
-            self.wrist_initial_position = self.wrist_position
-            self.wrist_initial_rotation = R.from_quat(self.wrist_orientation)
+        # if self.wrist_initial_position is None or self.wrist_initial_rotation is None:
+        #     self.wrist_initial_position = self.wrist_position
+        #     self.wrist_initial_rotation = R.from_quat(self.wrist_orientation)
 
-        wrist_joint = [0.0]
+
+        # wrist_rotation = (R.from_quat(self.wrist_orientation) * self.wrist_initial_rotation.inv()).as_quat().tolist()
+        # wrist_position = (self.wrist_position - self.wrist_initial_position).tolist()
+
+        if self.wrist_joint_cmd is None:
+            wrist_joint = [0.0]
+        else:
+            wrist_joint = [self.wrist_joint_cmd]
 
         if self.hand_scheme == "hh":
             hand_config = HandConfig(WRIST = wrist_joint,
@@ -124,7 +140,7 @@ class RetargeterNode(Node):
                                     RING = joint_rads[10:13],
                                     MIDDLE = joint_rads[7:10],
                                     INDEX = joint_rads[4:7],
-                                    THUMB = joint_rads[0:4]
+                                    THUMB = joint_rads[0:4],
                                     )
         else:
             hand_config = HandConfig(WRIST = wrist_joint,
