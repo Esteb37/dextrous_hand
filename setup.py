@@ -37,6 +37,7 @@ setup(
             'mujoco_controller_node = src.mujoco_controller_node:main',
             'wrist_controller_node = src.wrist_controller_node:main',
             'logger_node = src.logger_node:main',
+            'arduino_node = src.arduino_node:main',
         ],
     },
 )
