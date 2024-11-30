@@ -77,12 +77,24 @@ class RokokoTracker:
             self.wrist_position = wrist_position.copy()
             self.wrist_quat = wrist_quat.copy()
 
+    def set_elbow_pose(self, elbow_position, elbow_quat):
+        with self.wrist_lock:
+            self.elbow_position = elbow_position.copy()
+            self.elbow_quat = elbow_quat.copy()
+
     def get_wrist_pose(self):
         with self.wrist_lock:
             if self.wrist_position is None or self.wrist_quat is None:
                 KeyError("No wrist pose available")
                 return None
             return self.wrist_position.copy(), self.wrist_quat.copy()
+        
+    def get_elbow_pose(self):
+        with self.wrist_lock:
+            if self.elbow_position is None or self.elbow_quat is None:
+                KeyError("No elbow pose available")
+                return None
+            return self.elbow_position.copy(), self.elbow_quat.copy()
 
     def read_rokoko_data(self):
         while self.keep_running:
@@ -154,6 +166,40 @@ class RokokoTracker:
                 wrist_quat = wrist_rot.as_quat()
                 self.set_wrist_pose(wrist_position, wrist_quat)
 
+                elbow_position = np.array(
+                    [
+                        body_data["rightLowerArm"]["position"]["x"],
+                        body_data["rightLowerArm"]["position"]["y"],
+                        body_data["rightLowerArm"]["position"]["z"],
+                    ]
+                )
+                # invert z axis since rokoko uses left handed coordinate system
+                elbow_position[2] = -elbow_position[2]
+
+                # invert sign on x, y, z since rokoko uses left handed coordinate system. ref: https://stackoverflow.com/a/28683097
+                elbow_rot = Rotation.from_quat(
+                    np.array(
+                        [
+                            body_data["rightLowerArm"]["rotation"]["x"],
+                            body_data["rightLowerArm"]["rotation"]["y"],
+                            body_data["rightLowerArm"]["rotation"]["z"],
+                            body_data["rightLowerArm"]["rotation"]["w"],
+                        ]
+                    )
+                )
+                # invert sign on x, y, z since rokoko uses left handed coordinate system. ref: https://stackoverflow.com/a/28683097
+                # elbow_quat = np.array([elbow_quat[0], elbow_quat[1], elbow_quat[2], elbow_quat[3]])
+                # from quaternion to rotation matrix
+                # elbow_rot = R.from_quat(elbow_quat).as_matrix()
+                #  rotation matrix 180 degrees around z axis
+                R_z_180 = Rotation.from_matrix(
+                    np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])
+                )
+                elbow_rot = R_z_180 * elbow_rot
+                elbow_quat = elbow_rot.as_quat()
+                self.set_elbow_pose(elbow_position, elbow_quat)
+
+
 
 if __name__ == "__main__":
 
@@ -168,6 +214,7 @@ if __name__ == "__main__":
             print("keypoint positions", tracker.get_keypoint_positions())
             if use_coil:
                 print("wrist", tracker.get_wrist_pose())
+                print("elbow", tracker.get_elbow_pose())
 
     t = threading.Thread(target=worker)
     input("Press any key to start, then press any key to stop")

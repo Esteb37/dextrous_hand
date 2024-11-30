@@ -19,6 +19,7 @@ def generate_launch_description():
         robot_desc = infp.read()
 
     return LaunchDescription([
+        DexNode("mujoco_node"),
 
         DexNode("rokoko_node",
             parameters=[
@@ -52,6 +53,10 @@ def generate_launch_description():
                     "scheme_hh.yaml",
                 )}
             ]
+        ),
+
+        DexNode("wrist_controller_node",
+                output="screen",
         ),
 
         Node(

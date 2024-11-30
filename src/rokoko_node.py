@@ -42,6 +42,9 @@ class RokokoNode(Node):
         self.ingress_wrist_pub = self.create_publisher(
             PoseStamped, "/ingress/wrist", 10
         )
+        self.ingress_elbow_pub = self.create_publisher(
+            PoseStamped, "/ingress/elbow", 10
+        )
         self.debug = debug
 
         self.get_logger().warn("Rokoko Node started")
@@ -68,7 +71,7 @@ class RokokoNode(Node):
             wrist_pos, wrist_rot = wrist_pose
             # Create a PoseStamped message
             wrist_msg = PoseStamped()
-            wrist_msg.header.frame_id = "coil"
+            wrist_msg.header.frame_id = "coil_pro"
             wrist_msg.header.stamp = self.get_clock().now().to_msg()
 
             # Assign position using Point
@@ -81,8 +84,25 @@ class RokokoNode(Node):
                 x=wrist_rot[0], y=wrist_rot[1], z=wrist_rot[2], w=wrist_rot[3]
             )
 
+            elbow_pose = self.tracker.get_elbow_pose()
+            if elbow_pose is None:
+                return
+            elbow_pos, elbow_rot = elbow_pose
+
+            elbow_msg = PoseStamped()
+            elbow_msg.header.frame_id = "coil_pro"
+            elbow_msg.header.stamp = self.get_clock().now().to_msg()
+            
+            elbow_msg.pose.position = Point(    
+                x=elbow_pos[0], y=elbow_pos[1], z=elbow_pos[2]
+            )
+            elbow_msg.pose.orientation = Quaternion(
+                x=elbow_rot[0], y=elbow_rot[1], z=elbow_rot[2], w=elbow_rot[3]
+            )
+
             # Publish the message
             self.ingress_wrist_pub.publish(wrist_msg)
+            self.ingress_elbow_pub.publish(elbow_msg)
 
 
 def main(args=None):
