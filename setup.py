@@ -35,6 +35,7 @@ setup(
             'rokoko_node = src.rokoko_node:main',
             'arm_node = src.arm_node:main',
             'mujoco_controller_node = src.mujoco_controller_node:main',
+            'wrist_controller_node = src.wrist_controller_node:main',
         ],
     },
 )
