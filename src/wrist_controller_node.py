@@ -31,10 +31,7 @@ class WristControllerNode(Node):
             10)
         
         self.wrist_publisher = self.create_publisher(Float32, 'wrist_cmd', 10)
-        self.wrist_x_publisher = self.create_publisher(PoseStamped, 'wrist_x', 10)
-        self.elbow_x_publisher = self.create_publisher(PoseStamped, 'elbow_x', 10)
-        # self.wrist_2_publisher = self.create_publisher(Float32, 'wrist_2_cmd', 10)
-        # self.wrist_3_publisher = self.create_publisher(Float32, 'wrist_3_cmd', 10)
+        self.wrist_difference_publisher = self.create_publisher(PoseStamped, 'wrist_difference', 10)
 
         self.wrist_controller = WristController()
 
@@ -93,7 +90,7 @@ class WristControllerNode(Node):
         # elbow_x.pose.orientation.w = elbow_x_quat[3]        
 
         self.wrist_publisher.publish(wrist_msg)
-        self.wrist_x_publisher.publish(difference_quat)
+        self.wrist_difference_publisher.publish(difference_quat)
         # self.elbow_x_publisher.publish(elbow_x)
         # self.wrist_2_publisher.publish(wrist_2_msg)
         # self.wrist_3_publisher.publish(wrist_3_msg)
