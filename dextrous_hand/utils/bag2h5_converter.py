@@ -53,7 +53,7 @@ def convert_to_h5(input_bag_path: str, output_h5_path: str):
             # Save message data to HDF5 based on the message type
             if isinstance(msg, Float32MultiArray):
                 # For Float32MultiArray, save the data array
-                h5_file[topic_name].create_dataset(f"{timestamp}", data=msg.data)
+                h5_file[topic_name].create_dataset(f"{timestamp}", data=msg.data)  # type: ignore
 
             elif isinstance(msg, PoseStamped):
                 # For PoseStamped, save position and orientation data
@@ -61,17 +61,17 @@ def convert_to_h5(input_bag_path: str, output_h5_path: str):
                     msg.pose.position.x, msg.pose.position.y, msg.pose.position.z,
                     msg.pose.orientation.x, msg.pose.orientation.y, msg.pose.orientation.z, msg.pose.orientation.w
                 ]
-                h5_file[topic_name].create_dataset(f"{timestamp}", data=pose_data)
+                h5_file[topic_name].create_dataset(f"{timestamp}", data=pose_data)  # type: ignore
 
             elif isinstance(msg, Image):
                 # For Image, save the raw image data array
                 msg_shape = (msg.height, msg.width, msg.step)
                 cv_image = bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-                h5_file[topic_name].create_dataset(f"{timestamp}", data=cv_image)
+                h5_file[topic_name].create_dataset(f"{timestamp}", data=cv_image)  # type: ignore
 
             elif isinstance(msg, String):
                 # For String, save the string data
-                h5_file[topic_name].create_dataset("description", data=msg.data)
+                h5_file[topic_name].create_dataset("description", data=msg.data)  # type: ignore
 
 
             else:

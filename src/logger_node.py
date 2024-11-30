@@ -124,7 +124,7 @@ class DemoLogger(Node):
                 self.create_subscription(
                     topic_type,
                     topic_name,
-                    lambda msg, topic_name=topic_name: self.writer.write(
+                    lambda msg, topic_name=topic_name: self.writer.write( # type: ignore
                         topic_name, serialize_message(msg), self.get_clock().now().nanoseconds
                     ),
                     qos_profile if "intrinsics" in topic_name or "extrinsics" in topic_name or "projection"in topic_name  else 10,

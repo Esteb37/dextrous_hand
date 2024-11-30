@@ -36,6 +36,8 @@ setup(
             'arm_node = src.arm_node:main',
             'mujoco_controller_node = src.mujoco_controller_node:main',
             'logger_node = src.logger_node:main',
+            'oakd_node = src.oakd_node:main',
+            'wrist_controller_node = src.wrist_controller_node:main',
         ],
     },
 )
