@@ -107,6 +107,7 @@ class HandNode(Node):
             self.motor_read_publisher.publish(motor_positions)
 
             motor_dxl_positions = Float32MultiArray()
+            # self.get_logger().info(f"motor_dxl_positions.data: {self.motor_bridge.read_dxl_positions()}")
             motor_dxl_positions.data = self.motor_bridge.read_dxl_positions()
             self.motor_dxl_read_publisher.publish(motor_dxl_positions)
 
