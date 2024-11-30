@@ -48,7 +48,7 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
             if topic in input_h5:
                 if topic == "/task_description":
                     continue
-                timestamps = np.array(list(map(int, input_h5[topic].keys())))
+                timestamps = np.array(list(map(int, input_h5[topic].keys())))  # type: ignore
                 if start_time is None or timestamps[0] < start_time:
                     start_time = timestamps[0]
                 if end_time is None or timestamps[-1] > end_time:
@@ -70,11 +70,11 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
 
             if topic == "/task_description":
                 if TOPIC_TO_STRING[topic_type] == "String":
-                    string_data = topic_group["description"]
+                    string_data = topic_group["description"]  # type: ignore
                     output_h5.create_dataset("task_description", data=string_data)
                 continue
 
-            topic_timestamps = np.array(list(map(int, topic_group.keys())))
+            topic_timestamps = np.array(list(map(int, topic_group.keys())))  # type: ignore
             topic_timestamps.sort()
 
             if TOPIC_TO_STRING[topic_type] == "Image":
@@ -83,21 +83,21 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
                 for t in desired_timestamps:
                     closest_idx = np.abs(topic_timestamps - t).argmin()
                     closest_timestamp = topic_timestamps[closest_idx]
-                    sampled_images.append(topic_group[str(closest_timestamp)][:])
+                    sampled_images.append(topic_group[str(closest_timestamp)][:])  # type: ignore
                 sampled_images = np.array(sampled_images)  # Tx3xHxW
                 output_h5.create_dataset(f"observations/images/{topic}", data=sampled_images)
 
             elif TOPIC_TO_STRING[topic_type] == "PoseStamped":
                 # Interpolate PoseStamped data
-                pose_data = np.array([topic_group[str(ts)][:] for ts in topic_timestamps])
+                pose_data = np.array([topic_group[str(ts)][:] for ts in topic_timestamps])  # type: ignore
                 positions = pose_data[:, :3]
                 quaternions = pose_data[:, 3:]
 
                 interp_position = interp1d(
-                    topic_timestamps, positions, axis=0, kind="linear", fill_value="extrapolate"
+                    topic_timestamps, positions, axis=0, kind="linear", fill_value="extrapolate"  # type: ignore
                 )
                 interp_quaternions = interp1d(
-                    topic_timestamps, quaternions, axis=0, kind="linear", fill_value="extrapolate"
+                    topic_timestamps, quaternions, axis=0, kind="linear", fill_value="extrapolate"  # type: ignore
                 )
 
                 sampled_positions = interp_position(desired_timestamps)
@@ -114,9 +114,9 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
 
             elif TOPIC_TO_STRING[topic_type] == "Float32MultiArray":
                 # Interpolate Float32MultiArray data
-                array_data = np.array([topic_group[str(ts)][:] for ts in topic_timestamps])
+                array_data = np.array([topic_group[str(ts)][:] for ts in topic_timestamps])  # type: ignore
                 interp_array = interp1d(
-                    topic_timestamps, array_data, axis=0, kind="linear", fill_value="extrapolate"
+                    topic_timestamps, array_data, axis=0, kind="linear", fill_value="extrapolate"  # type: ignore
                 )
                 sampled_array = interp_array(desired_timestamps)
 

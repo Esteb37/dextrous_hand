@@ -2,7 +2,7 @@
 
 import yaml
 
-from std_msgs.msg import Float32MultiArray, String
+from std_msgs.msg import Float32MultiArray, Float32, String
 from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image
 
@@ -27,6 +27,7 @@ LOGGER_TOPICS_TYPES = {
     # HandCnfig
     "/hand_config": Float32MultiArray,
     "/current_hand_config": Float32MultiArray,
+    "/wrist_cmd": Float32,
 
     # Motors
     "/motors/target/positions": Float32MultiArray,
@@ -58,4 +59,10 @@ LOGGER_TOPICS_TYPES = {
     "/oakd_front_view/projection": Float32MultiArray,
     "/oakd_side_view/projection": Float32MultiArray,
     "/oakd_wrist_view/projection": Float32MultiArray,
+
+    # Rokoko data
+    "/ingress/mano": Float32MultiArray,
+    "/ingress/wrist": PoseStamped,
+    "/ingress/elbow": PoseStamped,
+
 }
