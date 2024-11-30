@@ -76,6 +76,8 @@ class Motor():
 
         self.dxl_current = 0.0
 
+        self.dxl_velocity = 0.0
+
         self.initialized = True
 
 
