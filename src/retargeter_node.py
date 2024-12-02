@@ -178,7 +178,6 @@ class RetargeterNode(Node):
 
         self.wrist_orientation = wrist_rot.as_quat()
 
-
         transform.transform.rotation.x = self.wrist_orientation[0]
         transform.transform.rotation.y = self.wrist_orientation[1]
         transform.transform.rotation.z = self.wrist_orientation[2]

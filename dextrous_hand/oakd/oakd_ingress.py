@@ -190,7 +190,7 @@ class OakDDriver:
     def run(self, device):
         with device:
             print("Starting pipeline...")
-            attempts = 1
+            attempts = 1000
             has_depth = False
             for _ in range(attempts):
                 print("Trying to get depth stream")
@@ -260,7 +260,6 @@ class OakDDriver:
                                 except Exception as e:
                                     print(e)
                                     continue
-
                             color = msgs["colorize"].getCvFrame()
                             if self.calibrated == False:
                                 self.calibrate(color)
@@ -287,16 +286,10 @@ class OakDDriver:
                                 pcl_converter.visualize_pcd()
 
                             if self.callback is not None:
-                                if has_depth:
-                                    if self.camera_name is not None:
-                                        self.callback(color, depth, self.camera_name)
-                                    else:
-                                        self.callback(color, depth)
+                                if self.camera_name is not None:
+                                    self.callback(color, depth, self.camera_name)
                                 else:
-                                    if self.camera_name is not None:
-                                        self.callback(color, None, self.camera_name)
-                                    else:
-                                        self.callback(color, None)
+                                    self.callback(color, depth)
 
                 key = cv2.waitKey(1)
                 if key == ord("s"):

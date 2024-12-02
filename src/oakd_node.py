@@ -114,19 +114,18 @@ class OakDPublisher(Node):
                 except CvBridgeError as e:
                     self.get_logger().error(f"Error publishing color image: {e}")
 
-                if camera_name != "wrist_view":
-                    try:
-                        header = Header()
-                        header.stamp = self.get_clock().now().to_msg()
-                        header.frame_id = "world"
-                        output_img_depth = self.bridge.cv2_to_imgmsg(
-                            depth, "mono16", header=header
-                        )
-                        self.camera_dict[camera_name]["depth_output_pub"].publish(
-                            output_img_depth
-                        )
-                    except CvBridgeError as e:
-                        self.get_logger().error(f"Error publishing depth image: {e}")
+                try:
+                    header = Header()
+                    header.stamp = self.get_clock().now().to_msg()
+                    header.frame_id = "world"
+                    output_img_depth = self.bridge.cv2_to_imgmsg(
+                        depth, "mono16", header=header
+                    )
+                    self.camera_dict[camera_name]["depth_output_pub"].publish(
+                        output_img_depth
+                    )
+                except CvBridgeError as e:
+                    self.get_logger().error(f"Error publishing depth image: {e}")
 
                 # publish camera info
                 if self.calibrated:
