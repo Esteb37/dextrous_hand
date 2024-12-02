@@ -268,7 +268,7 @@ class Retargeter:
 
         opt_steps = RETARGETER_PARAMS["opt_steps"]
 
-        # print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
+        print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
 
         start_time = time.time()
         if not warm:

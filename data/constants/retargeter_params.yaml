@@ -1,7 +1,7 @@
 # CPU or CUDA
 # Default: CUDA
 # Effect: CUDA only available in certain environments
-device: cuda
+device: cpu
 
 # Adam and RMSProp
 # Default: RMSProp
