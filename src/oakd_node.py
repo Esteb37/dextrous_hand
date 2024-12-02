@@ -66,7 +66,7 @@ class OakDPublisher(Node):
                     visualize=self.visualize, # type: ignore
                     device_mxid=camera_id,
                     camera_name=camera_name,
-                    calibrate = camera_name != "wrist_view"
+                    is_mono = camera_name == "wrist_view"
                 ),
                 "rgb_output_pub": self.create_publisher(
                     Image, f"/oakd_{camera_name}/color", 100
@@ -85,8 +85,6 @@ class OakDPublisher(Node):
                     Float32MultiArray, f"/oakd_{camera_name}/projection", qos_profile
                 ),
             }
-
-        return self.camera_dict["front_view"]["driver"].has_depth and self.camera_dict["side_view"]["driver"].has_depth
 
     def recv_oakd_images(self, color, depth, camera_name):
         with self.camera_dict[camera_name]["lock"]:
