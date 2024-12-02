@@ -146,7 +146,7 @@ print("OAK_CAMS_LIST", OAK_CAMS_LIST)
 class OakDDriver:
 
     def __init__(
-        self, callback, visualize=True, device_mxid=None, camera_name=None
+        self, callback, visualize=True, device_mxid=None, camera_name=None, calibrate=True
     ) -> None:
         print(f"Using OAK-D device {device_mxid}")
         print(f"Using camera: {camera_name}")
@@ -162,6 +162,8 @@ class OakDDriver:
         self.inv_intrinsics = None
         self.distortion_coeff = None
         self.calibrated = False
+        self.do_calibration = calibrate
+        self.has_depth = False
 
     def calibrate(self, frame):
         T_camera_marker = calibrate_with_aruco(frame, self.intrinsics, self.distortion_coeff)
@@ -198,8 +200,6 @@ class OakDDriver:
                     has_depth = True
                     print("OAK-D detected")
                     break
-                time.sleep(0.1)
-
 
             device.setIrLaserDotProjectorBrightness(1200)
             qs = []
@@ -245,6 +245,8 @@ class OakDDriver:
             sync = HostSync()
             depth_vis, color, rect_left, rect_right = None, None, None, None
 
+            self.has_depth = has_depth
+
             while True:
                 for q in qs:
                     new_msg = q.tryGet()
@@ -258,10 +260,12 @@ class OakDDriver:
                                     rectified_left = msgs["rectified_left"].getCvFrame()
                                     rectified_right = msgs["rectified_right"].getCvFrame()
                                 except Exception as e:
-                                    print(e)
                                     continue
-                            color = msgs["colorize"].getCvFrame()
-                            if self.calibrated == False:
+                            else:
+                                color = msgs["colorize"].getCvFrame()
+                                depth = None
+
+                            if self.calibrated == False and self.do_calibration:
                                 self.calibrate(color)
 
                             if self.visualize:

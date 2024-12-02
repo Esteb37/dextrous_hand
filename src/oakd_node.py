@@ -30,17 +30,27 @@ class OakDPublisher(Node):
 
         self.bridge = CvBridge()
         camera_dict = {}
-        if enable_front_camera:
-            camera_dict["front_view"] = OAK_CAMS_LIST["FRONT_CAMERA"]
-        if enable_side_camera:
-            camera_dict["side_view"] = OAK_CAMS_LIST["SIDE_CAMERA"]
-        if enable_wrist_camera:
-            camera_dict["wrist_view"] = OAK_CAMS_LIST["WRIST_CAMERA"]
+
+        try:
+            if enable_front_camera:
+                camera_dict["front_view"] = OAK_CAMS_LIST["FRONT_CAMERA"]
+            if enable_side_camera:
+                camera_dict["side_view"] = OAK_CAMS_LIST["SIDE_CAMERA"]
+            if enable_wrist_camera:
+                camera_dict["wrist_view"] = OAK_CAMS_LIST["WRIST_CAMERA"]
+        except Exception as e:
+            self.get_logger().error(f"Error initializing cameras: {e}")
+
+
         self.camera_dict = camera_dict
         self.visualize = self.get_parameter("visualize").value
         self.calibrated = False
 
         self.init_cameras()
+
+        time.sleep(5)
+
+        self.get_logger().warn("Camera node started")
 
     def init_cameras(self):
         qos_profile = QoSProfile(depth=10)
@@ -56,6 +66,7 @@ class OakDPublisher(Node):
                     visualize=self.visualize, # type: ignore
                     device_mxid=camera_id,
                     camera_name=camera_name,
+                    calibrate = camera_name != "wrist_view"
                 ),
                 "rgb_output_pub": self.create_publisher(
                     Image, f"/oakd_{camera_name}/color", 100
@@ -75,6 +86,8 @@ class OakDPublisher(Node):
                 ),
             }
 
+        return self.camera_dict["front_view"]["driver"].has_depth and self.camera_dict["side_view"]["driver"].has_depth
+
     def recv_oakd_images(self, color, depth, camera_name):
         with self.camera_dict[camera_name]["lock"]:
             (
@@ -87,8 +100,11 @@ class OakDPublisher(Node):
             with self.camera_dict[camera_name]["lock"]:
                 if (
                     self.camera_dict[camera_name]["color"] is None
-                    or self.camera_dict[camera_name]["depth"] is None
                 ):
+                    self.get_logger().error(f"No image received for {camera_name}")
+                    continue
+                if camera_name != "wrist_view" and self.camera_dict[camera_name]["depth"] is None:
+                    self.get_logger().error(f"No depth image received for {camera_name}")
                     continue
 
                 color, depth = deepcopy(
@@ -97,7 +113,9 @@ class OakDPublisher(Node):
 
                 # 180 flip (need to do it for all oakd cameras for now)
                 color = cv2.rotate(color, cv2.ROTATE_180)
-                depth = cv2.rotate(depth, cv2.ROTATE_180)
+
+                if depth is not None:
+                    depth = cv2.rotate(depth, cv2.ROTATE_180)
 
                 # publish normal images
                 try:
@@ -118,28 +136,23 @@ class OakDPublisher(Node):
                     header = Header()
                     header.stamp = self.get_clock().now().to_msg()
                     header.frame_id = "world"
-                    output_img_depth = self.bridge.cv2_to_imgmsg(
-                        depth, "mono16", header=header
-                    )
-                    self.camera_dict[camera_name]["depth_output_pub"].publish(
-                        output_img_depth
-                    )
+
+                    if depth is not None:
+                        output_img_depth = self.bridge.cv2_to_imgmsg(
+                            depth, "mono16", header=header
+                        )
+                        self.camera_dict[camera_name]["depth_output_pub"].publish(
+                            output_img_depth
+                        )
+
                 except CvBridgeError as e:
                     self.get_logger().error(f"Error publishing depth image: {e}")
+
 
                 # publish camera info
                 if self.calibrated:
                     continue
                 try:
-                    projection_matrix = np.array(self.camera_dict[camera_name]["driver"].projection_matrix)
-                    print(f"Projection matrix for {camera_name}: {projection_matrix}")
-                    # flatten the matrix
-                    projection_matrix_msg = Float32MultiArray()
-                    projection_matrix_msg.data = projection_matrix.flatten().tolist()
-                    self.camera_dict[camera_name]["projection_pub"].publish(
-                        projection_matrix_msg
-                    )
-
                     intrinsic_matrix = np.array(self.camera_dict[camera_name]["driver"].intrinsics)
                     print(f"intrinsic_matrix for {camera_name}: {intrinsic_matrix}")
                     intrinsic_matrix_msg = Float32MultiArray()
@@ -148,13 +161,25 @@ class OakDPublisher(Node):
                         intrinsic_matrix_msg
                     )
 
-                    extrinsic_matrix = np.array(self.camera_dict[camera_name]["driver"].extrinsics)
-                    print(f"Extrinsic matrix for {camera_name}: {extrinsic_matrix}")
-                    extrinsic_matrix_msg = Float32MultiArray()
-                    extrinsic_matrix_msg.data = extrinsic_matrix.flatten().tolist()
-                    self.camera_dict[camera_name]["extrinsics_pub"].publish(
-                        extrinsic_matrix_msg
-                    )
+                    if depth is not None:
+                        projection_matrix = np.array(self.camera_dict[camera_name]["driver"].projection_matrix)
+                        print(f"Projection matrix for {camera_name}: {projection_matrix}")
+                        # flatten the matrix
+                        projection_matrix_msg = Float32MultiArray()
+                        projection_matrix_msg.data = projection_matrix.flatten().tolist()
+                        self.camera_dict[camera_name]["projection_pub"].publish(
+                            projection_matrix_msg
+                        )
+
+
+                        extrinsic_matrix = np.array(self.camera_dict[camera_name]["driver"].extrinsics)
+                        print(f"Extrinsic matrix for {camera_name}: {extrinsic_matrix}")
+                        extrinsic_matrix_msg = Float32MultiArray()
+                        extrinsic_matrix_msg.data = extrinsic_matrix.flatten().tolist()
+                        self.camera_dict[camera_name]["extrinsics_pub"].publish(
+                            extrinsic_matrix_msg
+                        )
+
                     self.calibrated = True
 
                 except Exception as e:
@@ -165,6 +190,7 @@ def main():
     rclpy.init()
     print("Starting oakd_publisher")
     oakd_publisher = OakDPublisher()
+
     import threading
 
     spin_thread = threading.Thread(target=rclpy.spin, args=(oakd_publisher,))

@@ -33,6 +33,8 @@ class DemoLogger(Node):
         else:
             self.get_logger().info(f"Using existing base directory '{self.base_path}'.")
 
+        self.get_logger().info(f"Topics to record: {self.topics_to_record}")
+
     def run_logger(self):
         # Get task name (subfolder within the base path)
         if self.task_name is None:
