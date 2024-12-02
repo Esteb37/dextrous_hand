@@ -125,7 +125,7 @@ print(f"Available devices: \n")
 for c in available_cams:
     print(c)
 
-oakd_cams_file = os.path.join(parent_dir(), "data", "constants", "oakd_cams.yaml")
+oakd_cams_file = os.path.join(parent_dir(), "data", "constants", "oakd_cams_right.yaml")
 with open(oakd_cams_file, "r") as cfgf:
     oakd_cams = yaml.load(cfgf, Loader=yaml.FullLoader)
 
@@ -146,7 +146,7 @@ print("OAK_CAMS_LIST", OAK_CAMS_LIST)
 class OakDDriver:
 
     def __init__(
-        self, callback, visualize=True, device_mxid=None, camera_name=None, calibrate=True
+        self, callback, visualize=True, device_mxid=None, camera_name=None, is_mono = False
     ) -> None:
         print(f"Using OAK-D device {device_mxid}")
         print(f"Using camera: {camera_name}")
@@ -162,8 +162,7 @@ class OakDDriver:
         self.inv_intrinsics = None
         self.distortion_coeff = None
         self.calibrated = False
-        self.do_calibration = calibrate
-        self.has_depth = False
+        self.is_mono = is_mono
 
     def calibrate(self, frame):
         T_camera_marker = calibrate_with_aruco(frame, self.intrinsics, self.distortion_coeff)
@@ -192,14 +191,17 @@ class OakDDriver:
     def run(self, device):
         with device:
             print("Starting pipeline...")
-            attempts = 1000
             has_depth = False
-            for _ in range(attempts):
-                print("Trying to get depth stream")
-                if device.getOutputQueue("depth", maxSize=1, blocking=False).tryGet() is not None:
-                    has_depth = True
-                    print("OAK-D detected")
-                    break
+
+            if not self.is_mono:
+                attempts = 1000
+                for _ in range(attempts):
+                    print("Trying to get depth stream")
+                    if device.getOutputQueue("depth", maxSize=1, blocking=False).tryGet() is not None:
+                        has_depth = True
+                        print("OAK-D detected")
+                        break
+                    time.sleep(0.1)
 
             device.setIrLaserDotProjectorBrightness(1200)
             qs = []
@@ -245,8 +247,6 @@ class OakDDriver:
             sync = HostSync()
             depth_vis, color, rect_left, rect_right = None, None, None, None
 
-            self.has_depth = has_depth
-
             while True:
                 for q in qs:
                     new_msg = q.tryGet()
@@ -265,7 +265,7 @@ class OakDDriver:
                                 color = msgs["colorize"].getCvFrame()
                                 depth = None
 
-                            if self.calibrated == False and self.do_calibration:
+                            if self.calibrated == False and not self.is_mono:
                                 self.calibrate(color)
 
                             if self.visualize:
