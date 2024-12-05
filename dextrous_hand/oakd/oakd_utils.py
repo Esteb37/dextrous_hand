@@ -2,6 +2,9 @@ import numpy as np
 import open3d as o3d
 import cv2
 from scipy.spatial.transform import Rotation as R
+from sensor_msgs.msg import PointField
+from sensor_msgs import point_cloud2
+
 class PointCloudVisualizer:
     def __init__(self, intrinsic_matrix, width, height, visualize=False):
         self.R_camera_to_world = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]).astype(
@@ -164,3 +167,64 @@ def compute_projection_matrix(K, T_cam_world):
     # Compute the projection matrix P
     P = K @ extrinsics
     return P
+
+def rgb_depth_to_pointcloud(rgb_image, depth_image, camera_intrinsics, header):
+    """
+    Convert an RGB image and a depth image to a ROS 2 PointCloud2 message.
+
+    :param rgb_image: RGB image as a numpy array of shape (H, W, 3).
+    :param depth_image: Depth image as a numpy array of shape (H, W), in meters.
+    :param camera_intrinsics: intrinsic matrix of the camera.
+    :return: PointCloud2 message.
+    """
+    fx = camera_intrinsics[0, 0]
+    fy = camera_intrinsics[1, 1]
+    cx = camera_intrinsics[0, 2]
+    cy = camera_intrinsics[1, 2]
+
+    # Take only one fourth of the image
+    depth_image = depth_image[::2, ::2]
+    rgb_image = rgb_image[::2, ::2]
+
+    # Get image dimensions
+    height, width = depth_image.shape
+
+    # Create mesh grid of pixel coordinates
+    u, v = np.meshgrid(np.arange(width), np.arange(height))
+
+    # Back-project depth to 3D points
+    z = depth_image.flatten() / 1000.0  # Convert to meters
+    x = (u.flatten() - cx) * z / fx
+    y = (v.flatten() - cy) * z / fy
+    z *= -1
+    z += 1
+
+    # Create 3D points (N, 3)
+    points = np.stack((x, y, z), axis=-1)
+
+    # Filter out points with zero depth
+    valid = z > 0
+    # Filter out points further than a meter
+    valid = np.logical_and(valid, z < 2)
+
+    points = points[valid]
+
+
+    # Get corresponding RGB values
+    colors = rgb_image.reshape(-1, 3)[valid]
+
+    # Combine points and colors into a structured array
+    cloud_data = np.zeros(points.shape[0], dtype=[
+        ('x', np.float32), ('y', np.float32), ('z', np.float32),
+        ('rgb', np.uint32)
+    ])
+    cloud_data['x'], cloud_data['y'], cloud_data['z'] = points[:, 0], points[:, 1], points[:, 2]
+    cloud_data['rgb'] = (colors[:, 0] << 16) + (colors[:, 1] << 8) + colors[:, 2]
+    fields = [
+        PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+        PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+        PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
+        PointField(name='rgb', offset=12, datatype=PointField.UINT32, count=1)
+    ]
+    point_cloud_msg = point_cloud2.create_cloud(header, fields, cloud_data)
+    return point_cloud_msg

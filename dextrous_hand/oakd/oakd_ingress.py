@@ -77,6 +77,16 @@ xout_rect_left.setStreamName("rectified_left")
 xout_rect_right = pipeline.createXLinkOut()
 xout_rect_right.setStreamName("rectified_right")
 
+def visualize_depth(depth):
+    depth_vis = cv2.normalize(
+        depth, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1  # type: ignore
+    ) # type: ignore
+    depth_vis = cv2.equalizeHist(depth_vis)
+    depth_vis = cv2.applyColorMap(
+        depth_vis, cv2.COLORMAP_HOT
+    )
+    return depth_vis
+
 if COLOR:
     camRgb = pipeline.create(dai.node.ColorCamera)
     camRgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
@@ -271,29 +281,28 @@ class OakDDriver:
                             if self.visualize:
                                 cv2.imshow("color", color)
                                 if has_depth:
-                                    depth_vis = cv2.normalize(
-                                        depth, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1  # type: ignore
-                                    ) # type: ignore
-                                    depth_vis = cv2.equalizeHist(depth_vis)
-                                    depth_vis = cv2.applyColorMap(
-                                        depth_vis, cv2.COLORMAP_HOT
-                                    )
+                                    depth_vis = visualize_depth(depth)
                                     cv2.imshow("depth", depth_vis)
                                     cv2.imshow("rectified_left", rectified_left)
                                     cv2.imshow("rectified_right", rectified_right)
 
                             rgb = cv2.cvtColor(color, cv2.COLOR_BGR2RGB)
-                            if has_depth and self.visualize and depth is not None:
+
+                            if has_depth and depth is not None:
                                 pcd, rgbd = pcl_converter.rgbd_to_projection(depth, rgb)
+                            else:
+                                pcd = None
+                                rgbd = None
+
 
                             if self.visualize and has_depth:
                                 pcl_converter.visualize_pcd()
 
                             if self.callback is not None:
                                 if self.camera_name is not None:
-                                    self.callback(color, depth, self.camera_name)
+                                    self.callback(color, depth, pcd, rgbd, self.camera_name)
                                 else:
-                                    self.callback(color, depth)
+                                    self.callback(color, depth, pcd, rgbd)
 
                 key = cv2.waitKey(1)
                 if key == ord("s"):

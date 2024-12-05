@@ -5,7 +5,7 @@ from rclpy.node import Node
 import numpy as np
 import cv2
 from sensor_msgs.msg import Image
-from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Float32MultiArray, Float32
 from rclpy.qos import QoSProfile, DurabilityPolicy
 
 from std_msgs.msg import Header
@@ -14,12 +14,14 @@ from threading import RLock
 from copy import deepcopy
 import time
 
-from dextrous_hand.oakd.oakd_ingress import OakDDriver, OAK_CAMS_LIST
+from dextrous_hand.oakd.oakd_ingress import OakDDriver, OAK_CAMS_LIST, visualize_depth
+from dextrous_hand.oakd.oakd_utils import rgb_depth_to_pointcloud
+from sensor_msgs.msg import PointCloud2
 
 class OakDPublisher(Node):
     def __init__(self, camera_dict=None):
         super().__init__("oakd_publisher")
-        self.declare_parameter("visualize", False)
+        self.declare_parameter("visualize", True)
         self.declare_parameter("enable_front_camera", True)
         self.declare_parameter("enable_side_camera", True)
         self.declare_parameter("enable_wrist_camera", False)
@@ -61,9 +63,11 @@ class OakDPublisher(Node):
                 "lock": RLock(),
                 "color": None,
                 "depth": None,
+                "rgbd": None,
+                "pcl": None,
                 "driver": OakDDriver(
                     self.recv_oakd_images,
-                    visualize=self.visualize, # type: ignore
+                    visualize=False, # type: ignore
                     device_mxid=camera_id,
                     camera_name=camera_name,
                     is_mono = camera_name == "wrist_view"
@@ -75,6 +79,10 @@ class OakDPublisher(Node):
                 "depth_output_pub": self.create_publisher(
                     Image, f"/oakd_{camera_name}/depth", 100
                 ),
+
+                "depth_visualization_pub": self.create_publisher(
+                    Image, f"/oakd_{camera_name}/depth_visualization", 100
+                ),
                 "intrinsics_pub": self.create_publisher(
                     Float32MultiArray, f"/oakd_{camera_name}/intrinsics", qos_profile
                 ),
@@ -84,14 +92,20 @@ class OakDPublisher(Node):
                 "projection_pub": self.create_publisher(
                     Float32MultiArray, f"/oakd_{camera_name}/projection", qos_profile
                 ),
+                "point_cloud_pub": self.create_publisher(
+                    PointCloud2, f"/oakd_{camera_name}/point_cloud", qos_profile
+                ),
+                "intrinsic_matrix": None,
             }
 
-    def recv_oakd_images(self, color, depth, camera_name):
+    def recv_oakd_images(self, color, depth, pcl, rgbd, camera_name):
         with self.camera_dict[camera_name]["lock"]:
             (
                 self.camera_dict[camera_name]["color"],
                 self.camera_dict[camera_name]["depth"],
-            ) = (color, depth)
+                self.camera_dict[camera_name]["pcl"],
+                self.camera_dict[camera_name]["rgbd"],
+            ) = (color, depth, pcl, rgbd)
 
     def publish_images(self):
         for camera_name in self.camera_dict.keys():
@@ -105,16 +119,26 @@ class OakDPublisher(Node):
                     self.get_logger().error(f"No depth image received for {camera_name}")
                     continue
 
-                color, depth = deepcopy(
-                    self.camera_dict[camera_name]["color"]
-                ), deepcopy(self.camera_dict[camera_name]["depth"])
+                color, depth, pcl, rgbd = (
+                    self.camera_dict[camera_name]["color"],
+                    self.camera_dict[camera_name]["depth"],
+                    self.camera_dict[camera_name]["pcl"],
+                    self.camera_dict[camera_name]["rgbd"],
+                )
 
                 # 180 flip (need to do it for all oakd cameras for now)
                 color = cv2.rotate(color, cv2.ROTATE_180)
 
+                # color = color[:, :int(color.shape[1] * 0.9)]
+                # color = color[int(color.shape[0] * 0.05) :, :]
+
                 if depth is not None:
                     depth = cv2.rotate(depth, cv2.ROTATE_180)
 
+                    if self.visualize:
+                        depth_visualization = visualize_depth(depth)
+
+                    # To ROS2 point cloud
                 # publish normal images
                 try:
                     header = Header()
@@ -143,6 +167,24 @@ class OakDPublisher(Node):
                             output_img_depth
                         )
 
+                        if self.visualize:
+                            output_img_depth_visualization = self.bridge.cv2_to_imgmsg(
+                                depth_visualization, "bgr8", header=header
+                            )
+                            self.camera_dict[camera_name]["depth_visualization_pub"].publish(
+                                output_img_depth_visualization
+                            )
+
+                            if self.camera_dict[camera_name]["intrinsic_matrix"] is not None:
+
+                                point_cloud = rgb_depth_to_pointcloud(
+                                    color, depth, self.camera_dict[camera_name]["intrinsic_matrix"], header
+                                )
+                                self.camera_dict[camera_name]["point_cloud_pub"].publish(
+                                    point_cloud
+                                )
+
+
                 except CvBridgeError as e:
                     self.get_logger().error(f"Error publishing depth image: {e}")
 
@@ -158,6 +200,7 @@ class OakDPublisher(Node):
                     self.camera_dict[camera_name]["intrinsics_pub"].publish(
                         intrinsic_matrix_msg
                     )
+                    self.camera_dict[camera_name]["intrinsic_matrix"] = intrinsic_matrix
 
                     if depth is not None:
                         projection_matrix = np.array(self.camera_dict[camera_name]["driver"].projection_matrix)
@@ -168,8 +211,6 @@ class OakDPublisher(Node):
                         self.camera_dict[camera_name]["projection_pub"].publish(
                             projection_matrix_msg
                         )
-
-
                         extrinsic_matrix = np.array(self.camera_dict[camera_name]["driver"].extrinsics)
                         print(f"Extrinsic matrix for {camera_name}: {extrinsic_matrix}")
                         extrinsic_matrix_msg = Float32MultiArray()
