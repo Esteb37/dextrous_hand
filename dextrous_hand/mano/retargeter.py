@@ -167,6 +167,7 @@ class Retargeter:
             raise ValueError("Optimizer " + optimizer + " not supported. Rewrite code to support it")
 
         self.root = torch.zeros(1, 3).to(self.device)
+        self.frames_we_care_about = None
 
         self.loss_coeffs = torch.tensor(list(self.loss_coeffs)).to(self.device)
 
@@ -279,6 +280,21 @@ class Retargeter:
 
         print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
 
+        if self.frames_we_care_about is None:
+            frames_names = []
+            for finger, finger_tip in self.finger_to_tip.items():
+                frames_names.append(finger_tip)
+
+            for finger, finger_mp in self.finger_to_mp.items():
+                frames_names.append(finger_mp)
+
+            for finger, finger_base in self.finger_to_base.items():
+                frames_names.append(finger_base)
+
+            frames_names.append("retarget_palm")
+
+            self.frames_we_care_about = self.chain.get_frame_indices(*frames_names)
+
         start_time = time.time()
         if not warm:
             self.gc_joints = torch.ones(self.n_joints).to(self.device) * float(self.motor_count)
@@ -317,7 +333,8 @@ class Retargeter:
 
         for _ in range(opt_steps):
             chain_transforms = self.chain.forward_kinematics(
-                self.joint_map @ (self.gc_joints / (180 / np.pi))
+                self.joint_map @ (self.gc_joints / (180 / np.pi)),
+                frame_indices=self.frames_we_care_about
             )
             fingertips = {}
             for finger, finger_tip in self.finger_to_tip.items():

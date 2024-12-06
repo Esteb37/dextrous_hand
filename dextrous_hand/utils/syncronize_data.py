@@ -26,7 +26,7 @@ def get_topic_names(h5_path):
         print(f"Topics in the HDF5 file: {topic_names}")
     return topic_names
 
-def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_types):
+def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compress, topic_types):
     qpos_franka = None
     qpos_hand = None
     actions_franka = None
@@ -77,6 +77,11 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
             topic_timestamps = np.array(list(map(int, topic_group.keys())))  # type: ignore
             topic_timestamps.sort()
 
+            if "intrinsics" in topic or "extrinsics" in topic or "projection" in topic:
+                data = np.array(topic_group[str(topic_timestamps[0])][:]) # type: ignore
+                output_h5.create_dataset(f"observations/images/{topic}", data=data)
+                continue
+
             if TOPIC_TO_STRING[topic_type] == "Image":
                 # Sample images
                 sampled_images = []
@@ -84,8 +89,12 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
                     closest_idx = np.abs(topic_timestamps - t).argmin()
                     closest_timestamp = topic_timestamps[closest_idx]
                     sampled_images.append(topic_group[str(closest_timestamp)][:])  # type: ignore
-                sampled_images = np.array(sampled_images)  # Tx3xHxW
-                output_h5.create_dataset(f"observations/images/{topic}", data=sampled_images)
+                sampled_images = np.array(sampled_images)  # TxHxWxC
+                chunk_size = (1,) + tuple(sampled_images.shape[1:])
+                if compress:
+                    output_h5.create_dataset(f"observations/images/{topic}", data=sampled_images, chunks = chunk_size, compression="lzf")
+                else:
+                    output_h5.create_dataset(f"observations/images/{topic}", data=sampled_images, chunks = chunk_size)
 
             elif TOPIC_TO_STRING[topic_type] == "PoseStamped":
                 # Interpolate PoseStamped data
@@ -138,7 +147,7 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, topic_
 
     print(f"Processed data saved to: {output_h5_path}")
 
-def process_folder(input_folder, sampling_frequency, topic_types):
+def process_folder(input_folder, sampling_frequency, compress, topic_types):
     """
     Process all HDF5 files in the given folder and save the processed files
     with a running index in a new folder named <input_folder>_processed.
@@ -155,16 +164,22 @@ def process_folder(input_folder, sampling_frequency, topic_types):
         return
 
     # Create the output folder
-    output_folder = os.path.dirname(input_folder) + "_processed"
+    output_folder = os.path.join(os.path.dirname(input_folder),
+                                 os.path.basename(input_folder) + "_processed" + f"_{int(sampling_frequency)}hz")
+    if compress:
+        output_folder += "_lzf"
     os.makedirs(output_folder, exist_ok=True)
     print(f"Output folder created: {output_folder}")
 
     # Process each file
     for idx, input_file in enumerate(h5_files):
-        output_file = os.path.join(output_folder, f"{idx:04d}.h5")
-        print(f"Processing file: {input_file}")
-        sample_and_sync_h5(input_file, output_file, sampling_frequency, topic_types)
-        print(f"Processed file saved as: {output_file}")
+        try:
+            output_file = os.path.join(output_folder, f"{idx:04d}.h5")
+            print(f"Processing file: {input_file}")
+            sample_and_sync_h5(input_file, output_file, sampling_frequency, compress, topic_types)
+            print(f"Processed file saved as: {output_file}")
+        except Exception as e:
+            print(e)
 
     print(f"All files processed. Processed files are saved in {output_folder}.")
 
@@ -172,10 +187,11 @@ def main():
     parser = argparse.ArgumentParser(description="Process and synchronize HDF5 files.")
     parser.add_argument("input_folder", type=str, help="Path to the folder containing input HDF5 files.")
     parser.add_argument("--sampling_freq", type=float, default=100, help="Sampling frequency in Hz.")
+    parser.add_argument("--compress",  action="store_true", help="Compress the output HDF5 files. [it might boost the performance on aws but might decrease the performance on local machine]")
     args = parser.parse_args()
 
     # Process all files in the folder
-    process_folder(args.input_folder, args.sampling_freq, LOGGER_TOPICS_TYPES)
+    process_folder(args.input_folder, args.sampling_freq, args.compress, LOGGER_TOPICS_TYPES)
 
 if __name__ == "__main__":
     main()
