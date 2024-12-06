@@ -28,6 +28,7 @@ def control_nodes(configuration: str = "default", sim = False):
         NodeClass("wrist_controller_node"),
 
         NodeClass("retargeter_node",
+                  output="screen",
             parameters=[
                 {
                     "retarget/mjcf_filepath": os.path.join(

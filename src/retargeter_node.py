@@ -103,17 +103,17 @@ class RetargeterNode(Node):
         debug_dict = {}
 
         if self.params is not None:
-            joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict, self.params["retargeter_adjustments"])
+            joint_angles, mano_structure, hand_structure = self.retargeter.retarget(self.keypoint_positions, debug_dict, self.params["retargeter_adjustments"])
 
             if self.prev_params is not None:
                 if self.params["loss_coeffs"] != self.prev_params["loss_coeffs"] or self.params["scale_coeffs"] != self.prev_params["scale_coeffs"]:
-                    self.retargeter = Retargeter(urdf_filepath=self.mjcf_filepath, hand_scheme=self.hand_scheme, params = self.params) # type: ignore
+                    self.retargeter = Retargeter(urdf_filepath=self.mjcf_filepath, hand_scheme=self.hand_scheme, params = self.params)
 
                     self.get_logger().warn("Retargeter reinitialized")
 
             self.prev_params = self.params
         else:
-            joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
+            joint_angles, mano_structure, hand_structure = self.retargeter.retarget(self.keypoint_positions, debug_dict)
 
 
         if self.debug:
@@ -123,11 +123,11 @@ class RetargeterNode(Node):
             )
 
             self.mano_hand_visualizer.generate_keyvector_markers(
-                mano_fingertips, mano_mps, mano_palm, stamp=self.get_clock().now().to_msg()
+                mano_structure, stamp=self.get_clock().now().to_msg()
             )
 
             self.mano_hand_visualizer.generate_keyvector_markers(
-                fingertips, mps, palm, detach = True, stamp=self.get_clock().now().to_msg()
+                hand_structure, detach = True, stamp=self.get_clock().now().to_msg()
             )
 
             self.absolute_mano_hand_visualizer.generate_hand_markers(

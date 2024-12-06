@@ -89,6 +89,7 @@ def get_keyvectors(fingertips: Dict[str, torch.Tensor], mps: Dict[str, torch.Ten
         'pinky2ring_mp': mps['ring'] - mps['pinky'],
         'ring2middle_mp': mps['middle'] - mps['ring'],
         'middle2index_mp':  mps['index'] - mps['middle'],
+        'thumb_tip2mp': mps['thumb'] - fingertips['thumb'],
     }
 
 

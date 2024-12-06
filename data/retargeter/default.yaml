@@ -11,14 +11,14 @@ description: Default configuration for the retargeter
 # If you want to add keyvectors that are not related to fingertips or palms, modify the code in retargeter.py and retarget_utils.py
 keyvectors: [palm2thumb, palm2index, palm2middle, palm2ring, palm2pinky, thumb2index,
   thumb2middle, thumb2ring, thumb2pinky, index2middle, index2ring, index2pinky, middle2ring,
-  middle2pinky, ring2pinky, pinky2ring_mp, ring2middle_mp, middle2index_mp]
+  middle2pinky, ring2pinky, pinky2ring_mp, ring2middle_mp, middle2index_mp, thumb_tip2dp]
 
 # Default: 5.0
 # The loss coefficient for each keyvector.
 # The  individual coefficient is multiplied by the keyvector error and added to the total loss
 # The higher the coefficient, the higher the impact of the keyvector
 loss_coeffs:
-  palm2thumb: 20.0
+  palm2thumb: 5.0
   palm2index: 5.0
   palm2middle: 5.0
   palm2ring: 5.0
@@ -36,18 +36,19 @@ loss_coeffs:
   pinky2ring_mp: 5.0
   ring2middle_mp: 5.0
   middle2index_mp: 5.0
+  thumb_tip2dp: 5.0
 
 # Default: 1.0
 scale_coeffs:
-  palm2thumb: 0.6
+  palm2thumb: 1.0
   palm2index: 1.0
   palm2middle: 1.0
   palm2ring: 1.0
   palm2pinky: 1.0
-  thumb2index: 0.6
-  thumb2middle: 0.6
-  thumb2ring: 0.6
-  thumb2pinky: 0.6
+  thumb2index: 1.0
+  thumb2middle: 1.0
+  thumb2ring: 1.0
+  thumb2pinky: 1.0
   index2middle: 1.0
   index2ring: 1.0
   index2pinky: 1.0
@@ -57,6 +58,7 @@ scale_coeffs:
   pinky2ring_mp: 1.0
   ring2middle_mp: 1.0
   middle2index_mp: 1.0
+  thumb_tip2dp: 1.0
 
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
