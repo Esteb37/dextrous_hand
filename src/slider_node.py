@@ -145,6 +145,7 @@ class ParameterTuningGUI(QMainWindow):
             for param, array in finger_dict.items():
                 param_title = QLabel(f"{param}")
                 finger_layout.addWidget(param_title)
+                delta = 0.01 if param == "translation" else 0.1
                 for i, axis in enumerate(["x", "y", "z"]):
                     default_value = array[i]
                     label = QLabel(f"{axis}:")
@@ -156,18 +157,19 @@ class ParameterTuningGUI(QMainWindow):
                     input_field = QLineEdit(self)
                     input_field.setMaximumWidth(50)
                     input_field.setText(f"{default_value:.2f}")
-                    input_field.textChanged.connect(lambda _, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, 0))
+                    input_field.textChanged.connect(lambda _, d=0, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, d))
                     param_layout.addWidget(input_field)
 
                     minus_button = QPushButton("-")
                     minus_button.setMaximumWidth(50)
-                    minus_button.clicked.connect(lambda _, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, -0.1))
+                    minus_button.clicked.connect(lambda _, d=-delta, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, d))
                     param_layout.addWidget(minus_button)
 
                     plus_button = QPushButton("+")
                     plus_button.setMaximumWidth(50)
-                    plus_button.clicked.connect(lambda _, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, 0.1))
+                    plus_button.clicked.connect(lambda _, d=delta, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, d))
                     param_layout.addWidget(plus_button)
+
 
                     finger_layout.addLayout(param_layout)
 
