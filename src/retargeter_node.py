@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import rclpy
+import json
 import numpy as np
 from rclpy.node import Node
-from std_msgs.msg import Float32MultiArray
-from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Float32
+from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import MarkerArray
-from tf2_ros import TransformBroadcaster, TransformStamped
 from scipy.spatial.transform import Rotation as R
+from std_msgs.msg import Float32MultiArray, String
+from tf2_ros import TransformBroadcaster, TransformStamped
 
 from dextrous_hand.mano.retargeter import Retargeter
 from dextrous_hand.utils.HandConfig import HandConfig
@@ -24,17 +25,17 @@ class RetargeterNode(Node):
         self.declare_parameter("retarget/hand_scheme", rclpy.Parameter.Type.STRING)
         self.declare_parameter("retarget/configuration", "default")
 
-        mjcf_filepath = self.get_parameter("retarget/mjcf_filepath").value
+        self.mjcf_filepath = self.get_parameter("retarget/mjcf_filepath").value
         self.hand_scheme = self.get_parameter("retarget/hand_scheme").value
-        configuration = self.get_parameter("retarget/configuration").value
+        self.configuration = self.get_parameter("retarget/configuration").value
 
-        if mjcf_filepath is None:
+        if self.mjcf_filepath is None:
             raise ValueError("No mjcf_filepath provided")
 
         if self.hand_scheme is None:
             raise ValueError("No hand_scheme provided")
 
-        if configuration is None:
+        if self.configuration is None:
             raise ValueError("No configuration provided")
 
         # subscribe to ingress topics
@@ -46,11 +47,10 @@ class RetargeterNode(Node):
             PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
         )
 
-        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme, params_file=configuration)
+        self.retargeter = Retargeter(urdf_filepath=self.mjcf_filepath, hand_scheme=self.hand_scheme, params_file=self.configuration)
         self.wrist_cmd_sub = self.create_subscription(
             Float32, "/wrist_cmd", self.wrist_cmd_cb, 10
         )
-
 
         self.joints_pub = self.create_publisher(
             Float32MultiArray, "/hand/policy_output", 10
@@ -76,6 +76,10 @@ class RetargeterNode(Node):
 
         self.world_coil_broadcaster = TransformBroadcaster(self)
 
+        self.params = None
+        self.prev_params = None
+        self.params_sub = self.create_subscription(String, 'retargeter_params', self.params_cb, 10)
+
         self.get_logger().warn("Retargeter Node started")
 
     def ingress_mano_cb(self, msg):
@@ -97,7 +101,20 @@ class RetargeterNode(Node):
             self.absolute_mano_hand_visualizer.reset_markers()
 
         debug_dict = {}
-        joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
+
+        if self.params is not None:
+            joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict, self.params["retargeter_adjustments"])
+
+            if self.prev_params is not None:
+                if self.params["loss_coeffs"] != self.prev_params["loss_coeffs"] or self.params["scale_coeffs"] != self.prev_params["scale_coeffs"]:
+                    self.retargeter = Retargeter(urdf_filepath=self.mjcf_filepath, hand_scheme=self.hand_scheme, params = self.params) # type: ignore
+
+                    self.get_logger().warn("Retargeter reinitialized")
+
+            self.prev_params = self.params
+        else:
+            joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retargeter.retarget(self.keypoint_positions, debug_dict)
+
 
         if self.debug:
             self.mano_hand_visualizer.generate_hand_markers(
@@ -123,14 +140,6 @@ class RetargeterNode(Node):
         )
 
         joint_rads = np.deg2rad(joint_angles)
-
-        # if self.wrist_initial_position is None or self.wrist_initial_rotation is None:
-        #     self.wrist_initial_position = self.wrist_position
-        #     self.wrist_initial_rotation = R.from_quat(self.wrist_orientation)
-
-
-        # wrist_rotation = (R.from_quat(self.wrist_orientation) * self.wrist_initial_rotation.inv()).as_quat().tolist()
-        # wrist_position = (self.wrist_position - self.wrist_initial_position).tolist()
 
         if self.wrist_joint_cmd is None:
             wrist_joint = [0.0]
@@ -188,9 +197,8 @@ class RetargeterNode(Node):
 
         self.world_coil_broadcaster.sendTransform(transform)
 
-
-
-
+    def params_cb(self, msg):
+        self.params = json.loads(msg.data)
 
 def main(args=None):
     rclpy.init(args=args)

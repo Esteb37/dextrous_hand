@@ -9,25 +9,9 @@ description: Default configuration for the retargeter
 # For example if we touch the pinky to the thumb, pinky2thumb is very small in the mano, so the retargeter will try its best to make pinky2thumb small in the hand model.
 # More keyvectors = truer movements but also more computation
 # If you want to add keyvectors that are not related to fingertips or palms, modify the code in retargeter.py and retarget_utils.py
-keyvectors: [palm2thumb,
-            palm2index,
-            palm2middle,
-            palm2ring,
-            palm2pinky,
-            thumb2index,
-            thumb2middle,
-            thumb2ring,
-            thumb2pinky,
-            index2middle,
-            index2ring,
-            index2pinky,
-            middle2ring,
-            middle2pinky,
-            ring2pinky,
-            pinky2ring_mp,
-            ring2middle_mp,
-            middle2index_mp,
-            ]
+keyvectors: [palm2thumb, palm2index, palm2middle, palm2ring, palm2pinky, thumb2index,
+  thumb2middle, thumb2ring, thumb2pinky, index2middle, index2ring, index2pinky, middle2ring,
+  middle2pinky, ring2pinky, pinky2ring_mp, ring2middle_mp, middle2index_mp]
 
 # Default: 5.0
 # The loss coefficient for each keyvector.
@@ -77,7 +61,7 @@ scale_coeffs:
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
 # I think they are either all true or all false, but in the original code palm2thumb was always false even if use_scalar_distance was true
-use_scalar_distance_palm: False
+use_scalar_distance_palm: false
 
 # In degrees, do not change order
 # Effect: Self-explanatory
@@ -104,8 +88,23 @@ joint_ranges:
   PINKY_PIP: [0.0, 180.0]
 
 retargeter_adjustments:
-  thumb: null
-  index: null
-  middle: null
-  ring: null
-  pinky: null
+  thumb:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  index:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  middle:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  ring:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  pinky:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
