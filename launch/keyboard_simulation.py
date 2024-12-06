@@ -1,5 +1,5 @@
 from launch import LaunchDescription
-from dextrous_hand.utils.utils import DexNode, SimNode
+from dextrous_hand.utils.node_utils import DexNode, SimNode
 
 def generate_launch_description():
     return LaunchDescription([
