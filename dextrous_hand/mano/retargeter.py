@@ -34,6 +34,7 @@ class Retargeter:
         mjcf_filepath: str | None = None,
         sdf_filepath: str | None = None,
         hand_scheme:  Union[str, dict] | None = None,
+        params_file: str = "default",
     ) -> None:
         assert (
             int(urdf_filepath is not None)
@@ -41,16 +42,17 @@ class Retargeter:
             + int(sdf_filepath is not None)
         ) == 1, "Exactly one of urdf_filepath, mjcf_filepath, or sdf_filepath should be provided"
 
+        self.GLOBAL_PARAMS = RETARGETER_PARAMS["global"]
+        self.LOCAL_PARAMS = RETARGETER_PARAMS[params_file]
+
 
         if hand_scheme == "hh":
             from .hand_cfgs.hh_cfg import (
-                GC_TENDONS,
-                FINGER_TO_TIP,
-                FINGER_TO_BASE,
-                FINGER_TO_MP,
-                GC_LIMITS_LOWER,
-                GC_LIMITS_UPPER,
-                WRIST_NAME
+                GC_TENDONS, # type: ignore
+                FINGER_TO_TIP, # type: ignore
+                FINGER_TO_BASE, # type: ignore
+                FINGER_TO_MP, # type: ignore
+                WRIST_NAME # type: ignore
             )
         elif hand_scheme == "p4":
             from .hand_cfgs.p4_cfg import (
@@ -63,19 +65,26 @@ class Retargeter:
         else:
             raise ValueError(f"hand_model {hand_scheme} not supported")
 
-        self.mano_adjustments = RETARGETER_PARAMS["retargeter_adjustments"]
 
-        self.device = RETARGETER_PARAMS["device"]
+        self.lr = self.GLOBAL_PARAMS["lr"]
+        self.device = self.GLOBAL_PARAMS["device"]
 
-        self.lr = RETARGETER_PARAMS["lr"]
-        self.use_scalar_distance_palm = RETARGETER_PARAMS["use_scalar_distance_palm"]
-
-        self.joint_regularizers = RETARGETER_PARAMS["joint_regularizers"]
+        self.keyvectors = self.LOCAL_PARAMS["keyvectors"]
+        self.loss_coeffs = self.LOCAL_PARAMS["loss_coeffs"].values()
+        self.scale_coeffs = self.LOCAL_PARAMS["scale_coeffs"].values()
+        self.joint_regularizers = self.GLOBAL_PARAMS["joint_regularizers"]
+        self.mano_adjustments =  self.LOCAL_PARAMS["retargeter_adjustments"]
+        self.use_scalar_distance_palm = self.LOCAL_PARAMS["use_scalar_distance_palm"]
 
         self.target_angles = None
 
-        self.gc_limits_lower = GC_LIMITS_LOWER
-        self.gc_limits_upper = GC_LIMITS_UPPER
+
+        self.gc_limits_lower = np.array(
+            [rng[0] for rng in self.LOCAL_PARAMS["joint_ranges"].values()]
+        )
+        self.gc_limits_upper = np.array(
+            [rng[1] for rng in self.LOCAL_PARAMS["joint_ranges"].values()]
+        )
         self.finger_to_tip = FINGER_TO_TIP
         self.finger_to_base = FINGER_TO_BASE
         self.finger_to_mp = FINGER_TO_MP
@@ -149,7 +158,7 @@ class Retargeter:
             self.regularizer_weights[self.tendon_names.index(joint_name)] = weight
 
         # self.opt = torch.optim.Adam([self.gc_joints], lr=self.lr)
-        optimizer =  RETARGETER_PARAMS["optimizer"]
+        optimizer =  self.GLOBAL_PARAMS["optimizer"]
         if optimizer == "Adam":
             self.opt = torch.optim.Adam([self.gc_joints], lr=self.lr)
         elif optimizer == "RMSprop":
@@ -159,14 +168,14 @@ class Retargeter:
 
         self.root = torch.zeros(1, 3).to(self.device)
 
-        self.loss_coeffs = torch.tensor(list(RETARGETER_PARAMS["loss_coeffs"].values())).to(self.device)
+        self.loss_coeffs = torch.tensor(list(self.loss_coeffs)).to(self.device)
 
         if self.use_scalar_distance_palm:
-            self.use_scalar_distance = [False] + [True] * (len(RETARGETER_PARAMS["keyvectors"]) - 1)
+            self.use_scalar_distance = [False] + [True] * (len(self.keyvectors) - 1)
         else:
-            self.use_scalar_distance = [False] * len(RETARGETER_PARAMS["keyvectors"])
+            self.use_scalar_distance = [False] * len(self.keyvectors)
 
-        self.scale_coeffs = torch.tensor(list(RETARGETER_PARAMS["scale_coeffs"].values())).to(self.device)
+        self.scale_coeffs = torch.tensor(list(self.scale_coeffs)).to(self.device)
 
         self.sanity_check()
         _chain_transforms = self.chain.forward_kinematics(
@@ -266,7 +275,7 @@ class Retargeter:
         17-20: pinky
         """
 
-        opt_steps = RETARGETER_PARAMS["opt_steps"]
+        opt_steps = self.GLOBAL_PARAMS["opt_steps"]
 
         print(f"Retargeting: Warm: {warm} Opt steps: {opt_steps}")
 
@@ -449,7 +458,7 @@ class Retargeter:
         )
         if debug_dict is not None:
 
-            shifted_points = normalized_joint_pos + RETARGETER_PARAMS["mano_shift"]
+            shifted_points = normalized_joint_pos + self.GLOBAL_PARAMS["mano_shift"]
             debug_dict["normalized_joint_pos"] = shifted_points
             debug_dict["original_joint_pos"] = joints
 

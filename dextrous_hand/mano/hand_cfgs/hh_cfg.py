@@ -3,7 +3,7 @@ from typing import Dict
 
 from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
-coupled_scale = RETARGETER_PARAMS["coupled_scale"]
+coupled_scale = RETARGETER_PARAMS["global"]["coupled_scale"]
 
 # the information of the tendons in the hand. Each tendon represents a grouped actuation.
 GC_TENDONS = {
@@ -75,13 +75,5 @@ FINGER_TO_BASE = {
     "ring": "ring_um_virt",
     "pinky": "pinky_um_virt",
 }
-
-GC_LIMITS_LOWER = np.array(
-    [rng[0] for rng in RETARGETER_PARAMS["joint_ranges"].values()]
-)
-
-GC_LIMITS_UPPER = np.array(
-    [rng[1] for rng in RETARGETER_PARAMS["joint_ranges"].values()]
-)
 
 WRIST_NAME = "retarget_palm"

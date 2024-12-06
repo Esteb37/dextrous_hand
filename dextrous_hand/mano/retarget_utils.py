@@ -174,6 +174,11 @@ def normalize_points_to_hands_local(joint_pos):
         pinky_base=joint_dict["pinky"][0],
         wrist=joint_dict["wrist"],
     )
+
+    rot_x = rotation_matrix_x(RETARGETER_PARAMS["global"]["mano_incline"])
+
+    hand_rot = hand_rot @ rot_x
+
     joint_pos = joint_pos - hand_center
     joint_pos = joint_pos @ hand_rot
 

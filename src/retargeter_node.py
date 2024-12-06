@@ -14,7 +14,6 @@ from dextrous_hand.utils.HandConfig import HandConfig
 from dextrous_hand.mano.utils import numpy_to_float32_multiarray
 from dextrous_hand.mano.visualize_mano import ManoHandVisualizer
 from dextrous_hand.mano.retarget_utils import rotation_matrix_x, rotation_matrix_y, rotation_matrix_z
-from dextrous_hand.utils.constants import RETARGETER_PARAMS
 
 class RetargeterNode(Node):
     def __init__(self, debug=False):
@@ -23,9 +22,11 @@ class RetargeterNode(Node):
         # start retargeter
         self.declare_parameter("retarget/mjcf_filepath", rclpy.Parameter.Type.STRING)
         self.declare_parameter("retarget/hand_scheme", rclpy.Parameter.Type.STRING)
+        self.declare_parameter("retarget/configuration", "default")
 
         mjcf_filepath = self.get_parameter("retarget/mjcf_filepath").value
         self.hand_scheme = self.get_parameter("retarget/hand_scheme").value
+        configuration = self.get_parameter("retarget/configuration").value
 
         if mjcf_filepath is None:
             raise ValueError("No mjcf_filepath provided")
@@ -33,17 +34,19 @@ class RetargeterNode(Node):
         if self.hand_scheme is None:
             raise ValueError("No hand_scheme provided")
 
+        if configuration is None:
+            raise ValueError("No configuration provided")
+
         # subscribe to ingress topics
         self.ingress_mano_sub = self.create_subscription(
             Float32MultiArray, "/ingress/mano", self.ingress_mano_cb, 10
         )
 
-        # TODO: Subscribe to a new topic for wrist pose, coming from the hijacker node
         self.ingress_wrist = self.create_subscription(
             PoseStamped, "/ingress/wrist", self.ingress_wrist_cb, 10
         )
 
-        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme)
+        self.retargeter = Retargeter(urdf_filepath=mjcf_filepath, hand_scheme=self.hand_scheme, params_file=configuration)
         self.wrist_cmd_sub = self.create_subscription(
             Float32, "/wrist_cmd", self.wrist_cmd_cb, 10
         )

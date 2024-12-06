@@ -1,76 +1,11 @@
-import os
-from launch_ros.actions import Node
 from launch import LaunchDescription
 
-from dextrous_hand.utils.utils import parent_dir, DexNode
+from dextrous_hand.utils.node_utils import control_nodes, viz_nodes
+
+configuration = "default"
+with_mujoco = False
 
 def generate_launch_description():
-
-    urdf = os.path.join(
-                    parent_dir(),
-                    "data",
-                    "assets",
-                    "urdf",
-                    "hh_hand.urdf",
-                )
-
-
-    with open(urdf, 'r') as infp:
-        robot_desc = infp.read()
-
-    return LaunchDescription([
-        DexNode("mujoco_node",
-        ), 
-
-        DexNode("retargeter_node",
-                output="screen",
-                parameters=[
-                {
-                    "retarget/mjcf_filepath": os.path.join(
-                        parent_dir(),
-                        "data",
-                        "assets",
-                        "urdf",
-                        "hh_hand.urdf",
-                    )
-                },
-                {"retarget/hand_scheme": "hh"},
-            ]
-        ),
-
-        DexNode("visualize_joints_node",
-                output="screen",
-            parameters=[
-                {"scheme_path": os.path.join(
-                    parent_dir(),
-                    "data",
-                    "assets",
-                    "scheme_hh.yaml",
-                )}
-            ]
-        ),
-
-        DexNode("wrist_controller_node",
-                output="screen",
-        ),
-
-        Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        output='screen',
-        parameters=[{'robot_description': robot_desc,}],
-        arguments=[urdf]),
-
-
-        Node(package = "rviz2",
-             executable="rviz2",
-             name="rviz2",
-             arguments=["-d",
-                        os.path.join(parent_dir(),
-                                     "data",
-                                     "rviz",
-                                     "urdf.rviz")
-                        ],
-            ),
-    ])
+    return LaunchDescription(
+        control_nodes(configuration, sim = True) + viz_nodes(with_mujoco)
+    )

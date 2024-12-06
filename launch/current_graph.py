@@ -1,7 +1,7 @@
 from launch_ros.actions import Node
 from launch import LaunchDescription
 from dextrous_hand.utils.ids import MOTORS
-from dextrous_hand.utils.utils import DexNode
+from dextrous_hand.utils.node_utils import DexNode
 
 def generate_launch_description():
 

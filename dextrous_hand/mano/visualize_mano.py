@@ -174,14 +174,16 @@ class ManoHandVisualizer:
         bone_marker.color.a = 1.0
         bone_marker.color.g = 1.0  # Blue color
 
+        shift = np.array(RETARGETER_PARAMS["global"]["mano_shift"])
+
         # Add bone lines
         for tip in tips:
             if detach:
                 start_joint = palm
                 end_joint = tip
             else:
-                start_joint = palm  + np.array(RETARGETER_PARAMS["mano_shift"])
-                end_joint = tip + np.array(RETARGETER_PARAMS["mano_shift"])
+                start_joint = palm  + shift
+                end_joint = tip + shift
             p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
             p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
             bone_marker.points.append(p_start) # type: ignore
@@ -206,8 +208,8 @@ class ManoHandVisualizer:
                     start_joint = start_tip
                     end_joint = end_tip
                 else:
-                    start_joint = start_tip  + np.array(RETARGETER_PARAMS["mano_shift"])
-                    end_joint = end_tip + np.array(RETARGETER_PARAMS["mano_shift"])
+                    start_joint = start_tip  + shift
+                    end_joint = end_tip + shift
                 p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
                 p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
                 bone_marker.points.append(p_start) # type: ignore
@@ -234,8 +236,8 @@ class ManoHandVisualizer:
                 start_joint = start_tip
                 end_joint = end_tip
             else:
-                start_joint = start_tip  + np.array(RETARGETER_PARAMS["mano_shift"])
-                end_joint = end_tip + np.array(RETARGETER_PARAMS["mano_shift"])
+                start_joint = start_tip  + shift
+                end_joint = end_tip + shift
             p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
             p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
             bone_marker.points.append(p_start) # type: ignore
