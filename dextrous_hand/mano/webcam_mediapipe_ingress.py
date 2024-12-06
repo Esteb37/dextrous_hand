@@ -50,7 +50,7 @@ class MediaPipeTracker:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             if results.multi_hand_landmarks:
                 for hand_landmarks, hand_handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
-                    if hand_handedness.classification[0].label == 'Left': # For some reason, the labels are reversed, TODO: Investigate
+                    if hand_handedness.classification[0].label == 'Left':
                         self.keypoint_positions = np.array([(lm.x, lm.y, lm.z) for lm in hand_landmarks.landmark], dtype=np.float32)
                         mp_drawing.draw_landmarks(
                             image,

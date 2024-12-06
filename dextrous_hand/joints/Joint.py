@@ -86,9 +86,6 @@ class Joint(ABC):
             a tuple containing the length of the inner and outer tendon
         """
 
-        """
-        TODO: Make this method general to the case of pin joints
-        """
         if "radius" in self.geometry:
             a = self.geometry["radius"]/SPOOL_RADIUS
             return a*joint
