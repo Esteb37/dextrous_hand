@@ -14,8 +14,6 @@ class Wrist(Subsystem):
     def joints2motors(self, joint_angles) -> list[float]:
         """
         Map the angle of the joint to the angle of the motor
-        TODO: Implement this method
-              It's probably just the angle of the joint through a gear ratio.
         """
         return [joint_angles[0] / self.JOINT.GEAR_RATIO]
 

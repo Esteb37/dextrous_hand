@@ -17,6 +17,5 @@ class WristJoint(Joint):
     def motors2joint(self, motor_angles):
         """
         Map the angle of the motor to the angle of the joint
-        TODO: Implement this method, probably just the angle of the motor through a gear ratio.
         """
         return motor_angles[0] * self.GEAR_RATIO

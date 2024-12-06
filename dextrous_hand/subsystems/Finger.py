@@ -322,7 +322,6 @@ class Finger(Subsystem):
 class Thumb(Finger):
     """
     For now, the thumb is the same as a finger.
-    TODO: Implement thumb-specific methods
     """
     def __init__(self, id : ids.SUBSYSTEMS):
         """
