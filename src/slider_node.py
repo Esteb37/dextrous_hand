@@ -92,7 +92,7 @@ class ParameterTuningGUI(QMainWindow):
             input_field = QLineEdit(self)
             input_field.setMaximumWidth(50)
             input_field.setText(f"{default_value:.2f}")
-
+            input_field.textChanged.connect(lambda _, p=finger, f=input_field: self.update_param("loss_coeffs", p, f, 0))
             param_layout.addWidget(input_field)
 
             minus_button = QPushButton("-")
@@ -120,7 +120,7 @@ class ParameterTuningGUI(QMainWindow):
             input_field = QLineEdit(self)
             input_field.setMaximumWidth(50)
             input_field.setText(f"{default_value:.2f}")
-
+            input_field.textChanged.connect(lambda _, p=finger, f=input_field: self.update_param("scale_coeffs", p, f, 0))
             param_layout.addWidget(input_field)
 
             minus_button = QPushButton("-")
@@ -156,7 +156,7 @@ class ParameterTuningGUI(QMainWindow):
                     input_field = QLineEdit(self)
                     input_field.setMaximumWidth(50)
                     input_field.setText(f"{default_value:.2f}")
-
+                    input_field.textChanged.connect(lambda _, p=finger, n=param, a=axis, f=input_field: self.update_mano_adjust(p, n, a, f, 0))
                     param_layout.addWidget(input_field)
 
                     minus_button = QPushButton("-")

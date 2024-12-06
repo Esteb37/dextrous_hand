@@ -399,7 +399,10 @@ class Retargeter:
 
         print(f"Retarget time: {(time.time() - start_time) * 1000} ms")
 
-        return finger_joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm
+        mano_structure = (mano_fingertips, mano_mps, mano_palm)
+        hand_structure = (fingertips, mps, palm)
+
+        return finger_joint_angles, mano_structure, hand_structure
 
 
     def adjust_mano_fingers(self, joints, mano_adjustments):
@@ -483,8 +486,8 @@ class Retargeter:
             debug_dict["normalized_joint_pos"] = shifted_points
             debug_dict["original_joint_pos"] = joints
 
-        self.target_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm = self.retarget_finger_mano_joints(
+        self.target_angles, mano_structure, hand_structure = self.retarget_finger_mano_joints(
             normalized_joint_pos
         )
 
-        return self.target_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm
+        return self.target_angles, mano_structure, hand_structure

@@ -127,9 +127,24 @@ class ManoHandVisualizer:
 
         self.markers.extend(markers)
 
-    def generate_keyvector_markers(self, fingertips, mps, palm, stamp, detach = False):
+    def generate_keyvector_markers(self, structure, stamp, detach = False):
+        fingertips, mps, palm = structure
 
         markers = []
+
+        indices = {
+            "thumb": {},
+            "index": {},
+            "middle": {},
+            "ring": {},
+            "pinky": {},
+        }
+
+        for i, finger in enumerate(fingertips.keys()):
+            indices[finger]["tip"] = i
+
+        for i, finger in enumerate(mps.keys()):
+            indices[finger]["mp"] = i
 
         if detach:
             tips = [tip_tensor.detach().cpu().numpy()[0] for tip_tensor in fingertips.values()]
@@ -228,20 +243,31 @@ class ManoHandVisualizer:
         bone_marker.color.b = 1.0
         bone_marker.color.r = 1.0
 
-        for i, start_tip in enumerate(mps):
-            if i == len(mps) - 1:
-                break
-            end_tip = mps[i+1]
+        pairs = [("index", "middle"), ("middle", "ring"), ("ring", "pinky")]
+        for start_finger, end_finger in pairs:
             if detach:
-                start_joint = start_tip
-                end_joint = end_tip
+                start_joint = mps[indices[start_finger]["mp"]]
+                end_joint = mps[indices[end_finger]["mp"]]
             else:
-                start_joint = start_tip  + shift
-                end_joint = end_tip + shift
+                start_joint = mps[indices[start_finger]["mp"]] + shift
+                end_joint = mps[indices[end_finger]["mp"]] + shift
+
             p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
             p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
             bone_marker.points.append(p_start) # type: ignore
             bone_marker.points.append(p_end) # type: ignore
+
+        if detach:
+            start_joint = tips[indices["thumb"]["tip"]]
+            end_joint = mps[indices["thumb"]["mp"]]
+        else:
+            start_joint = tips[indices["thumb"]["tip"]] + shift
+            end_joint = mps[indices["thumb"]["mp"]] + shift
+
+        p_start = Point(x=float(start_joint[0]), y=float(start_joint[1]), z=float(start_joint[2]))
+        p_end = Point(x=float(end_joint[0]), y=float(end_joint[1]), z=float(end_joint[2]))
+        bone_marker.points.append(p_start) # type: ignore
+        bone_marker.points.append(p_end) # type: ignore
 
         markers.append(bone_marker)
 

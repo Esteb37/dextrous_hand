@@ -64,6 +64,7 @@ FINGER_TO_MP: Dict[str, str] = {
     "middle": "middle_mp_virt",
     "ring": "ring_mp_virt",
     "pinky": "pinky_mp_virt",
+    "thumb": "thumb_mp_virt",
 }
 
 # the mapping from fingername to the frame of the fingerbase (The base that fixed to the palm)
