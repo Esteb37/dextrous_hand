@@ -35,6 +35,7 @@ class Retargeter:
         sdf_filepath: str | None = None,
         hand_scheme:  Union[str, dict] | None = None,
         params_file: str = "default",
+        params: dict | None = None
     ) -> None:
         assert (
             int(urdf_filepath is not None)
@@ -43,7 +44,11 @@ class Retargeter:
         ) == 1, "Exactly one of urdf_filepath, mjcf_filepath, or sdf_filepath should be provided"
 
         self.GLOBAL_PARAMS = RETARGETER_PARAMS["global"]
-        self.LOCAL_PARAMS = RETARGETER_PARAMS[params_file]
+
+        if params is None:
+            self.LOCAL_PARAMS = RETARGETER_PARAMS[params_file]
+        else:
+            self.LOCAL_PARAMS = params
 
 
         if hand_scheme == "hh":
@@ -77,7 +82,6 @@ class Retargeter:
         self.use_scalar_distance_palm = self.LOCAL_PARAMS["use_scalar_distance_palm"]
 
         self.target_angles = None
-
 
         self.gc_limits_lower = np.array(
             [rng[0] for rng in self.LOCAL_PARAMS["joint_ranges"].values()]
@@ -398,11 +402,7 @@ class Retargeter:
         return finger_joint_angles, mano_fingertips, mano_mps, mano_palm, fingertips, mps, palm
 
 
-    def adjust_mano_fingers(self, joints):
-
-
-        # Assuming mano_adjustments is accessible within the class
-        mano_adjustments = self.mano_adjustments
+    def adjust_mano_fingers(self, joints, mano_adjustments):
 
         # Get the joints per finger
         joints_dict = retarget_utils.get_mano_joints_dict(
@@ -462,11 +462,15 @@ class Retargeter:
         return joints
 
 
-    def retarget(self, joints, debug_dict):
+    def retarget(self, joints, debug_dict, mano_adjustments = None):
         normalized_joint_pos, mano_center_and_rot = (
             retarget_utils.normalize_points_to_hands_local(joints)
         )
-        normalized_joint_pos = self.adjust_mano_fingers(normalized_joint_pos)
+
+        if mano_adjustments is None:
+            mano_adjustments = self.mano_adjustments
+
+        normalized_joint_pos = self.adjust_mano_fingers(normalized_joint_pos, mano_adjustments)
         # (model_joint_pos - model_center) @ model_rotation = normalized_joint_pos
         debug_dict["mano_center_and_rot"] = mano_center_and_rot
         debug_dict["model_center_and_rot"] = (self.model_center, self.model_rotation)
