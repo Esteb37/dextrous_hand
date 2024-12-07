@@ -23,7 +23,7 @@ class ArmNode(Node):
         )
 
         self.X_W_bCP = DrakeRigidTransform(
-            p=np.array([1.0, 2.0, -1.3]),
+            p=np.array([1.0, 2.2, -1.3]),
             R=DrakeRollPitchYaw(
                 np.deg2rad(np.array([90.0, 0.0, 0.0]))
             ).ToRotationMatrix(),
@@ -37,8 +37,6 @@ class ArmNode(Node):
         )
 
         # publishes to franka/end_effector_pose_cmd
-        # TODO: Create an intermediate topic to publish the target pose, so that wrist rotation can be isolated from the rest of the arm
-        # TODO: Create a new node to subscribe to the intermediate topic and publish to franka/end_effector_pose and 
         self.arm_publisher = self.create_publisher(
             PoseStamped, "/franka/end_effector_pose_cmd", 10
         )
@@ -121,14 +119,26 @@ class ArmNode(Node):
 
         # Assume robot is at home pose
         self.X_W_fEE_init = deepcopy(self.X_W_fEE)
-        # while self.X_W_fEE_init is None:
-        #     print("Waiting for robot pose...")
-        #     time.sleep(0.2)
-        #     self.X_W_fEE_init = deepcopy(self.X_W_fEE)
+        while self.X_W_fEE_init is None:
+            print("Waiting for robot pose...")
+            time.sleep(0.2)
+            self.X_W_fEE_init = deepcopy(self.X_W_fEE)
 
         start_target = np.array(
-            [[0, 0, -1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0.5, -0.1, 0.25, 1]]
+            [[0, 0, -1, 0], [-1, 0, 0, 0], [0, 1, 0, 0], [0.45, -0.25, 0.25, 1]]
         ).T
+
+        R_z_neg90 = np.array([
+            [0, 1, 0, 0],
+            [-1, 0, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+
+        # Perform the matrix multiplication
+        start_target = np.dot(start_target, R_z_neg90)
+
+
         start_target = DrakeRigidTransform(start_target)
         self.publish_target_pose(start_target)
 

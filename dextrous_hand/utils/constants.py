@@ -36,8 +36,6 @@ NODE_FREQUENCY_HZ = GLOBAL_CONSTANTS['NODE_FREQUENCY_HZ']
 LOGGER_TOPICS_TYPES = {
     # HandCnfig
     "/hand_config": Float32MultiArray,
-    "/current_hand_config": Float32MultiArray,
-    "/wrist_cmd": Float32,
 
     # Motors
     "/motors/target/positions": Float32MultiArray,
@@ -57,6 +55,7 @@ LOGGER_TOPICS_TYPES = {
     "/oakd_front_view/depth": Image,
     "/oakd_side_view/color": Image,
     "/oakd_side_view/depth": Image,
+
     "/oakd_wrist_view/color": Image,
 
     "/task_description": String,  # New topic for task description

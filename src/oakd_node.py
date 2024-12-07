@@ -24,7 +24,7 @@ class OakDPublisher(Node):
         self.declare_parameter("visualize", True)
         self.declare_parameter("enable_front_camera", True)
         self.declare_parameter("enable_side_camera", True)
-        self.declare_parameter("enable_wrist_camera", False)
+        self.declare_parameter("enable_wrist_camera", True)
 
         enable_front_camera = self.get_parameter("enable_front_camera").value
         enable_side_camera = self.get_parameter("enable_side_camera").value
@@ -32,6 +32,9 @@ class OakDPublisher(Node):
 
         self.bridge = CvBridge()
         camera_dict = {}
+
+
+        self.get_logger().warn("Camera node starting")
 
         try:
             if enable_front_camera:

@@ -88,7 +88,7 @@ class RokokoTracker:
                 KeyError("No wrist pose available")
                 return None
             return self.wrist_position.copy(), self.wrist_quat.copy()
-        
+
     def get_elbow_pose(self):
         with self.wrist_lock:
             if self.elbow_position is None or self.elbow_quat is None:
