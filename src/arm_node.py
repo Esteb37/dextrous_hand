@@ -23,7 +23,7 @@ class ArmNode(Node):
         )
 
         self.X_W_bCP = DrakeRigidTransform(
-            p=np.array([1.0, 2.2, -1.3]),
+            p=np.array([1.0, 2.0, -1.3]),
             R=DrakeRollPitchYaw(
                 np.deg2rad(np.array([90.0, 0.0, 0.0]))
             ).ToRotationMatrix(),
