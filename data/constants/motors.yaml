@@ -91,7 +91,7 @@ RING_FMBM:
 
 PINKY_FRBL:
   port: 2
-  zero: 2.177250385284424
+  zero: 2.175715923309326
   direction: -1
   range: *full_range
 
@@ -103,7 +103,7 @@ PINKY_FLBR:
 
 PINKY_FMBM:
   port: 3
-  zero: 2.5301520824432373
+  zero: 2.554701805114746
   direction: 1
   range: *full_range
 
