@@ -8,7 +8,7 @@ with_mujoco = False
 def generate_launch_description():
     return LaunchDescription(
         [DexNode("slider_node")] + \
-         control_nodes(configuration, sim = True) + \
+         control_nodes(configuration) + \
          ingress_nodes() + \
          viz_nodes(with_mujoco)
     )

@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton,
 from dextrous_hand.utils.constants import RETARGETER_PARAMS
 from dextrous_hand.utils.utils import parent_dir
 
-configuration = 'default'
+configuration = 'dice'
 
 class ParameterAdjuster(Node):
     def __init__(self, parameters):

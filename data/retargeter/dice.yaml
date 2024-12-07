@@ -1,8 +1,8 @@
 # Title
-title: default
+title: dice
 
 # A short description of this configuration
-description: Default configuration for the retargeter
+description: Config for grabbing dice
 
 
 # A keyvector is a distance between two points in the hand. The retargeter tries to mimic this distance from the mano model into the hand model.
@@ -36,7 +36,7 @@ loss_coeffs:
   pinky2ring_mp: 5.0
   ring2middle_mp: 5.0
   middle2index_mp: 5.0
-  thumb_tip2dp: 70.0
+  thumb_tip2dp: 60.0
 
 # Default: 1.0
 scale_coeffs:
@@ -58,7 +58,7 @@ scale_coeffs:
   pinky2ring_mp: 1.0
   ring2middle_mp: 1.0
   middle2index_mp: 1.0
-  thumb_tip2dp: 0.2
+  thumb_tip2dp: 0.7
 
 # Default: False
 # Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
@@ -92,7 +92,7 @@ joint_ranges:
 retargeter_adjustments:
   thumb:
     translation: [0.01, 0.0, 0.02]
-    rotation: [0.0, 0.0, 0.0]
+    rotation: [0.7, 0.2, 0.0]
     scale: [1.0, 1.0, 1.0]
   index:
     translation: [0.0, 0.0, 0.0]

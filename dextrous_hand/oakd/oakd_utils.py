@@ -2,8 +2,7 @@ import numpy as np
 import open3d as o3d
 import cv2
 from scipy.spatial.transform import Rotation as R
-from sensor_msgs.msg import PointField
-from sensor_msgs import point_cloud2
+from sensor_msgs.msg import PointField, PointCloud2
 
 class PointCloudVisualizer:
     def __init__(self, intrinsic_matrix, width, height, visualize=False):
@@ -226,5 +225,6 @@ def rgb_depth_to_pointcloud(rgb_image, depth_image, camera_intrinsics, header):
         PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
         PointField(name='rgb', offset=12, datatype=PointField.UINT32, count=1)
     ]
-    point_cloud_msg = point_cloud2.create_cloud(header, fields, cloud_data)
+    point_cloud_msg = PointCloud2()
+
     return point_cloud_msg

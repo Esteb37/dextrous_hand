@@ -92,8 +92,8 @@ class RokokoNode(Node):
             elbow_msg = PoseStamped()
             elbow_msg.header.frame_id = "coil_pro"
             elbow_msg.header.stamp = self.get_clock().now().to_msg()
-            
-            elbow_msg.pose.position = Point(    
+
+            elbow_msg.pose.position = Point(
                 x=elbow_pos[0], y=elbow_pos[1], z=elbow_pos[2]
             )
             elbow_msg.pose.orientation = Quaternion(

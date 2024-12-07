@@ -28,7 +28,6 @@ def control_nodes(configuration: str = "default", sim = False):
         NodeClass("wrist_controller_node"),
 
         NodeClass("retargeter_node",
-                  output="screen",
             parameters=[
                 {
                     "retarget/mjcf_filepath": os.path.join(
@@ -46,7 +45,12 @@ def control_nodes(configuration: str = "default", sim = False):
     ]
 
 
-def ingress_nodes(cameras: dict, sim = False):
+def ingress_nodes(cameras: dict = {
+                    "front_view":True,
+                    "side_view": True,
+                    "wrist_view": True
+                  },
+                  sim = False):
 
     NodeClass = DexNode if not sim else SimNode
 

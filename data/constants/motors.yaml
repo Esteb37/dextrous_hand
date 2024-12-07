@@ -4,104 +4,111 @@ MPI: &mpi -3.141592
 FULL_RANGE: &full_range [*mpi, *pi]
 MAX_CURRENT: 400
 
+# index pip not going back
+# middle is going diagonally
+# ring pip is uncoupled
+
+# respool #5
+# #15 is extremely hard
+
 THUMB_ABD:
-  port: 3
-  zero: 3.146962881088257
+  port: 10
+  zero: 3.3172762393951416
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 3.1392910480499268
+  zero: 5.006601810455322
   direction: -1
   range: *full_range
 
 THUMB_PIP:
-  port: 15
-  zero: 3.1408255100250244
+  port: 12
+  zero: 2.436556339263916
   direction: 1
   range: *full_range
 
 THUMB_DIP:
-  port: 14
-  zero: 3.1408255100250244
+  port: 11
+  zero: 2.9781837463378906
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
-  port: 8
-  zero: 3.137756824493408
-  direction: -1
+  port: 9
+  zero: 2.7695114612579346
+  direction: 1
   range: *full_range
 
 INDEX_FLBR:
-  port: 12
-  zero: 3.137756824493408
-  direction: -1
+  port: 0
+  zero: 1.8872570991516113
+  direction: 1
   range: *full_range
 
 INDEX_FMBM:
-  port: 5
-  zero: 3.1408255100250244
+  port: 15
+  zero: 3.9601712226867676
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
-  port: 16
-  zero: 3.1438941955566406
+  port: 5
+  zero: 3.619544267654419
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
-  port: 7
-  zero: 3.137756824493408
-  direction: 1
+  port: 14
+  zero: 2.7219464778900146
+  direction: -1
   range: *full_range
 
 MIDDLE_FMBM:
-  port: 6
-  zero: 3.1392910480499268
-  direction: -1
+  port: 16
+  zero: 2.9321532249450684
+  direction: 1
   range: *full_range
 
 RING_FRBL:
-  port: 10
-  zero: 3.146962881088257
-  direction: -1
+  port: 7
+  zero: 2.5853888988494873
+  direction: 1
   range: *full_range
 
 RING_FLBR:
-  port: 11
-  zero: 3.1484973430633545
-  direction: 1
+  port: 8
+  zero: 3.1454286575317383
+  direction: -1
   range: *full_range
 
 RING_FMBM:
-  port: 9
-  zero: 3.150031566619873
-  direction: -1
-  range: *full_range
-
-PINKY_FRBL:
-  port: 1
-  zero: 4.750364303588867
+  port: 6
+  zero: 3.1178102493286133
   direction: 1
   range: *full_range
 
-PINKY_FLBR:
+PINKY_FRBL:
   port: 2
-  zero: 3.1408255100250244
+  zero: 2.177250385284424
   direction: -1
   range: *full_range
 
+PINKY_FLBR:
+  port: 1
+  zero: 1.8795853853225708
+  direction: 1
+  range: *full_range
+
 PINKY_FMBM:
-  port: 0
-  zero: 2.149631977081299
+  port: 3
+  zero: 2.5301520824432373
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 3.1408255100250244
+  zero: 3.119344472885132
   direction: -1
   range: [-6.18, 6.18]
