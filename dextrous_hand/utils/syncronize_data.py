@@ -12,6 +12,7 @@ from dextrous_hand.utils.constants import LOGGER_TOPICS_TYPES  # Import the pred
 from std_msgs.msg import Float32MultiArray, String
 from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image
+import subprocess
 
 TOPIC_TO_STRING = {
     Float32MultiArray: "Float32MultiArray",
@@ -40,6 +41,17 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compre
         sampling_frequency (float): Sampling frequency in Hz.
         topic_types (dict): Dictionary mapping topics to their types.
     """
+    with h5py.File(input_h5_path, 'r') as input_h5:
+        # Extract task description
+        task_description = None
+        if "/task_description" in input_h5:
+            task_description = input_h5["/task_description"]["description"][()]
+            task_description = task_description.decode('utf-8') if isinstance(task_description, bytes) else task_description
+
+        # Construct the output file name
+        if task_description:
+            output_h5_path = os.path.join(output_h5_path, f"{task_description}.h5") 
+
     with h5py.File(input_h5_path, 'r') as input_h5, h5py.File(output_h5_path, 'w') as output_h5:
         # Determine sampling timestamps
         start_time = None
@@ -85,6 +97,8 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compre
 
             if TOPIC_TO_STRING[topic_type] == "Image":
                 # Sample images
+                if "depth" in topic:
+                    continue
                 sampled_images = []
                 for t in desired_timestamps:
                     closest_idx = np.abs(topic_timestamps - t).argmin()
@@ -133,9 +147,10 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compre
                     topic_timestamps, array_data, axis=0, kind="linear", fill_value="extrapolate"
                 )
                 sampled_array = interp_array(desired_timestamps)
-                
-                qpos_hand = sampled_array
-                actions_hand = sampled_array
+                if topic == "/motors/target/positions":
+                    actions_hand= sampled_array
+                if topic == "/motors/read/positions":    
+                    qpos_hand = sampled_array
             
         
             # create observations group
@@ -151,6 +166,25 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compre
 
 
     print(f"Processed data saved to: {output_h5_path}")
+
+def get_git_commit_hash(input_folder):
+    
+    try:
+        current_dir = os.getcwd()
+        # Find the top-level directory of the Git repository
+        os.chdir(input_folder)
+
+        top_level_dir = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).strip().decode('utf-8')
+        print(f"Top-level directory: {top_level_dir}")
+        # Change the working directory to the top-level directory
+        os.chdir(top_level_dir)
+
+        # Get the commit hash
+        commit_hash = subprocess.check_output(['git', 'rev-parse', 'HEAD']).strip().decode('utf-8')
+        os.chdir(current_dir)
+        return commit_hash[:7]  # Use the first 7 characters of the commit hash
+    except subprocess.CalledProcessError:
+        return "unknown"
 
 def process_folder(input_folder, sampling_frequency, compress, resize_to, topic_types):
     """
@@ -169,8 +203,9 @@ def process_folder(input_folder, sampling_frequency, compress, resize_to, topic_
         return
 
     # Create the output folder
+    commit_hash = get_git_commit_hash(input_folder)
     output_folder = os.path.join(os.path.dirname(input_folder), 
-                                 os.path.basename(input_folder) + "_processed" + f"_{int(sampling_frequency)}hz")
+                                 os.path.basename(input_folder) + f"_processed_{commit_hash}_{int(sampling_frequency)}hz")
     if compress:
         output_folder += "_lzf"
     os.makedirs(output_folder, exist_ok=True)
@@ -179,10 +214,10 @@ def process_folder(input_folder, sampling_frequency, compress, resize_to, topic_
     # Process each file
     for idx, input_file in enumerate(h5_files):
         try:
-            output_file = os.path.join(output_folder, f"{idx:04d}.h5")
+            # output_file = os.path.join(output_folder, f"{idx:04d}.h5")
             print(f"Processing file: {input_file}")
-            sample_and_sync_h5(input_file, output_file, sampling_frequency, compress, resize_to, topic_types)
-            print(f"Processed file saved as: {output_file}")
+            sample_and_sync_h5(input_file, output_folder, sampling_frequency, compress, resize_to, topic_types)
+            print(f"Processed file saved as: {output_folder}")
         except Exception as e:
             print(e)
 
@@ -191,7 +226,7 @@ def process_folder(input_folder, sampling_frequency, compress, resize_to, topic_
 def main():
     parser = argparse.ArgumentParser(description="Process and synchronize HDF5 files.")
     parser.add_argument("input_folder", type=str, help="Path to the folder containing input HDF5 files.")
-    parser.add_argument("--sampling_freq", type=float, default=100, help="Sampling frequency in Hz.")
+    parser.add_argument("--sampling_freq", type=float, default=50, help="Sampling frequency in Hz.")
     parser.add_argument("--compress",  action="store_true", help="Compress the output HDF5 files. [it might boost the performance on aws but might decrease the performance on local machine]")
     parser.add_argument(
         '--resize_to',
