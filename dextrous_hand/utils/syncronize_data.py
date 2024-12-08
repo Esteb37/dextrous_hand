@@ -47,10 +47,11 @@ def sample_and_sync_h5(input_h5_path, output_h5_path, sampling_frequency, compre
         if "/task_description" in input_h5:
             task_description = input_h5["/task_description"]["description"][()]
             task_description = task_description.decode('utf-8') if isinstance(task_description, bytes) else task_description
-
+        
         # Construct the output file name
         if task_description:
-            output_h5_path = os.path.join(output_h5_path, f"{task_description}.h5") 
+            base_name = os.path.basename(input_h5_path).split('.')[0]  # Get the base name of the file
+            output_h5_path = os.path.join(output_h5_path, f"{base_name}_{task_description}.h5") 
 
     with h5py.File(input_h5_path, 'r') as input_h5, h5py.File(output_h5_path, 'w') as output_h5:
         # Determine sampling timestamps
