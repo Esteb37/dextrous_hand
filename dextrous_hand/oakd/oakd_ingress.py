@@ -286,23 +286,13 @@ class OakDDriver:
                                     cv2.imshow("rectified_left", rectified_left)
                                     cv2.imshow("rectified_right", rectified_right)
 
-                            rgb = cv2.cvtColor(color, cv2.COLOR_BGR2RGB)
-
-                            if has_depth and depth is not None:
-                                pcd, rgbd = pcl_converter.rgbd_to_projection(depth, rgb)
-                            else:
-                                pcd = None
-                                rgbd = None
-
-
-                            if self.visualize and has_depth:
-                                pcl_converter.visualize_pcd()
+                                    pcl_converter.visualize_pcd()
 
                             if self.callback is not None:
                                 if self.camera_name is not None:
-                                    self.callback(color, depth, pcd, rgbd, self.camera_name)
+                                    self.callback(color, depth, self.camera_name)
                                 else:
-                                    self.callback(color, depth, pcd, rgbd)
+                                    self.callback(color, depth)
 
                 key = cv2.waitKey(1)
                 if key == ord("s"):
