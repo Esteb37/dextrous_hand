@@ -8,6 +8,5 @@ with_mujoco = False
 def generate_launch_description():
     return LaunchDescription(
         ingress_nodes(cameras) + \
-        control_nodes(configuration) + \
-        viz_nodes(with_mujoco)
+        control_nodes(configuration)
     )
