@@ -21,7 +21,7 @@ from sensor_msgs.msg import PointCloud2
 class OakDPublisher(Node):
     def __init__(self, camera_dict=None):
         super().__init__("oakd_publisher")
-        self.declare_parameter("visualize", True)
+        self.declare_parameter("visualize", False)
         self.declare_parameter("enable_front_camera", True)
         self.declare_parameter("enable_side_camera", True)
         self.declare_parameter("enable_wrist_camera", True)
@@ -66,8 +66,6 @@ class OakDPublisher(Node):
                 "lock": RLock(),
                 "color": None,
                 "depth": None,
-                "rgbd": None,
-                "pcl": None,
                 "driver": OakDDriver(
                     self.recv_oakd_images,
                     visualize=False, # type: ignore
@@ -101,14 +99,12 @@ class OakDPublisher(Node):
                 "intrinsic_matrix": None,
             }
 
-    def recv_oakd_images(self, color, depth, pcl, rgbd, camera_name):
+    def recv_oakd_images(self, color, depth, camera_name):
         with self.camera_dict[camera_name]["lock"]:
             (
                 self.camera_dict[camera_name]["color"],
                 self.camera_dict[camera_name]["depth"],
-                self.camera_dict[camera_name]["pcl"],
-                self.camera_dict[camera_name]["rgbd"],
-            ) = (color, depth, pcl, rgbd)
+            ) = (color, depth)
 
     def publish_images(self):
         for camera_name in self.camera_dict.keys():
@@ -122,11 +118,9 @@ class OakDPublisher(Node):
                     self.get_logger().error(f"No depth image received for {camera_name}")
                     continue
 
-                color, depth, pcl, rgbd = (
+                color, depth  = (
                     self.camera_dict[camera_name]["color"],
                     self.camera_dict[camera_name]["depth"],
-                    self.camera_dict[camera_name]["pcl"],
-                    self.camera_dict[camera_name]["rgbd"],
                 )
 
                 # 180 flip (need to do it for all oakd cameras for now)
