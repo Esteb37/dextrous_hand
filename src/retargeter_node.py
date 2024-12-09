@@ -12,6 +12,7 @@ from tf2_ros import TransformBroadcaster, TransformStamped
 
 from dextrous_hand.mano.retargeter import Retargeter
 from dextrous_hand.utils.HandConfig import HandConfig
+from dextrous_hand.utils.constants import GLOBAL_CONSTANTS
 from dextrous_hand.mano.utils import numpy_to_float32_multiarray
 from dextrous_hand.mano.visualize_mano import ManoHandVisualizer
 from dextrous_hand.mano.retarget_utils import rotation_matrix_x, rotation_matrix_y, rotation_matrix_z
@@ -23,11 +24,10 @@ class RetargeterNode(Node):
         # start retargeter
         self.declare_parameter("retarget/mjcf_filepath", rclpy.Parameter.Type.STRING)
         self.declare_parameter("retarget/hand_scheme", rclpy.Parameter.Type.STRING)
-        self.declare_parameter("retarget/configuration", "default")
 
         self.mjcf_filepath = self.get_parameter("retarget/mjcf_filepath").value
         self.hand_scheme = self.get_parameter("retarget/hand_scheme").value
-        self.configuration = self.get_parameter("retarget/configuration").value
+        self.configuration = GLOBAL_CONSTANTS["CONFIGURATION"]
 
         if self.mjcf_filepath is None:
             raise ValueError("No mjcf_filepath provided")

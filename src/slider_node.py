@@ -7,10 +7,9 @@ from PyQt5.QtCore import QTimer
 from std_msgs.msg import String
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget, QHBoxLayout, QLineEdit
 
-from dextrous_hand.utils.constants import RETARGETER_PARAMS
 from dextrous_hand.utils.utils import parent_dir
+from dextrous_hand.utils.constants import RETARGETER_PARAMS, GLOBAL_CONSTANTS
 
-configuration = 'dice'
 
 class ParameterAdjuster(Node):
     def __init__(self, parameters):
@@ -35,7 +34,7 @@ class ParameterAdjuster(Node):
 
     def save(self):
         # Save the parameters to a file
-        yaml_path = parent_dir() + "/data/retargeter/" + configuration + ".yaml"
+        yaml_path = parent_dir() + "/data/retargeter/" + GLOBAL_CONSTANTS["CONFIGURATION"] + ".yaml"
 
         yaml = YAML()
         yaml.preserve_quotes = True  # Preserves quotes and structure
@@ -213,7 +212,7 @@ class ParameterTuningGUI(QMainWindow):
 
 def main(args=None):
     rclpy.init(args=args)
-    parameters = RETARGETER_PARAMS[configuration]
+    parameters = RETARGETER_PARAMS[GLOBAL_CONSTANTS["CONFIGURATION"]]
     node = ParameterAdjuster(parameters)
 
     app = QApplication(sys.argv)

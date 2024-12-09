@@ -1,6 +1,15 @@
 # Set to True if the motor controller is not connected
 IS_SIMULATION: false
 
+CONFIGURATION: "opposition"
+
+WITH_MUJOCO: false
+
+CAMERAS:
+  front_view: true
+  side_view: true
+  wrist_view: true
+
 # Set to True to disable the hand and control the motors manually but still be able to read the sensors
 MANUAL_CONTROL: false
 
