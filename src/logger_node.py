@@ -137,9 +137,9 @@ class DemoLogger(Node):
 
     def stop_recording(self):
         if self.writer:
-            self.writer = None
             for sub in self.subscribers:
                 self.destroy_subscription(sub)
+            self.writer = None
             self.get_logger().info("Stopped recording.")
         else:
             self.get_logger().warn("No active recording to stop.")
