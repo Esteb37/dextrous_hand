@@ -2,6 +2,7 @@ import os
 
 from launch_ros.actions import Node
 from dextrous_hand.utils.utils import parent_dir
+from dextrous_hand.utils.constants import GLOBAL_CONSTANTS
 
 class DexNode(Node):
     def __init__(self, name, **kwargs):
@@ -18,7 +19,7 @@ class SimNode(DexNode):
         params.append({"is_simulation": True})
         super().__init__(name, parameters=params, **kwargs)
 
-def control_nodes(configuration: str = "default", sim = False):
+def control_nodes(sim = False):
 
     NodeClass = DexNode if not sim else SimNode
 
@@ -39,23 +40,25 @@ def control_nodes(configuration: str = "default", sim = False):
                     )
                 },
                 {"retarget/hand_scheme": "hh"},
-                {"retarget/configuration": configuration},
             ]
         )
     ]
 
+def rokoko_node():
+    return [DexNode("rokoko_node",
+            parameters=[
+                {"rokoko_tracker/ip": "0.0.0.0"},
+                {"rokoko_tracker/port": 14043},
+                {"rokoko_tracker/use_coil": True}
+            ],
+        )]
 
-def ingress_nodes(cameras: dict = {
-                    "front_view":True,
-                    "side_view": True,
-                    "wrist_view": True
-                  },
-                  sim = False):
+def ingress_nodes():
 
-    NodeClass = DexNode if not sim else SimNode
+    cameras = GLOBAL_CONSTANTS["CAMERAS"]
 
     return [
-        NodeClass("rokoko_node",
+        DexNode("rokoko_node",
             parameters=[
                 {"rokoko_tracker/ip": "0.0.0.0"},
                 {"rokoko_tracker/port": 14043},
@@ -63,7 +66,7 @@ def ingress_nodes(cameras: dict = {
             ],
         ),
 
-        NodeClass("oakd_node",
+        DexNode("oakd_node",
             parameters=[
                 {"enable_front_camera": cameras["front_view"]},
                 {"enable_side_camera": cameras["side_view"]},
@@ -71,7 +74,7 @@ def ingress_nodes(cameras: dict = {
             ],
         )]
 
-def viz_nodes(with_mujoco = False, sim = False):
+def viz_nodes():
     urdf = os.path.join(
                     parent_dir(),
                     "data",
@@ -84,9 +87,9 @@ def viz_nodes(with_mujoco = False, sim = False):
     with open(urdf, 'r') as infp:
         robot_desc = infp.read()
 
-    NodeClass = DexNode if not sim else SimNode
+
     nodes = [
-        NodeClass("visualize_joints_node",
+        DexNode("visualize_joints_node",
                 parameters=[
                     {"scheme_path": os.path.join(
                         parent_dir(),
@@ -118,7 +121,7 @@ def viz_nodes(with_mujoco = False, sim = False):
             )
     ]
 
-    if with_mujoco:
-        nodes.append(NodeClass("mujoco_node"))
+    if GLOBAL_CONSTANTS["WITH_MUJOCO"]:
+        nodes.append(DexNode("mujoco_node"))
 
     return nodes
