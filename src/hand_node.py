@@ -105,15 +105,6 @@ class HandNode(Node):
             motor_positions.data = self.motor_bridge.read_positions()
             self.motor_read_publisher.publish(motor_positions)
 
-            motor_dxl_positions = Float32MultiArray()
-            # self.get_logger().info(f"motor_dxl_positions.data: {self.motor_bridge.read_dxl_positions()}")
-            motor_dxl_positions.data = self.motor_bridge.read_dxl_positions()
-            self.motor_dxl_read_publisher.publish(motor_dxl_positions)
-
-            motor_velocities = Float32MultiArray()
-            motor_velocities.data = self.motor_bridge.read_velocities()
-            self.motor_velocity_read_publisher.publish(motor_velocities)
-
             motor_currents = Float32MultiArray()
             motor_currents.data = self.motor_bridge.read_currents()
             self.motor_current_read_publisher.publish(motor_currents)
@@ -122,9 +113,6 @@ class HandNode(Node):
             motor_targets.data = self.motor_bridge.read_targets()
             self.motor_target_publisher.publish(motor_targets)
 
-            motor_dxl_targets = Float32MultiArray()
-            motor_dxl_targets.data = self.motor_bridge.read_dxl_targets()
-            self.motor_dxl_target_publisher.publish(motor_dxl_targets)
 
 
     def print(self):

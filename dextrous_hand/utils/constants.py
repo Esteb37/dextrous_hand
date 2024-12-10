@@ -34,16 +34,10 @@ NODE_FREQUENCY_HZ = GLOBAL_CONSTANTS['NODE_FREQUENCY_HZ']
 
 # Define supported topics and message types
 LOGGER_TOPICS_TYPES = {
-    # HandCnfig
-    "/hand_config": Float32MultiArray,
-
     # Motors
     "/motors/target/positions": Float32MultiArray,
-    "/motors/target/dxl_positions" : Float32MultiArray,
 
     "/motors/read/positions": Float32MultiArray,
-    "/motors/read/dxl_positions": Float32MultiArray,
-    "/motors/read/dxl_velocities": Float32MultiArray,
     "/motors/read/dxl_currents": Float32MultiArray,
 
     # FRANKA ROBOT
@@ -64,16 +58,14 @@ LOGGER_TOPICS_TYPES = {
     "/oakd_front_view/intrinsics": Float32MultiArray,
     "/oakd_side_view/intrinsics": Float32MultiArray,
     "/oakd_wrist_view/intrinsics": Float32MultiArray,
+
     "/oakd_front_view/extrinsics": Float32MultiArray,
     "/oakd_side_view/extrinsics": Float32MultiArray,
-    "/oakd_wrist_view/extrinsics": Float32MultiArray,
+
     "/oakd_front_view/projection": Float32MultiArray,
     "/oakd_side_view/projection": Float32MultiArray,
-    "/oakd_wrist_view/projection": Float32MultiArray,
 
     # Rokoko data
     "/ingress/mano": Float32MultiArray,
     "/ingress/wrist": PoseStamped,
-    "/ingress/elbow": PoseStamped,
-
 }
