@@ -35,5 +35,6 @@ def generate_launch_description():
     return LaunchDescription([
         policy_ckpt_arg,
         policy_node,
-        DexNode("motors_node")
+        DexNode("motors_node"),
+        # DexNode("oakd_node"),
 ])

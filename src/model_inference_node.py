@@ -88,13 +88,14 @@ class PolicyPlayerAgent(Node):
 
         self.policy = get_policy_from_ckpt(self.policy_ckpt_path)
         self.policy.reset_policy()
-        self.policy_run = self.create_timer(0.05, self.run_policy_cb) # 20hz
-
+        self.policy_run = self.create_timer(0.01, self.run_policy_cb) # 20hz
 
         hand_msg = numpy_to_float32_multiarray(np.zeros(self.hand_qpos_dim))
         self.hand_pub.publish(hand_msg)
 
         self.get_logger().warn("Inference node started with model from: " + self.policy_ckpt_path)
+
+        self.start_time = self.get_clock().now()
 
 
     def publish(self, wrist_policy: np.ndarray, hand_policy: np.ndarray):
@@ -158,12 +159,19 @@ class PolicyPlayerAgent(Node):
             self.get_logger().info("No observations available. Sleeping for 1 seconds.")
             sleep(1)
             return
+
         with torch.inference_mode():
             obs_dict = {k: torch.tensor(v).float().unsqueeze(0) for k, v in obs_dict.items()} # add batch dimension
             actions = self.policy.predict_action(obs_dict)
             wrist_action = actions["actions_franka"][0].cpu().numpy()
             hand_action = actions["actions_hand"][0].cpu().numpy()
+
+        end_time = self.get_clock().now()
         self.publish(wrist_action, hand_action)
+        self.get_logger().info(f"Time taken for inference: {(end_time - self.start_time).nanoseconds/1 * 10**-6} ms")
+        self.get_logger().info(f"Frequency: {1/((end_time - self.start_time).nanoseconds/1 * 10**-9)} Hz")
+        self.start_time = end_time
+
 
 def main(args=None):
     rclpy.init(args=args)
