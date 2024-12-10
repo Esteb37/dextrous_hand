@@ -41,6 +41,7 @@ setup(
             'slider_node = src.slider_node:main',
             'syncronize_data = dextrous_hand.utils.syncronize_data:main',
             'model_inference_node = src.model_inference_node:main',
+            'motors_node = src.motors_node:main',
         ],
     },
 )
