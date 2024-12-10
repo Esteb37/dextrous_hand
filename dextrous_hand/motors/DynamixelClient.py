@@ -307,7 +307,12 @@ class DynamixelClient:
         # Magic number, the actual maximum current is 1/3 higher than whatever you write to the motors
         # This does not happen with the Wizard
         max_current_scale = 3 / 4
+
         max_current = constants.MOTOR_CONSTANTS["MAX_CURRENT"] * max_current_scale
+
+        max_currents = max_current * np.ones(len(motor_ids))
+
+        max_currents[ids.MOTORS.WRIST.value] = constants.MOTOR_CONSTANTS["MAX_CURRENT_WRIST"] * max_current_scale
 
         times = self.sync_write(motor_ids, max_current * np.ones(len(motor_ids)), ADDR_GOAL_CURRENT, LEN_GOAL_CURRENT) # type: ignore
         return times

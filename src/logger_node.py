@@ -49,7 +49,7 @@ class DemoLogger(Node):
         else:
             self.get_logger().info(f"Directory '{task_folder}' already exists.")
 
-        self.task_description = input("Enter a description for the task: ")
+        self.task_description = "pickup"
 
         # Confirm and start recording
         input("Press Enter to start recording ")

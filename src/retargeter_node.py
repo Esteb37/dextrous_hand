@@ -80,7 +80,7 @@ class RetargeterNode(Node):
         self.prev_params = None
         self.params_sub = self.create_subscription(String, 'retargeter_params', self.params_cb, 10)
 
-        self.get_logger().warn("Retargeter Node started")
+        self.get_logger().warn("Retargeter Node started with configuration: " + self.configuration)
 
     def ingress_mano_cb(self, msg):
         self.keypoint_positions = np.array(msg.data).reshape(-1, 3)
