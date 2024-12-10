@@ -25,7 +25,7 @@ def generate_launch_description():
                 "/oakd_front_view/color", "/oakd_side_view/color", "/oakd_wrist_view/color"
             ],
             'camera_names': [
-                "oakd_front_view_images", "oakd_side_view_images", "oakd_wrist_view_images"
+                "oakd_front_view_images", "oakd_side_view_images", "oakd_side_wrist_images"
             ],
             "policy_ckpt_path": policy_ckpt_path
          }]
