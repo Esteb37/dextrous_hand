@@ -24,7 +24,7 @@ class OakDPublisher(Node):
         self.declare_parameter("visualize", False)
         self.declare_parameter("enable_front_camera", True)
         self.declare_parameter("enable_side_camera", True)
-        self.declare_parameter("enable_wrist_camera", False)
+        self.declare_parameter("enable_wrist_camera", True)
 
         enable_front_camera = self.get_parameter("enable_front_camera").value
         enable_side_camera = self.get_parameter("enable_side_camera").value
