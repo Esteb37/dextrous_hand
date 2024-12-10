@@ -3,6 +3,8 @@ IS_SIMULATION: false
 
 CONFIGURATION: "opposition"
 
+MODEL_PATH: "firstTry/checkpoint_500.pth"
+
 WITH_MUJOCO: false
 
 CAMERAS:

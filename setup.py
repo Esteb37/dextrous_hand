@@ -40,6 +40,7 @@ setup(
             'oakd_node = src.oakd_node:main',
             'slider_node = src.slider_node:main',
             'syncronize_data = dextrous_hand.utils.syncronize_data:main',
+            'model_inference_node = src.model_inference_node:main',
         ],
     },
 )
