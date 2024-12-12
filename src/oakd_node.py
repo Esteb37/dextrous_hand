@@ -22,8 +22,8 @@ class OakDPublisher(Node):
     def __init__(self, camera_dict=None):
         super().__init__("oakd_publisher")
         self.declare_parameter("visualize", False)
-        self.declare_parameter("enable_front_camera", False)
-        self.declare_parameter("enable_side_camera", False)
+        self.declare_parameter("enable_front_camera", True)
+        self.declare_parameter("enable_side_camera", True)
         self.declare_parameter("enable_wrist_camera", True)
 
         enable_front_camera = self.get_parameter("enable_front_camera").value
@@ -137,7 +137,9 @@ class OakDPublisher(Node):
 
                 else:
                     # Cut the right half
-                    color = color[:, :int(color.shape[1] * 0.6)]
+                    color = color[:, int(color.shape[1] * 0.4):]
+
+                color = cv2.resize(color, (240, 240))
 
                     # To ROS2 point cloud
                 # publish normal images
