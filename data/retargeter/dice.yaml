@@ -92,7 +92,7 @@ joint_ranges:
 retargeter_adjustments:
   thumb:
     translation: [0.01, 0.0, 0.02]
-    rotation: [0.7, 0.6, 0.0]
+    rotation: [0.7, 0.2, 0.0]
     scale: [1.0, 1.0, 1.0]
   index:
     translation: [0.0, 0.0, 0.0]

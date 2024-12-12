@@ -1,9 +1,9 @@
 # Set to True if the motor controller is not connected
 IS_SIMULATION: false
 
-CONFIGURATION: "opposition"
+CONFIGURATION: "dice"
 
-MODEL_PATH: "firstTry/checkpoint_300.pth"
+MODEL_PATH: "secondDay/checkpoint_80.pth"
 
 WITH_MUJOCO: false
 

@@ -14,7 +14,6 @@ class MotorsNode(Node):
     def __init__(self):
         super().__init__('motors_node')
 
-        GLOBAL_CONSTANTS["IS_SIMULATION"] = True
 
         self.config_subscription = self.create_subscription(Float32MultiArray,'/motors/target/positions',self.motor_pos_callback, 10)
 

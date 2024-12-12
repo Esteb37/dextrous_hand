@@ -25,7 +25,7 @@ def generate_launch_description():
                 "/oakd_front_view/color", "/oakd_side_view/color", "/oakd_wrist_view/color"
             ],
             'camera_names': [
-                "oakd_front_view_images", "oakd_side_view_images", "oakd_side_wrist_images"
+                "oakd_front_view_images", "oakd_side_view_images", "oakd_wrist_view_images"
             ],
             "policy_ckpt_path": policy_ckpt_path
          }]
@@ -36,5 +36,5 @@ def generate_launch_description():
         policy_ckpt_arg,
         policy_node,
         DexNode("motors_node"),
-        # DexNode("oakd_node"),
+        DexNode("oakd_node"),
 ])
