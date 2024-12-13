@@ -139,7 +139,9 @@ class OakDPublisher(Node):
                     # Cut the right half
                     color = color[:, int(color.shape[1] * 0.4):]
 
-                color = cv2.resize(color, (240, 240))
+                color = cv2.resize(color, (224, 224))
+
+
 
                     # To ROS2 point cloud
                 # publish normal images
@@ -166,9 +168,9 @@ class OakDPublisher(Node):
                         output_img_depth = self.bridge.cv2_to_imgmsg(
                             depth, "mono16", header=header
                         )
-                        self.camera_dict[camera_name]["depth_output_pub"].publish(
+                        """self.camera_dict[camera_name]["depth_output_pub"].publish(
                             output_img_depth
-                        )
+                        )"""
 
                         if self.visualize:
                             output_img_depth_visualization = self.bridge.cv2_to_imgmsg(

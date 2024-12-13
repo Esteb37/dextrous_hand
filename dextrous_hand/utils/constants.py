@@ -69,3 +69,8 @@ LOGGER_TOPICS_TYPES = {
     "/ingress/mano": Float32MultiArray,
     "/ingress/wrist": PoseStamped,
 }
+
+IMAGE_TOPIC_TYPES = {
+    "/observations/images/oakd_front_view/color": Image,
+    "/observations/images/oakd_side_view/color": Image,
+}

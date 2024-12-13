@@ -1,0 +1,3 @@
+train: /home/esteb37/Downloads/images/train/dataset/train
+val: /home/esteb37/Downloads/images/train/dataset/test
+names: ["big_blue", "big_yellow", "big_red", "small_blue", "small_yellow", "small_red", "tray_blue", "tray_yellow", "tray_red"]
