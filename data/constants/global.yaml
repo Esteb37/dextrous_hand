@@ -3,7 +3,8 @@ IS_SIMULATION: false
 
 CONFIGURATION: "dice"
 
-MODEL_PATH: "day5_models/checkpoint_490.pth"
+BIG_MODEL_PATH: "bigYolo/best_model.pth"
+SMALL_MODEL_PATH: "bigYolo/best_model.pth"
 
 WITH_MUJOCO: false
 
