@@ -7,11 +7,13 @@ import cv2
 
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
+from std_msgs.msg import Int32
 
 bridge = CvBridge()
 
 classes = ["big_blue", "big_yellow", "big_red", "small_blue", "small_yellow", "small_red", "tray_blue", "tray_yellow", "tray_red"]
+
+decisions = ["left", "center", "right", "unsure"]
 
 class YOLONode(Node):
     def __init__(self):
@@ -23,7 +25,7 @@ class YOLONode(Node):
 
         self.front_pub = self.create_publisher(Image, "/yolo_front_view", 10)
         self.side_pub = self.create_publisher(Image, "/yolo_side_view", 10)
-        self.decision_pub = self.create_publisher(String, "/yolo_decision", 10)
+        self.decision_pub = self.create_publisher(Int32, "/yolo_decision", 10)
 
         self.front_decision = "unsure"
         self.side_decision = "unsure"
@@ -69,8 +71,8 @@ class YOLONode(Node):
 
     def decide_loop(self):
         if self.decision != "unsure":
-            msg = String()
-            msg.data = self.decision
+            msg = Int32()
+            msg.data = decisions.index(self.decision)
             self.decision_pub.publish(msg)
             return
 
@@ -82,8 +84,8 @@ class YOLONode(Node):
 
         if stop_time - self.start_time > 2e9:
             self.get_logger().warn("YOLO unsure")
-            msg = String()
-            msg.data = "unsure"
+            msg = Int32()
+            msg.data = decisions.index("unsure")
             self.decision_pub.publish(msg)
 
         self.decision = self.decide()
@@ -92,8 +94,8 @@ class YOLONode(Node):
             self.get_logger().info("YOLO unsure for: " + str((stop_time - self.start_time)/1e9) + " seconds")
 
         else:
-            msg = String()
-            msg.data = self.decision
+            msg = Int32()
+            msg.data = decisions.index(self.decision)
             self.decision_pub.publish(msg)
 
     def process_image(self, image, camera, visualize = False):
@@ -149,28 +151,33 @@ class YOLONode(Node):
                     corr_tray = best_red
 
                 if corr_tray is None:
-                    return
+                    side = "unsure"
 
-                trays = []
-                if best_blue is not None:
-                    trays.append(best_blue)
-                if best_yellow is not None:
-                    trays.append(best_yellow)
-                if best_red is not None:
-                    trays.append(best_red)
-
-                if camera == "front":
-                    trays.sort(key=lambda x: x[0])
                 else:
-                    trays.sort(key=lambda x: x[0], reverse=True)
+                    trays = []
+                    if best_blue is not None:
+                        trays.append(best_blue)
+                    if best_yellow is not None:
+                        trays.append(best_yellow)
+                    if best_red is not None:
+                        trays.append(best_red)
 
-                side = "left"
+                    if len(trays) != 3:
+                        side = "unsure"
 
-                if trays[2][5] == corr_tray[5]:
-                    side = "right"
+                    else:
+                        if camera == "front":
+                            trays.sort(key=lambda x: x[0])
+                        else:
+                            trays.sort(key=lambda x: x[0], reverse=True)
 
-                if trays[1][5] == corr_tray[5]:
-                    side = "center"
+                        side = "left"
+
+                        if trays[2][5] == corr_tray[5]:
+                            side = "right"
+
+                        if trays[1][5] == corr_tray[5]:
+                            side = "center"
 
                 if visualize:
                     for rect in [best_cube, corr_tray]:
