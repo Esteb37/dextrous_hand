@@ -24,9 +24,6 @@ for file in files:
 
     results = model(image, imgsz=224)
 
-    if len(results) == 0:
-        continue
-
     best_cube = None
     best_cube_conf = 0
     best_red = None
@@ -39,8 +36,8 @@ for file in files:
     for result in results:
         for box in result.boxes:
 
-            array = box.data.cpu().numpy()
-            x1, y1, x2, y2, conf, clas = array[0]
+            array = box.data.cpu().numpy()[0]
+            x1, y1, x2, y2, conf, clas = array
 
             if clas <= 5:
                 if conf > best_cube_conf:
@@ -62,42 +59,55 @@ for file in files:
                     best_red = array
                     best_red_conf = conf
 
-    if best_cube is not None:
-        x1, y1, x2, y2, conf, clas = best_cube[0]
-        if clas in [0, 3]:
-            corr_tray = best_blue
-        if clas in [1, 4]:
-            corr_tray = best_yellow
-        if clas in [2, 5]:
-            corr_tray = best_red
+        if best_cube is not None:
+            x1, y1, x2, y2, conf, clas = best_cube
+            if clas in [0, 3] and best_blue is not None:
+                corr_tray = best_blue
+            if clas in [1, 4] and best_yellow is not None:
+                corr_tray = best_yellow
+            if clas in [2, 5] and best_red is not None:
+                corr_tray = best_red
 
-    trays = []
-    if best_blue is not None:
-        trays.append(best_blue[0])
-    if best_yellow is not None:
-        trays.append(best_yellow[0])
-    if best_red is not None:
-        trays.append(best_red[0])
+            if corr_tray is None:
+                side = "unsure"
+                break
 
+            trays = []
+            if best_blue is not None:
+                trays.append(best_blue)
+            if best_yellow is not None:
+                trays.append(best_yellow)
+            if best_red is not None:
+                trays.append(best_red)
 
-    # Sort from left to right
-    trays.sort(key=lambda x: x[0])
+            if "front" in file:
+                trays.sort(key=lambda x: x[0])
+            else:
+                trays.sort(key=lambda x: x[0], reverse=True)
 
-    for rect in [best_cube, corr_tray]:
-        if rect is None:
-            continue
+            side = "left"
 
-        x1, y1, x2, y2, conf, clas = rect[0]
+            if trays[2][5] == corr_tray[5]:
+                side = "right"
 
-        x1 = int(x1)
-        y1 = int(y1)
-        x2 = int(x2)
-        y2 = int(y2)
-        clas = int(clas)
-        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
-        cv2.putText(image, classes[clas], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            if trays[1][5] == corr_tray[5]:
+                side = "center"
 
+            for rect in [best_cube, corr_tray]:
+                if rect is None:
+                    continue
 
+                x1, y1, x2, y2, conf, clas = rect
+
+                x1 = int(x1)
+                y1 = int(y1)
+                x2 = int(x2)
+                y2 = int(y2)
+                clas = int(clas)
+                cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                cv2.putText(image, classes[clas], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+    cv2.putText(image, side, (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
 
     cv2.imshow("image", image)
     cv2.waitKey(0)
