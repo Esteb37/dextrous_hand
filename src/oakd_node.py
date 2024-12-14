@@ -139,7 +139,7 @@ class OakDPublisher(Node):
                     # Cut the right half
                     color = color[:, int(color.shape[1] * 0.4):]
 
-                color = cv2.resize(color, (240, 240))
+                color = cv2.resize(color, (224, 224))
 
                     # To ROS2 point cloud
                 # publish normal images
