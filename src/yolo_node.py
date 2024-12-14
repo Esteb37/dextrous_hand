@@ -47,6 +47,8 @@ class YOLONode(Node):
         self.cube_size = "initial"
         self.last_cube_size = "initial"
 
+        self.cube_discrepancy_start_time = None
+
         self.get_logger().warn("Yolo node started")
 
     def front_callback(self, msg):
@@ -71,18 +73,7 @@ class YOLONode(Node):
             image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.side_pub.publish(image)
 
-    def decide_tray(self, front, side):
-        if front != side:
-            if front == "unsure":
-                return side
-            if side == "unsure":
-                return front
-            else:
-                return "unsure"
-
-        return front
-
-    def decide_cube(self, front, side):
+    def decide(self, front, side):
         if front != side:
             if front == "unsure":
                 return side
@@ -120,20 +111,27 @@ class YOLONode(Node):
                 else:
                     side_size = self.cube_size
 
-            cube_size = self.decide_cube(front_size, side_size)
+            cube_size = self.decide(front_size, side_size)
 
             if cube_size != "discrepancy":
+                self.cube_discrepancy_start_time = None
                 if cube_size != self.last_cube_size:
                     self.cube_start_time = float(self.get_clock().now().nanoseconds)
 
                 self.last_cube_size = cube_size
 
                 if self.get_clock().now().nanoseconds - self.cube_start_time > 1e9:
-                    self.get_logger().warn(f"Cube size: {cube_size}")
-                    self.cube_size = cube_size
-
+                    if self.cube_size != cube_size:
+                        self.get_logger().warn(f"Cube size: {cube_size}")
+                        self.cube_size = cube_size
             else:
-                self.get_logger().warn("Cube discrepancy")
+                if self.cube_discrepancy_start_time is None:
+                    self.cube_discrepancy_start_time = float(self.get_clock().now().nanoseconds)
+
+                if self.get_clock().now().nanoseconds - self.cube_discrepancy_start_time > 5e9:
+                    self.cube_discrepancy_start_time = None
+                    self.get_logger().error("Cube discrepancy, assuming big")
+                    self.cube_size = "big"
 
             if self.cube_size != "initial":
                 msg = String()
