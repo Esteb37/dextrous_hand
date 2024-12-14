@@ -7,7 +7,7 @@ import cv2
 
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Int32
+from std_msgs.msg import Int32, String
 
 bridge = CvBridge()
 
@@ -26,83 +26,115 @@ class YOLONode(Node):
         self.front_pub = self.create_publisher(Image, "/yolo_front_view", 10)
         self.side_pub = self.create_publisher(Image, "/yolo_side_view", 10)
         self.decision_pub = self.create_publisher(Int32, "/yolo_decision", 10)
+        self.cube_pub = self.create_publisher(String, "/cube_size", 10)
 
         self.front_decision = "unsure"
         self.side_decision = "unsure"
 
-        self.decide_looper = self.create_timer(0.1, self.decide_loop)
+        self.front_cube = None
+        self.side_cube = None
+
+        #self.tray_looper = self.create_timer(0.1, self.tray_loop)
+        self.cube_looper = self.create_timer(0.1, self.cube_loop)
 
         self.side_init = False
         self.front_init = False
 
-        self.start_time = float(self.get_clock().now().nanoseconds)
+        self.tray_start_time = float(self.get_clock().now().nanoseconds)
+        self.cube_start_time = float(self.get_clock().now().nanoseconds)
+
         self.decision = "unsure"
+        self.cube_size = "unsure"
 
         self.get_logger().warn("Yolo node started")
 
-
     def front_callback(self, msg):
         self.front_init = True
-        if self.decision != "unsure":
-            return
 
-        side, image = self.process_image(msg, "front")
+        side, cube, image = self.process_image(msg, "front")
         self.front_decision = side
+        self.front_cube = cube
+
         if image is not None:
+            image = image[int(image.shape[1] * 0.6):, :]
             image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.front_pub.publish(image)
 
     def side_callback(self, msg):
         self.side_init = True
-        if self.decision != "unsure":
-            return
 
-        side, image = self.process_image(msg, "side")
+        side, cube, image = self.process_image(msg, "side")
         self.side_decision = side
+        self.side_cube = cube
+
         if image is not None:
+            image = image[int(image.shape[1] * 0.5):, :]
             image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.side_pub.publish(image)
 
-    def decide(self):
-        if self.front_decision != self.side_decision:
-            return "unsure"
+    def decide_tray(self, front, side):
+        if front != side:
+            if front == "unsure":
+                return side
+            if side == "unsure":
+                return front
 
-        return self.front_decision
+        return front
 
-    def decide_loop(self):
-        if self.decision != "unsure":
-            msg = Int32()
-            msg.data = decisions.index(self.decision)
-            self.decision_pub.publish(msg)
-            return
+    def decide_cube(self, front, side):
+        if front != side:
+            if front == "unsure":
+                return side
+            else:
+                return front
 
-        if not self.front_init or not self.side_init:
-            self.start_time = float(self.get_clock().now().nanoseconds)
-            return
+        return front
 
-        stop_time = float(self.get_clock().now().nanoseconds)
+    def cube_loop(self):
+        if self.front_init and self.side_init:
+            if self.front_cube is None:
+                front_size = self.cube_size
+            else:
+                _, y1, _, y2, _, clas = self.front_cube
 
-        if stop_time - self.start_time > 2e9:
-            self.get_logger().warn("YOLO unsure")
-            msg = Int32()
-            msg.data = decisions.index("unsure")
-            self.decision_pub.publish(msg)
+                ymin =  int(224 * 0.6)
 
-        self.decision = self.decide()
+                if (y1 + y2) / 2 > ymin:
+                    front_size = "small" if clas in [3, 4, 5] else "big"
 
-        if self.decision == "unsure":
-            self.get_logger().info("YOLO unsure for: " + str((stop_time - self.start_time)/1e9) + " seconds")
+                else:
+                    front_size = self.cube_size
 
-        else:
-            msg = Int32()
-            msg.data = decisions.index(self.decision)
-            self.decision_pub.publish(msg)
+            if self.side_cube is None:
+                side_size = self.cube_size
+            else:
+                _, y1, _, y2, _, clas = self.side_cube
 
-    def process_image(self, image, camera, visualize = False):
+                ymin =  int(224 * 0.5)
+
+                if (y1 + y2) / 2 > ymin:
+                    side_size = "small" if clas in [3, 4, 5] else "big"
+                else:
+                    side_size = self.cube_size
+
+            cube_size = self.decide_cube(front_size, side_size)
+            if cube_size != self.cube_size:
+                self.cube_size = cube_size
+                self.get_logger().warn(f"Cube size: {cube_size}")
+
+            msg = String()
+            msg.data = cube_size
+            self.cube_pub.publish(msg)
+
+
+    def process_image(self, image, camera, visualize = True):
 
         image = bridge.imgmsg_to_cv2(image)
 
-        results = self.model(image, imgsz=224)
+        if "side" in camera:
+            image = cv2.rotate(image, cv2.ROTATE_180)
+
+        results = self.model(image, imgsz=224, verbose=False)
 
         best_cube = None
         best_cube_conf = 0
@@ -143,6 +175,7 @@ class YOLONode(Node):
 
             if best_cube is not None:
                 x1, y1, x2, y2, conf, clas = best_cube
+                corr_tray = None
                 if clas in [0, 3] and best_blue is not None:
                     corr_tray = best_blue
                 if clas in [1, 4] and best_yellow is not None:
@@ -196,10 +229,10 @@ class YOLONode(Node):
 
         if visualize:
             cv2.putText(image, side, (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-            return side, image
+            return side, best_cube, image
 
         else:
-            return side, None
+            return side, best_cube, None
 
 
 def main(args=None):
