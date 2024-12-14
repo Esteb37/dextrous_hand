@@ -43,8 +43,9 @@ class YOLONode(Node):
         self.tray_start_time = float(self.get_clock().now().nanoseconds)
         self.cube_start_time = float(self.get_clock().now().nanoseconds)
 
-        self.decision = "unsure"
-        self.cube_size = "unsure"
+        self.decision = "initial"
+        self.cube_size = "initial"
+        self.last_cube_size = "initial"
 
         self.get_logger().warn("Yolo node started")
 
@@ -56,7 +57,6 @@ class YOLONode(Node):
         self.front_cube = cube
 
         if image is not None:
-            image = image[int(image.shape[1] * 0.6):, :]
             image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.front_pub.publish(image)
 
@@ -68,7 +68,6 @@ class YOLONode(Node):
         self.side_cube = cube
 
         if image is not None:
-            image = image[int(image.shape[1] * 0.5):, :]
             image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.side_pub.publish(image)
 
@@ -78,6 +77,8 @@ class YOLONode(Node):
                 return side
             if side == "unsure":
                 return front
+            else:
+                return "unsure"
 
         return front
 
@@ -85,8 +86,10 @@ class YOLONode(Node):
         if front != side:
             if front == "unsure":
                 return side
-            else:
+            if side == "unsure":
                 return front
+            else:
+                return "discrepancy"
 
         return front
 
@@ -118,13 +121,24 @@ class YOLONode(Node):
                     side_size = self.cube_size
 
             cube_size = self.decide_cube(front_size, side_size)
-            if cube_size != self.cube_size:
-                self.cube_size = cube_size
-                self.get_logger().warn(f"Cube size: {cube_size}")
 
-            msg = String()
-            msg.data = cube_size
-            self.cube_pub.publish(msg)
+            if cube_size != "discrepancy":
+                if cube_size != self.last_cube_size:
+                    self.cube_start_time = float(self.get_clock().now().nanoseconds)
+
+                self.last_cube_size = cube_size
+
+                if self.get_clock().now().nanoseconds - self.cube_start_time > 1e9:
+                    self.get_logger().warn(f"Cube size: {cube_size}")
+                    self.cube_size = cube_size
+
+            else:
+                self.get_logger().warn("Cube discrepancy")
+
+            if self.cube_size != "initial":
+                msg = String()
+                msg.data = self.cube_size
+                self.cube_pub.publish(msg)
 
 
     def process_image(self, image, camera, visualize = True):
