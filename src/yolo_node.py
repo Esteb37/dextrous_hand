@@ -5,7 +5,10 @@ from rclpy.node import Node
 from ultralytics import YOLO
 import cv2
 
+from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
+
+bridge = CvBridge()
 
 classes = ["big_blue", "big_yellow", "big_red", "small_blue", "small_yellow", "small_red", "tray_blue", "tray_yellow", "tray_red"]
 
@@ -24,19 +27,24 @@ class YOLONode(Node):
     def front_callback(self, msg):
         image = self.process_image(msg)
         if image is not None:
+            image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.front_pub.publish(image)
 
     def side_callback(self, msg):
         image = self.process_image(msg)
         if image is not None:
+            image = bridge.cv2_to_imgmsg(image, "bgr8")
             self.side_pub.publish(image)
 
     def process_image(self, image):
+
+        image = bridge.imgmsg_to_cv2(image)
 
         results = self.model(image, imgsz=224)
 
         if len(results) == 0:
             return None
+
 
         best_cube = None
         best_cube_conf = 0
