@@ -46,9 +46,7 @@ LOGGER_TOPICS_TYPES = {
 
     # CAMERA IMAGES
     "/oakd_front_view/color": Image,
-    "/oakd_front_view/depth": Image,
     "/oakd_side_view/color": Image,
-    "/oakd_side_view/depth": Image,
 
     "/oakd_wrist_view/color": Image,
 
@@ -64,8 +62,4 @@ LOGGER_TOPICS_TYPES = {
 
     "/oakd_front_view/projection": Float32MultiArray,
     "/oakd_side_view/projection": Float32MultiArray,
-
-    # Rokoko data
-    "/ingress/mano": Float32MultiArray,
-    "/ingress/wrist": PoseStamped,
 }

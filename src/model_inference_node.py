@@ -88,7 +88,7 @@ class PolicyPlayerAgent(Node):
 
         self.policy = get_policy_from_ckpt(self.policy_ckpt_path)
         self.policy.reset_policy()
-        self.policy_run = self.create_timer(0.01, self.run_policy_cb) # 20hz
+        self.policy_run = self.create_timer(0.001, self.run_policy_cb) # 20hz
 
         hand_msg = numpy_to_float32_multiarray(np.zeros(self.hand_qpos_dim))
         self.hand_pub.publish(hand_msg)

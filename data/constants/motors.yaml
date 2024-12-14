@@ -14,102 +14,102 @@ MAX_CURRENT_WRIST: 800
 
 THUMB_ABD:
   port: 10
-  zero: 3.1408255100250244
+  zero: 3.047229766845703
   direction: -1
   range: *full_range
 
 THUMB_MCP:
   port: 13
-  zero: 5.195327281951904
+  zero: 4.883852958679199
   direction: -1
   range: *full_range
 
 THUMB_PIP:
   port: 12
-  zero: 3.016542673110962
+  zero: 3.0886573791503906
   direction: 1
   range: *full_range
 
 THUMB_DIP:
   port: 11
-  zero: 2.991992950439453
+  zero: 2.700465440750122
   direction: 1
   range: *full_range
 
 INDEX_FRBL:
   port: 9
-  zero: 3.0855886936187744
+  zero: 3.122413158416748
   direction: 1
   range: *full_range
 
 INDEX_FLBR:
   port: 0
-  zero: 1.9624404907226562
+  zero: 1.8979976177215576
   direction: 1
   range: *full_range
 
 INDEX_FMBM:
   port: 15
-  zero: 1.1292855739593506
+  zero: 1.6494320631027222
   direction: 1
   range: *full_range
 
 MIDDLE_FRBL:
   port: 5
-  zero: 3.840491533279419
+  zero: 3.021145820617676
   direction: -1
   range: *full_range
 
 MIDDLE_FLBR:
   port: 14
-  zero: 1.0356898307800293
+  zero: 1.0556365251541138
   direction: -1
   range: *full_range
 
 MIDDLE_FMBM:
   port: 16
-  zero: 2.807870388031006
+  zero: 2.8876569271087646
   direction: 1
   range: *full_range
 
 RING_FRBL:
   port: 7
-  zero: 2.606869697570801
+  zero: 3.6855216026306152
   direction: 1
   range: *full_range
 
 RING_FLBR:
   port: 8
-  zero: 3.107069730758667
+  zero: 2.0207459926605225
   direction: -1
   range: *full_range
 
 RING_FMBM:
   port: 6
-  zero: 2.906069040298462
+  zero: 2.968977689743042
   direction: 1
   range: *full_range
 
 PINKY_FRBL:
   port: 2
-  zero: 2.278517723083496
+  zero: 1.5512332916259766
   direction: -1
   range: *full_range
 
 PINKY_FLBR:
   port: 1
-  zero: 1.8964632749557495
+  zero: 3.780651569366455
   direction: 1
   range: *full_range
 
 PINKY_FMBM:
   port: 3
-  zero: 1.9210129976272583
+  zero: 2.1358227729797363
   direction: 1
   range: *full_range
 
 WRIST:
   port: 4
-  zero: 5.876581192016602
+  zero: 5.741558074951172
   direction: -1
   range: [-6.18, 6.18]

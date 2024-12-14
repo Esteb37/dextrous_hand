@@ -3,7 +3,7 @@ IS_SIMULATION: false
 
 CONFIGURATION: "dice"
 
-MODEL_PATH: "secondDay/checkpoint_80.pth"
+MODEL_PATH: "day5_models/checkpoint_490.pth"
 
 WITH_MUJOCO: false
 
