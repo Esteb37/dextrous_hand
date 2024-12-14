@@ -5,3 +5,5 @@ src/__pycache__
 *pyc
 *.h5
 data/models
+dextrous_hand/yolo/runs
+dextrous_hand/yolo/yolo11n.pt

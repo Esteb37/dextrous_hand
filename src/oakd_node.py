@@ -166,9 +166,9 @@ class OakDPublisher(Node):
                         output_img_depth = self.bridge.cv2_to_imgmsg(
                             depth, "mono16", header=header
                         )
-                        self.camera_dict[camera_name]["depth_output_pub"].publish(
+                        """self.camera_dict[camera_name]["depth_output_pub"].publish(
                             output_img_depth
-                        )
+                        )"""
 
                         if self.visualize:
                             output_img_depth_visualization = self.bridge.cv2_to_imgmsg(

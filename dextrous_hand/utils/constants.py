@@ -63,3 +63,8 @@ LOGGER_TOPICS_TYPES = {
     "/oakd_front_view/projection": Float32MultiArray,
     "/oakd_side_view/projection": Float32MultiArray,
 }
+
+IMAGE_TOPIC_TYPES = {
+    "/observations/images/oakd_front_view/color": Image,
+    "/observations/images/oakd_side_view/color": Image,
+}
