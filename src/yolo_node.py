@@ -100,101 +100,104 @@ class YOLONode(Node):
         return front
 
     def cube_loop(self):
-        if self.front_init and self.side_init:
-            front_cube, front_blue, front_yellow, front_red = self.front_boxes
-            side_cube, side_blue, side_yellow, side_red = self.side_boxes
+        try:
+            if self.front_init and self.side_init:
+                front_cube, front_blue, front_yellow, front_red = self.front_boxes
+                side_cube, side_blue, side_yellow, side_red = self.side_boxes
 
-            update_tray = True
+                update_tray = True
 
-            if front_cube is None:
-                front_size = self.cube_size
-            else:
-                _, y1, _, y2, _, clas = front_cube
-
-                ymin =  int(224 * 0.6)
-
-                if (y1 + y2) / 2 > ymin:
-                    front_size = "small" if clas in [3, 4, 5] else "big"
-
-                else:
+                if front_cube is None:
                     front_size = self.cube_size
-                    update_tray = False
-
-            if side_cube is None:
-                side_size = self.cube_size
-            else:
-                _, y1, _, y2, _, clas = side_cube
-
-                ymin =  int(224 * 0.5)
-
-                if (y1 + y2) / 2 > ymin:
-                    side_size = "small" if clas in [3, 4, 5] else "big"
                 else:
+                    _, y1, _, y2, _, clas = front_cube
+
+                    ymin =  int(224 * 0.6)
+
+                    if (y1 + y2) / 2 > ymin:
+                        front_size = "small" if clas in [3, 4, 5] else "big"
+
+                    else:
+                        front_size = self.cube_size
+                        update_tray = False
+
+                if side_cube is None:
                     side_size = self.cube_size
-                    update_tray = False
+                else:
+                    _, y1, _, y2, _, clas = side_cube
 
-            cube_size = self.decide(front_size, side_size)
+                    ymin =  int(224 * 0.5)
 
-            if cube_size != "discrepancy" and cube_size != "unsure":
-                self.cube_uncertainty_start_time = None
-                if cube_size != self.last_cube_size:
-                    self.cube_start_time = float(self.get_clock().now().nanoseconds)
+                    if (y1 + y2) / 2 > ymin:
+                        side_size = "small" if clas in [3, 4, 5] else "big"
+                    else:
+                        side_size = self.cube_size
+                        update_tray = False
 
-                self.last_cube_size = cube_size
+                cube_size = self.decide(front_size, side_size)
 
-                if self.get_clock().now().nanoseconds - self.cube_start_time > 1e9 * self.ACCEPTANCE_TIMER:
-                    if self.cube_size != cube_size:
-                        self.get_logger().warn(f"Cube size: {cube_size}")
-                        self.cube_size = cube_size
-
-                if update_tray:
-                    front_tray, _ = self.get_tray_side(front_cube, front_blue, front_yellow, front_red, "front")
-                    side_tray, _ = self.get_tray_side(side_cube, side_blue, side_yellow, side_red, "side")
-
-                    tray_position = self.decide(front_tray, side_tray)
-
-                    if tray_position == "discrepancy" or tray_position == "unsure":
-                        if self.tray_position == "initial":
-                            if self.tray_uncertainty_start_time is None:
-                                self.tray_uncertainty_start_time = float(self.get_clock().now().nanoseconds)
-
-                            if self.get_clock().now().nanoseconds - self.tray_uncertainty_start_time > 1e9 * self.DISCREPANCY_TIMER:
-                                self.tray_uncertainty_start_time = None
-                                self.get_logger().error("Unable to get tray position, assuming center")
-                                self.tray_position = "center"
-                        else:
-                            self.last_tray_position = self.tray_position
-
-                    elif tray_position != self.tray_position:
-                        if self.last_tray_position != tray_position:
-                            self.tray_start_time = float(self.get_clock().now().nanoseconds)
-
-                        if self.get_clock().now().nanoseconds - self.tray_start_time > 1e9 * self.ACCEPTANCE_TIMER:
-                            self.tray_position = tray_position
-                            self.get_logger().warn(f"Tray position: {self.tray_position}")
-
-                        self.last_tray_position = tray_position
-
-
-            else:
-                if self.cube_uncertainty_start_time is None:
-                    self.cube_uncertainty_start_time = float(self.get_clock().now().nanoseconds)
-
-                if self.get_clock().now().nanoseconds - self.cube_uncertainty_start_time > 1e9 * self.DISCREPANCY_TIMER:
+                if cube_size != "discrepancy" and cube_size != "unsure":
                     self.cube_uncertainty_start_time = None
-                    self.get_logger().error("Unable to get cube size, assuming big")
-                    self.cube_size = "big"
+                    if cube_size != self.last_cube_size:
+                        self.cube_start_time = float(self.get_clock().now().nanoseconds)
 
-            if self.cube_size != "initial":
-                msg = String()
-                msg.data = self.cube_size
-                self.cube_pub.publish(msg)
+                    self.last_cube_size = cube_size
 
-            if self.tray_position != "initial":
-                msg = Int32()
-                msg.data = tray_positions.index(self.tray_position)
-                self.tray_pub.publish(msg)
+                    if self.get_clock().now().nanoseconds - self.cube_start_time > 1e9 * self.ACCEPTANCE_TIMER:
+                        if self.cube_size != cube_size:
+                            self.get_logger().warn(f"Cube size: {cube_size}")
+                            self.cube_size = cube_size
 
+                    if update_tray:
+                        front_tray, _ = self.get_tray_side(front_cube, front_blue, front_yellow, front_red, "front")
+                        side_tray, _ = self.get_tray_side(side_cube, side_blue, side_yellow, side_red, "side")
+
+                        tray_position = self.decide(front_tray, side_tray)
+
+                        if tray_position == "discrepancy" or tray_position == "unsure":
+                            if self.tray_position == "initial":
+                                if self.tray_uncertainty_start_time is None:
+                                    self.tray_uncertainty_start_time = float(self.get_clock().now().nanoseconds)
+
+                                if self.get_clock().now().nanoseconds - self.tray_uncertainty_start_time > 1e9 * self.DISCREPANCY_TIMER:
+                                    self.tray_uncertainty_start_time = None
+                                    self.get_logger().error("Unable to get tray position, assuming center")
+                                    self.tray_position = "center"
+                            else:
+                                self.last_tray_position = self.tray_position
+
+                        elif tray_position != self.tray_position:
+                            if self.last_tray_position != tray_position:
+                                self.tray_start_time = float(self.get_clock().now().nanoseconds)
+
+                            if self.get_clock().now().nanoseconds - self.tray_start_time > 1e9 * self.ACCEPTANCE_TIMER:
+                                self.tray_position = tray_position
+                                self.get_logger().warn(f"Tray position: {self.tray_position}")
+
+                            self.last_tray_position = tray_position
+
+
+                else:
+                    if self.cube_uncertainty_start_time is None:
+                        self.cube_uncertainty_start_time = float(self.get_clock().now().nanoseconds)
+
+                    if self.get_clock().now().nanoseconds - self.cube_uncertainty_start_time > 1e9 * self.DISCREPANCY_TIMER:
+                        self.cube_uncertainty_start_time = None
+                        self.get_logger().error("Unable to get cube size, assuming big")
+                        self.cube_size = "big"
+
+                if self.cube_size != "initial":
+                    msg = String()
+                    msg.data = self.cube_size
+                    self.cube_pub.publish(msg)
+
+                if self.tray_position != "initial":
+                    msg = Int32()
+                    msg.data = tray_positions.index(self.tray_position)
+                    self.tray_pub.publish(msg)
+        except:
+            self.tray_position = "center"
+            self.cube_size = "big"
 
     def get_boxes(self, image):
         results = self.model(image, imgsz=224, verbose=False)

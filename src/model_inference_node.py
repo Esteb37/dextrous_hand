@@ -8,7 +8,7 @@ from threading import Lock
 from rclpy.node import Node
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
-from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Float32MultiArray, String, Int32
 from geometry_msgs.msg import PoseStamped
 
 import torch
@@ -42,21 +42,28 @@ class PolicyPlayerAgent(Node):
 
         self.declare_parameter("camera_topics", rclpy.Parameter.Type.STRING_ARRAY)
         self.declare_parameter("camera_names", rclpy.Parameter.Type.STRING_ARRAY)
-        self.declare_parameter("policy_ckpt_path", GLOBAL_CONSTANTS["MODEL_PATH"])
+        self.declare_parameter("big_policy_ckpt_path", GLOBAL_CONSTANTS["BIG_MODEL_PATH"])
+        self.declare_parameter("small_policy_ckpt_path", GLOBAL_CONSTANTS["SMALL_MODEL_PATH"])
 
         self.declare_parameter("hand_qpos_dim", 17) # The dimension of the hand_qpos, we need this because we need to broadcast an all zero command to the hand at the beginning
         self.camera_topics = self.get_parameter("camera_topics").value
         self.camera_names = self.get_parameter("camera_names").value
-        self.policy_ckpt_path = self.get_parameter("policy_ckpt_path").value
+        self.big_policy_ckpt_path = self.get_parameter("big_policy_ckpt_path").value
+        self.small_policy_ckpt_path = self.get_parameter("small_policy_ckpt_path").value
         self.hand_qpos_dim = self.get_parameter("hand_qpos_dim").value
 
         if self.camera_topics is None or self.camera_names is None:
             raise ValueError("No camera topics or names provided")
 
-        if self.policy_ckpt_path is None or self.policy_ckpt_path == "":
-            raise ValueError("No policy ckpt path provided")
+        if self.big_policy_ckpt_path is None or self.big_policy_ckpt_path == "":
+            raise ValueError("No big policy ckpt path provided")
         else:
-            self.policy_ckpt_path = parent_dir() + "/data/models/" + self.policy_ckpt_path
+            self.big_policy_ckpt_path = parent_dir() + "/data/models/" + self.big_policy_ckpt_path
+
+        if self.small_policy_ckpt_path is None or self.small_policy_ckpt_path == "":
+            raise ValueError("No small policy ckpt path provided")
+        else:
+            self.small_policy_ckpt_path = parent_dir() + "/data/models/" + self.small_policy_ckpt_path
 
         if self.hand_qpos_dim is None:
             raise ValueError("No hand qpos dimension provided")
@@ -82,21 +89,34 @@ class PolicyPlayerAgent(Node):
             for camera_topic, camera_name in zip(self.camera_topics, self.camera_names)
         ]
 
+        self.yolo_sub = self.create_subscription(Int32, "/yolo_decision", self.yolo_callback, 10)
+
+        self.size_sub = self.create_subscription(String, "/cube_size", self.size_callback, 10)
+
         self.bridge = CvBridge()
         self.current_wrist_state = None
         self.current_hand_state = None
 
-        self.policy = get_policy_from_ckpt(self.policy_ckpt_path)
-        self.policy.reset_policy()
+        self.big_policy = get_policy_from_ckpt(self.big_policy_ckpt_path)
+        self.big_policy.reset_policy()
+        self.small_policy = get_policy_from_ckpt(self.small_policy_ckpt_path)
+        self.small_policy.reset_policy()
         self.policy_run = self.create_timer(0.001, self.run_policy_cb) # 20hz
 
         hand_msg = numpy_to_float32_multiarray(np.zeros(self.hand_qpos_dim))
         self.hand_pub.publish(hand_msg)
 
-        self.get_logger().warn("Inference node started with model from: " + self.policy_ckpt_path)
+        self.yolo_decision = None
+        self.cube_size = "big"
 
+        self.get_logger().warn(f"Inference node started with models from {self.big_policy_ckpt_path} and {self.small_policy_ckpt_path}")
         self.start_time = self.get_clock().now()
 
+    def yolo_callback(self, msg: Int32):
+        self.yolo_decision = msg.data
+
+    def size_callback(self, msg: String):
+        self.cube_size = msg.data
 
     def publish(self, wrist_policy: np.ndarray, hand_policy: np.ndarray):
         # publish hand policy
@@ -142,15 +162,17 @@ class PolicyPlayerAgent(Node):
         with self.lock:
             qpos_franka = self.current_wrist_state
             qpos_hand = self.current_hand_state
-        if qpos_franka is None or qpos_hand is None:
+            yolo_decision = self.yolo_decision
+        if qpos_franka is None or qpos_hand is None or yolo_decision is None:
             print("missing qpos_franka", qpos_franka is None)
             print("missing qpos_hand", qpos_hand is None)
+            print("missing yolo_decision", yolo_decision is None)
             return False, obs_dict
-
 
         obs_dict.update(images)
         obs_dict['qpos_franka'] = qpos_franka
         obs_dict['qpos_hand'] = qpos_hand
+        obs_dict['yolo_decision'] = self.yolo_decision
         return get_data_success, obs_dict
 
     def run_policy_cb(self):
@@ -162,16 +184,19 @@ class PolicyPlayerAgent(Node):
 
         with torch.inference_mode():
             obs_dict = {k: torch.tensor(v).float().unsqueeze(0) for k, v in obs_dict.items()} # add batch dimension
-            actions = self.policy.predict_action(obs_dict)
+
+            if self.cube_size == "big":
+                actions = self.big_policy.predict_action(obs_dict)
+            else:
+                actions = self.small_policy.predict_action(obs_dict)
+
             wrist_action = actions["actions_franka"][0].cpu().numpy()
             hand_action = actions["actions_hand"][0].cpu().numpy()
 
         end_time = self.get_clock().now()
         self.publish(wrist_action, hand_action)
-        self.get_logger().info(f"Time taken for inference: {(end_time - self.start_time).nanoseconds/1 * 10**-6} ms")
-        self.get_logger().info(f"Frequency: {1/((end_time - self.start_time).nanoseconds/1 * 10**-9)} Hz")
+        self.get_logger().info(f"Policy: {self.cube_size} - {1/((end_time - self.start_time).nanoseconds/1 * 10**-9)} Hz")
         self.start_time = end_time
-
 
 def main(args=None):
     rclpy.init(args=args)
