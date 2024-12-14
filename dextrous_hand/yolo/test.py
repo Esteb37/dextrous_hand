@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import os
 import cv2
 
-model = YOLO("/home/esteb37/ros2_ws/src/dextrous_hand/dextrous_hand/yolo/runs/detect/train5/weights/best.pt")
+model = YOLO("/home/esteb37/ros2_ws/src/dextrous_hand/dextrous_hand/yolo/runs/detect/train7/weights/best.pt")
 
 path = "/home/esteb37/Downloads/images/tray_yellow"
 
@@ -62,10 +62,30 @@ for file in files:
                     best_red = array
                     best_red_conf = conf
 
-    for rect in [best_cube, best_blue, best_yellow, best_red]:
+    if best_cube is not None:
+        x1, y1, x2, y2, conf, clas = best_cube[0]
+        if clas in [0, 3]:
+            corr_tray = best_blue
+        if clas in [1, 4]:
+            corr_tray = best_yellow
+        if clas in [2, 5]:
+            corr_tray = best_red
+
+    trays = []
+    if best_blue is not None:
+        trays.append(best_blue[0])
+    if best_yellow is not None:
+        trays.append(best_yellow[0])
+    if best_red is not None:
+        trays.append(best_red[0])
+
+
+    # Sort from left to right
+    trays.sort(key=lambda x: x[0])
+
+    for rect in [best_cube, corr_tray]:
         if rect is None:
             continue
-
 
         x1, y1, x2, y2, conf, clas = rect[0]
 
@@ -76,6 +96,8 @@ for file in files:
         clas = int(clas)
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
         cv2.putText(image, classes[clas], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+
 
     cv2.imshow("image", image)
     cv2.waitKey(0)
