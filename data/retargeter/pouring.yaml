@@ -1,0 +1,112 @@
+# Title
+title: pouring
+
+# A short description of this configuration
+description: Default configuration for the retargeter
+
+
+# A keyvector is a distance between two points in the hand. The retargeter tries to mimic this distance from the mano model into the hand model.
+# For example if we touch the pinky to the thumb, pinky2thumb is very small in the mano, so the retargeter will try its best to make pinky2thumb small in the hand model.
+# More keyvectors = truer movements but also more computation
+# If you want to add keyvectors that are not related to fingertips or palms, modify the code in retargeter.py and retarget_utils.py
+keyvectors: [palm2thumb, palm2index, palm2middle, palm2ring, palm2pinky, thumb2index,
+  thumb2middle, thumb2ring, thumb2pinky, index2middle, index2ring, index2pinky, middle2ring,
+  middle2pinky, ring2pinky, pinky2ring_mp, ring2middle_mp, middle2index_mp, thumb_tip2dp]
+
+# Default: 5.0
+# The loss coefficient for each keyvector.
+# The  individual coefficient is multiplied by the keyvector error and added to the total loss
+# The higher the coefficient, the higher the impact of the keyvector
+loss_coeffs:
+  palm2thumb: 5.0
+  palm2index: 5.0
+  palm2middle: 5.0
+  palm2ring: 5.0
+  palm2pinky: 5.0
+  thumb2index: 5.0
+  thumb2middle: 5.0
+  thumb2ring: 5.0
+  thumb2pinky: 5.0
+  index2middle: 5.0
+  index2ring: 5.0
+  index2pinky: 5.0
+  middle2ring: 5.0
+  middle2pinky: 5.0
+  ring2pinky: 5.0
+  pinky2ring_mp: 5.0
+  ring2middle_mp: 5.0
+  middle2index_mp: 5.0
+  thumb_tip2dp: 70.0
+
+# Default: 1.0
+scale_coeffs:
+  palm2thumb: 1.0
+  palm2index: 1.0
+  palm2middle: 1.0
+  palm2ring: 1.0
+  palm2pinky: 1.0
+  thumb2index: 1.0
+  thumb2middle: 1.0
+  thumb2ring: 1.0
+  thumb2pinky: 1.0
+  index2middle: 1.0
+  index2ring: 1.0
+  index2pinky: 1.0
+  middle2ring: 1.0
+  middle2pinky: 1.0
+  ring2pinky: 1.0
+  pinky2ring_mp: 1.0
+  ring2middle_mp: 1.0
+  middle2index_mp: 1.0
+  thumb_tip2dp: 0.2
+
+# Default: False
+# Effect: If true, the loss coefficient will use the normalized distance between mano keyvector and hand keyvector
+# I think they are either all true or all false, but in the original code palm2thumb was always false even if use_scalar_distance was true
+use_scalar_distance_palm: false
+
+# In degrees, do not change order
+# Effect: Self-explanatory
+joint_ranges:
+  THUMB_MCP: [0.0, 130.0]
+  THUMB_ABD: [0.0, 85.0]
+  THUMB_PIP: [0.0, 90.0]
+  THUMB_DIP: [0.0, 90.0]
+
+  INDEX_ABD: [-30.0, 30.0]
+  INDEX_MCP: [0.0, 180.0]
+  INDEX_PIP: [0.0, 180.0]
+
+  MIDDLE_ABD: [-30.0, 30.0]
+  MIDDLE_MCP: [0.0, 180.0]
+  MIDDLE_PIP: [0.0, 180.0]
+
+  RING_ABD: [-30.0, 30.0]
+  RING_MCP: [0.0, 180.0]
+  RING_PIP: [0.0, 180.0]
+
+  PINKY_ABD: [-30.0, 30.0]
+  PINKY_MCP: [0.0, 180.0]
+  PINKY_PIP: [0.0, 180.0]
+
+retargeter_adjustments:
+  thumb:
+    translation: [0.01, 0.0, 0.02]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  index:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  middle:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  ring:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
+  pinky:
+    translation: [0.0, 0.0, 0.0]
+    rotation: [0.0, 0.0, 0.0]
+    scale: [1.0, 1.0, 1.0]
