@@ -88,7 +88,7 @@ class PolicyPlayerAgent(Node):
 
         self.policy = get_policy_from_ckpt(self.policy_ckpt_path)
         self.policy.reset_policy()
-        self.policy_run = self.create_timer(0.001, self.run_policy_cb) # 20hz
+        self.policy_run = self.create_timer(0.05, self.run_policy_cb) # 20hz
 
         hand_msg = numpy_to_float32_multiarray(np.zeros(self.hand_qpos_dim))
         self.hand_pub.publish(hand_msg)
@@ -129,6 +129,7 @@ class PolicyPlayerAgent(Node):
         get_data_success = True
 
         images = {camera.name: camera.get_im() for camera in self.camera_listeners}
+
         if any([im is None for im in images.values()]):
             get_data_success = False
             print("Missing camera images", [im is not None for im in images.values()])
@@ -147,10 +148,9 @@ class PolicyPlayerAgent(Node):
             print("missing qpos_hand", qpos_hand is None)
             return False, obs_dict
 
-
+        obs_dict['qpos_hand'] = qpos_hand
         obs_dict.update(images)
         obs_dict['qpos_franka'] = qpos_franka
-        obs_dict['qpos_hand'] = qpos_hand
         return get_data_success, obs_dict
 
     def run_policy_cb(self):

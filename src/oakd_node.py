@@ -132,6 +132,8 @@ class OakDPublisher(Node):
                 if depth is not None:
                     depth = cv2.rotate(depth, cv2.ROTATE_180)
 
+                    depth = cv2.resize(depth, (224, 224))
+
                     if self.visualize:
                         depth_visualization = visualize_depth(depth)
 
@@ -166,9 +168,9 @@ class OakDPublisher(Node):
                         output_img_depth = self.bridge.cv2_to_imgmsg(
                             depth, "mono16", header=header
                         )
-                        """self.camera_dict[camera_name]["depth_output_pub"].publish(
+                        self.camera_dict[camera_name]["depth_output_pub"].publish(
                             output_img_depth
-                        )"""
+                        )
 
                         if self.visualize:
                             output_img_depth_visualization = self.bridge.cv2_to_imgmsg(
