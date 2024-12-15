@@ -1,7 +1,7 @@
 # Set to True if the motor controller is not connected
 IS_SIMULATION: false
 
-CONFIGURATION: "dice"
+CONFIGURATION: "drill"
 
 MODEL_PATH: "day5_models/checkpoint_490.pth"
 
