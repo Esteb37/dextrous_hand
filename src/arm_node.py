@@ -33,7 +33,7 @@ class ArmNode(Node):
         self.X_W_fEE = None
 
         self.rokoko_pose_sub = self.create_subscription(
-            PoseStamped, "/ingress/wrist", self.rokoko_pose_callback, 10
+            PoseStamped, "/ingress/elbow", self.rokoko_pose_callback, 10
         )
 
         # publishes to franka/end_effector_pose_cmd
