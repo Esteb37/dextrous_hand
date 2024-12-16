@@ -22,7 +22,7 @@ class YOLONode(Node):
 
     def __init__(self):
         super().__init__("yolo_node")
-        self.model = YOLO("/home/esteb37/ros2_ws/src/dextrous_hand/dextrous_hand/yolo/runs/detect/train7/weights/best.pt")
+        self.model = YOLO("/home/atharva/Downloads/best.pt")
 
         self.front_sub = self.create_subscription(Image, "/oakd_front_view/color", self.front_callback, 10)
         self.side_sub = self.create_subscription(Image, "/oakd_side_view/color", self.side_callback, 10)

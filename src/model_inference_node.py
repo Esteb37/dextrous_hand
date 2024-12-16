@@ -172,7 +172,7 @@ class PolicyPlayerAgent(Node):
         obs_dict.update(images)
         obs_dict['qpos_franka'] = qpos_franka
         obs_dict['qpos_hand'] = qpos_hand
-        obs_dict['yolo_decision'] = self.yolo_decision
+        obs_dict['yolo_decision'] = [self.yolo_decision]
         return get_data_success, obs_dict
 
     def run_policy_cb(self):

@@ -3,8 +3,8 @@ IS_SIMULATION: false
 
 CONFIGURATION: "dice"
 
-BIG_MODEL_PATH: "bigYolo/best_model.pth"
-SMALL_MODEL_PATH: "bigYolo/best_model.pth"
+BIG_MODEL_PATH: "finalData/allYolo/best_model.pth"
+SMALL_MODEL_PATH: "finalData/allYolo/best_model.pth"
 
 WITH_MUJOCO: false
 
