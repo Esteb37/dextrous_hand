@@ -26,7 +26,7 @@ def control_nodes(sim = False):
     return [
         NodeClass("hand_node"),
 
-        # NodeClass("wrist_controller_node"),
+        NodeClass("wrist_controller_node"),
 
         NodeClass("retargeter_node",
             parameters=[
