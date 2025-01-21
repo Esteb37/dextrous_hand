@@ -1,0 +1,21 @@
+[console_scripts]
+arm_node = src.arm_node:main
+basic_node = src.basic_node:main
+calibrate_node = src.calibrate_node:main
+hand_node = src.hand_node:main
+keyboard_node = src.keyboard_node:main
+logger_node = src.logger_node:main
+model_inference_node = src.model_inference_node:main
+motors_node = src.motors_node:main
+mujoco_controller_node = src.mujoco_controller_node:main
+mujoco_node = src.mujoco_node:main
+oakd_faker_node = src.oakd_faker_node:main
+oakd_node = src.oakd_node:main
+retargeter_node = src.retargeter_node:main
+rokoko_node = src.rokoko_node:main
+slider_node = src.slider_node:main
+syncronize_data = dextrous_hand.utils.syncronize_data:main
+visualize_joints_node = src.visualize_joints_node:main
+webcam_mano_node = src.webcam_mano_node:main
+wrist_controller_node = src.wrist_controller_node:main
+yolo_node = src.yolo_node:main
