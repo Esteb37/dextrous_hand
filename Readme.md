@@ -1,6 +1,14 @@
+![RAPUNZEL](data/assets/labelled_rapunzel.png)
+
 # Architecture
 
-![Architecture](architecture.png)
+## Teleoperation and data gathering
+![Teleoperation Architecture](data/assets/teleop_architecture.png)
+
+## Autonomy with Imitation Learning
+![Autonomy Architecture](data/assets/inference_architecture.png)
+
+
 
 # Setup
 
