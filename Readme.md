@@ -1,4 +1,8 @@
+![Gif 1](data/assets/spinner.gif)
+![Gif 2](data/assets/card.gif)
+
 ![RAPUNZEL](data/assets/labelled_rapunzel.png)
+
 
 # Architecture
 
